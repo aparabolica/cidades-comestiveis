@@ -24,6 +24,8 @@ var app = express()
 // Bootstrap application settings
 require('./config/express')(app, config, passport)
 
+// Bootstrap routes
+require('./config/routes')(app, config)
 
 // Start the app by listening on <port>
 var port = process.env.PORT || 3000

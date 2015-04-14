@@ -4,7 +4,7 @@
 */
 
 var
-	apiPrefix = 'api/v1',
+	apiPrefix = '/api/v1',
 	path = require('path'),
 	rootPath = path.resolve(__dirname + '../..'),
 	sessionSecret = process.env.SESSION_SECRET || 'not so secret',
