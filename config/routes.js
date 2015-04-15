@@ -8,8 +8,6 @@ var lands = require('../routes/lands');
 
 module.exports = function (app, config) {
   var apiPrefix = config.apiPrefix;
-  console.log(config);
-  console.log(apiPrefix);
 
   // Search
   app.use('/', routes);
