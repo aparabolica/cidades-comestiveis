@@ -2,6 +2,7 @@
   "name": "cidades-comestiveis",
   "version": "0.1.0",
   "scripts": {
+    "watch": "NODE_ENV=development ./node_modules/.bin/nodemon --watch app.js",
     "start": "node app.js",
     "test": "NODE_ENV=test mocha test/api"
   },
@@ -45,6 +46,7 @@
   "homepage": "https://github.com/codigourbano/cidades-comestiveis",
   "devDependencies": {
     "mocha": "^2.2.1",
+    "nodemon": "^1.3.7",
     "rosie": "^0.4.1",
     "should": "^5.2.0",
     "supertest": "^0.15.0"
