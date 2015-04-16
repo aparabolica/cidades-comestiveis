@@ -62,14 +62,13 @@ UserSchema.path('email').validate(function (email) {
 	return email.length
 }, 'Email cannot be blank.');
 
-UserSchema.path('email').validate(function (email, fn) {
+UserSchema.path('email').validate(function (email, done) {
 	var User = mongoose.model('User')
-	if (this.doesNotRequireValidation()) fn(true)
 
 	// Check only when it is a new user or when email field is modified
 	if (this.isNew || this.isModified('email')) {
 		User.find({ email: email }).exec(function (err, users) {
-			fn(!err && users.length === 0)
+			done(!err && users.length === 0)
 		})
 	} else
 		fn(true);
@@ -182,13 +181,6 @@ UserSchema.methods = {
 		}
 	},
 
-	/**
-	 * Validation is not required if using OAuth
-	 */
-
-	doesNotRequireValidation: function() {
-		return ~oAuthTypes.indexOf(this.provider);
-	}
 }
 
 
