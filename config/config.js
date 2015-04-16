@@ -24,19 +24,21 @@ var
 
 module.exports = {
 	development: {
-		root: rootPath,
+		rootPath: rootPath,
 		apiPrefix: apiPrefix,
 		sessionSecret: sessionSecret,
 		db: 'mongodb://localhost/comestiveis_dev',
 		i18n: i18n
 	},
 	test: {
+		rootPath: rootPath,
 		apiPrefix: apiPrefix,
 		sessionSecret: sessionSecret,
 		db: 'mongodb://localhost/comestiveis_test',
 		i18n: i18n
 	},
 	production: {
+		rootPath: rootPath,
 		apiPrefix: apiPrefix,
 		sessionSecret: sessionSecret,
 		db: process.env.MONGOLAB_URI || 'mongodb://localhost/comestiveis_production',
