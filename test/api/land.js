@@ -19,6 +19,12 @@ var factories = require('../helpers/factories');
 var apiPrefix = 'api/v1';
 var config = require('../../config/config')['test'];
 
+
+/* Local instances */
+var user1;
+var user1AccessToken;
+
+
 /* The tests */
 
 describe('API: Lands', function(){
@@ -37,31 +43,18 @@ describe('API: Lands', function(){
     });
 
     /*
-     * Create user1, user2 and admin
+     * Create user1
      */
     function createUsers(doneCreateUsers) {
       async.series([function(done){
-          factories.createUser(function(err,usr){
-            should.not.exist(err);
-            user1 = usr;
-            expressHelper.login(user1.email, user1.password, function(token){
-              user1AccessToken = token;
-              done();
-            });
+        factories.createUser(function(err,usr){
+          should.not.exist(err);
+          user1 = usr;
+          expressHelper.login(user1.email, user1.password, function(token){
+            user1AccessToken = token;
+            done();
           });
-        }, function(done){
-          factories.createUser(function(err,usr){
-            should.not.exist(err);
-            user2 = usr;
-            done()
-          });
-        }, function(done){
-          factories.createUser(function(err,usr){
-            should.not.exist(err);
-            admin = usr;
-            admin.role = 'admin';
-            done()
-          });
+        });
       }], doneCreateUsers);
     }
   });

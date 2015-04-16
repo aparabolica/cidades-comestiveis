@@ -53,19 +53,6 @@ module.exports = function (app, config, passport) {
     }
   }));
 
-  // CookieParser should be above session
-  app.use(cookieParser());
-  app.use(cookieSession({ secret: 'secret' }));
-  app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: config.sessionSecret,
-    store: new mongoStore({
-      url: config.db,
-      collection : 'sessions'
-    })
-  }));
-
   // use passport session
   app.use(passport.initialize());
   app.use(passport.session());
