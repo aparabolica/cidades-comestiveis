@@ -10,6 +10,8 @@
     "angular": "^1.3.15",
     "angular-ui-router": "^0.2.13",
     "body-parser": "^1.12.2",
+    "browserify": "^9.0.8",
+    "browserify-shim": "^3.8.5",
     "compression": "^1.4.3",
     "connect-mongo": "^0.8.0",
     "cookie-parser": "^1.3.4",
@@ -38,6 +40,17 @@
     "underscore": "^1.8.3",
     "validator": "^3.37.0",
     "winston": "^1.0.0"
+  },
+  "browser": {
+    "angular": "./node_modules/angular/angular.js"
+  },
+  "browserify-shim": {
+    "angular": "angular"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "description": "A platform to map initiatives of [urban agriculture].",
   "repository": {
