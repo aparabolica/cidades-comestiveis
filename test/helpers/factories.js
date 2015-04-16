@@ -3,10 +3,9 @@
  * Module dependencies.
  **/
 
-var 
-	rosie = require('rosie').Factory,
-	mongoose = require('mongoose'),
-	User = mongoose.model('User');
+var rosie = require('rosie').Factory;
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
 
 /**
  * The factories
