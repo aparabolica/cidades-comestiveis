@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "scripts": {
     "watch": "NODE_ENV=development ./node_modules/.bin/nodemon --watch app.js",
+    "postinstall": "mkdir -p dist && ./node_modules/.bin/grunt build",
     "start": "node app.js",
     "test": "NODE_ENV=test mocha test/api"
   },
   "dependencies": {
+    "angular": "^1.3.15",
+    "angular-ui-router": "^0.2.13",
     "body-parser": "^1.12.2",
+    "browserify": "^9.0.8",
+    "browserify-shim": "^3.8.5",
     "compression": "^1.4.3",
     "connect-mongo": "^0.8.0",
     "cookie-parser": "^1.3.4",
@@ -16,16 +21,37 @@
     "debug": "~2.1.1",
     "express": "~4.12.2",
     "express-session": "^1.11.1",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.7.0",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-jade": "^0.14.1",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
     "jade": "~1.9.2",
     "method-override": "^2.3.2",
     "moment": "^2.10.2",
     "mongoose": "^4.0.1",
     "morgan": "^1.5.2",
+    "ng-dialog": "^0.3.12",
     "passport": "^0.2.1",
     "passport-local": "^1.0.0",
     "serve-favicon": "~2.2.0",
+    "underscore": "^1.8.3",
     "validator": "^3.37.0",
     "winston": "^1.0.0"
+  },
+  "browser": {
+    "angular": "./node_modules/angular/angular.js"
+  },
+  "browserify-shim": {
+    "angular": "angular"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "description": "A platform to map initiatives of [urban agriculture].",
   "repository": {
