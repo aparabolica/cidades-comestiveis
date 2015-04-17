@@ -13,11 +13,12 @@ var app = require('../../app');
 var expressHelper = require('../helpers/express');
 var clearDb = require('../helpers/clearDb');
 var factories = require('../helpers/factories');
+var messaging = require('../../lib/messaging')
 
 /* Config */
 
-var apiPrefix = 'api/v1';
 var config = require('../../config/config')['test'];
+var apiPrefix = config.apiPrefix;
 
 
 /* Local instances */
@@ -74,8 +75,8 @@ describe('API: Lands', function(){
           .end(function(err,res){
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            messages.hasValidMessages(res.body).should.be.true;
-            res.body.messages[0].should.have.property('text', i18n.t('access_token.unauthorized'));
+            messaging.hasValidMessages(res.body).should.be.true;
+            res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
             doneIt();
           });
       });
