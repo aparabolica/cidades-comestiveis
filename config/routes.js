@@ -1,15 +1,24 @@
-var apiRoutes = require('express').Router();
+
+/* Controllers */
 
 var auth = require('./auth');
+var lands = require('../app/controllers/lands');
 
 module.exports = function (app, config) {
 
-  // Authorization
-  apiRoutes.post('/login', auth.login);
-  apiRoutes.get('/logout', auth.logout);
 
-  // Set '/api/v1' as base path for API routes
-  app.use(config.apiPrefix, apiRoutes);
+  /* Authentication routes */
+  var authRoutes = require('express').Router();
+  authRoutes.post('/login', auth.login);
+  authRoutes.get('/logout', auth.logout);
+  app.use(config.apiPrefix, authRoutes);
+
+  /* Lands routes */
+  var landRoutes = require('express').Router();
+  landRoutes.get('/', [auth.requiresLogin, lands.create]);
+  landRoutes.post('/', [auth.requiresLogin, lands.create]);
+  app.use(config.apiPrefix + '/lands', landRoutes);
+
 
   // For all other routes, send client app
   app.get('/*', function(req, res) {
