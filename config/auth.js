@@ -74,3 +74,32 @@ exports.logout = function(req, res, next) {
 	}
 
 };
+
+exports.requiresLogin = function (req, res, next) {
+
+	passport.authenticate('bearer', { session: false }, function(err, user, info) {
+
+		if (req.isAuthenticated()) {
+			// user is allowed through local strategy
+			return next();
+		}
+
+		if (err) {
+			return res.status(401).send(messaging.error(info));
+		}
+
+		if (!user) {
+			return res.status(401).send(messaging.error('access_token.unauthorized'));
+		}
+
+		if (user) {
+			req.user = user;
+			return next();
+		}
+
+		// (default res.forbidden() behavior can be overridden in `config/403.js`)
+		return res.forbidden('You are not allowed to perform this action.');
+
+	})(req, res, next);
+
+}
