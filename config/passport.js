@@ -31,7 +31,7 @@ module.exports = function (passport, config) {
         if (!user.authenticate(password))
           return done(null, false, { message: 'Invalid password' });
 
-        return done(null, user.info() );
+        return done(null, user.privateInfo() );
       });
     })
   );
