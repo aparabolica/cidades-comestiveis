@@ -15,16 +15,16 @@ var validator = require('validator');
 
 var UserSchema = new Schema({
 	role: { type: String, enum: ['admin', 'moderator', 'user'], default: 'user'},
-	name: { type: String, default: '' },
-	email: { type: String, default: '', validate: [validator.isEmail, 'Invalid e-mail address.'] },
+	name: { type: String, required: 'missing_name'},
+	email: { type: String, required: 'missing_email', validate: [validator.isEmail, 'invalid_email'] },
 	token: { type: String },
 	username: String,
-	hashed_password: { type: String, default: '' },
-	authToken: { type: String, default: '' },
+	hashed_password: {type: String, required: 'missing_password'},
 	salt: { type: String, default: '' },
 	logins: Number,
 	lastLogin: Date,
 	updatedAt: Date,
+	registeredAt: {type: Date, default: Date.now},
 	localization: String,
 	bio: {type: String, default: '' },
 	web: String,
@@ -48,20 +48,6 @@ UserSchema
  * Validations
  */
 
-var validatePresenceOf = function (value) {
-	return value && value.length;
-}
-
-// the below 5 validations only apply if you are signing up traditionally
-
-UserSchema.path('name').validate(function (name) {
-	return name.length;
-}, 'Name cannot be blank.');
-
-UserSchema.path('email').validate(function (email) {
-	return email.length
-}, 'Email cannot be blank.');
-
 UserSchema.path('email').validate(function (email, done) {
 	var User = mongoose.model('User')
 
@@ -72,19 +58,18 @@ UserSchema.path('email').validate(function (email, done) {
 		})
 	} else
 		fn(true);
-}, 'E-mail address already in use.');
+}, 'email_already_registered');
 
-UserSchema.path('username').validate(function (username, fn) {
-	var User = mongoose.model('User');
+UserSchema.path('hashed_password').validate(function(v) {
+  if (this._password && (this._password.length < 6)) {
+    this.invalidate('password', 'short_password');
+  }
 
-	// Check only when it is a new user or when username field is modified
-	if (this.isNew || this.isModified('username')) {
-		User.find({ username: username }).exec(function (err, users) {
-			fn(!err && users.length === 0)
-		})
-	} else
-		fn(true);
-}, 'Username already in use.');
+  if (this.isNew && !this._password) {
+    this.invalidate('password', 'missing_password');
+  }
+}, null);
+
 
 /**
  * Methods
@@ -94,22 +79,21 @@ UserSchema.methods = {
 
 
 	/**
-	 * Info - avoids sending sensitive information to the client
+	 * Private info - user properties that only he can see all
 	 *
 	 * @return {}
 	 * @api public
 	 */
 
-	info: function() {
+	privateInfo: function() {
 
 		var info = {
 			_id: this._id,
 			name: this.name,
-			username: this.username,
 			email: this.email,
-			status: this.status,
 			role: this.role,
-			bio: this.bio
+			bio: this.bio,
+			registeredAt: this.registeredAt
 		};
 
 		return info;
