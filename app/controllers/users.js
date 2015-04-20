@@ -8,7 +8,6 @@ var User = mongoose.model('User');
 exports.new = function(req, res, next) {
 
   var user = new User(req.body);
-
   user.save(function(err){
     if (err)
       return res.status(400).json(messaging.mongooseErrors(err, 'user'));

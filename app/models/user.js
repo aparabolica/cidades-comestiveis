@@ -18,17 +18,12 @@ var UserSchema = new Schema({
 	name: { type: String, required: 'missing_name'},
 	email: { type: String, required: 'missing_email', validate: [validator.isEmail, 'invalid_email'] },
 	token: { type: String },
-	username: String,
 	hashed_password: {type: String, required: 'missing_password'},
 	salt: { type: String, default: '' },
-	logins: Number,
-	lastLogin: Date,
-	updatedAt: Date,
-	registeredAt: {type: Date, default: Date.now},
-	localization: String,
 	bio: {type: String, default: '' },
-	web: String,
-	emailConfirmed: {type: Boolean, default: false}
+	location: { type: {type: String}, coordinates: []},
+	updatedAt: Date,
+	registeredAt: {type: Date, default: Date.now}
 });
 
 /**
@@ -43,6 +38,29 @@ UserSchema
 		this.hashed_password = this.encryptPassword(password)
 	})
 	.get(function() { return this._password });
+
+UserSchema
+	.virtual('longitude')
+	.set(function(longitude) {
+		var self = this;
+		if (!self.location.coordinates.length){
+			self.location.type = 'Point';
+			self.location.coordinates = [null,null];
+		}
+		this.location.coordinates[0] = longitude;
+	})
+
+UserSchema
+	.virtual('latitude')
+	.set(function(latitude) {
+		var self=this;
+		if (!self.location.coordinates.length) {
+			self.location.type = 'Point';
+			self.location.coordinates = [null,null];
+		}
+		this.location.coordinates[1] = latitude;
+	})
+
 
 /**
  * Validations
@@ -70,6 +88,23 @@ UserSchema.path('hashed_password').validate(function(v) {
   }
 }, null);
 
+UserSchema.path('location.coordinates').validate(function(v) {
+	var self = this;
+
+	if (self.location.coordinates.length != 0) {
+		var lon = self.location.coordinates[0];
+		var lat = self.location.coordinates[1];
+
+		/* validate longitude */
+		if (!lon) self.invalidate('location.coordinates', 'missing_longitude');
+		else if (!validator.isFloat(lon)) self.invalidate('location.coordinates', 'invalid_longitude');
+
+		/* validate longitude */
+		if (!lat) self.invalidate('location', 'missing_latitude');
+		else if (!validator.isFloat(lat)) self.invalidate('location.coordinates', 'invalid_latitude');
+	}
+}, null);
+
 
 /**
  * Methods
@@ -93,7 +128,8 @@ UserSchema.methods = {
 			email: this.email,
 			role: this.role,
 			bio: this.bio,
-			registeredAt: this.registeredAt
+			registeredAt: this.registeredAt,
+			location: this.location
 		};
 
 		return info;
@@ -176,7 +212,7 @@ UserSchema.static({
 
 	load: function (options, cb) {
 		this.findOne(options)
-			.select('email name username bio status needsEmailsConfirmation role')
+			.select('email name bio status needsEmailsConfirmation role')
 			.exec(cb)
 	},
 

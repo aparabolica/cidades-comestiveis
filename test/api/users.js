@@ -45,7 +45,10 @@ describe('API: Users', function(){
         var user = {
           name: 'User 1',
           email: 'user1@email.com',
-          password: '+8characthers'
+          password: '+8characthers',
+          longitude: -46.63318,
+          latitude: -23.55046
+
         }
 
         /* The request */
@@ -63,12 +66,24 @@ describe('API: Users', function(){
             body = res.body,
             section;
 
-          // verify user info returned
+          /* User basic info */
           body.should.have.property('name', user.name);
           body.should.have.property('email', user.email);
           body.should.have.property('role');
           body.should.have.property('registeredAt');
           body.should.not.have.property('password');
+          body.should.have.property('location');
+
+          /* Location geojson */
+          var locationGeojson = body.location;
+          locationGeojson.should.have.property('type', 'Point');
+          locationGeojson.should.have.property('coordinates');
+          locationGeojson.coordinates.should.be.an.Array;
+
+          /* Coordinates */
+          var coordinates = locationGeojson.coordinates
+          coordinates[0].should.be.equal(user.longitude);
+          coordinates[1].should.be.equal(user.latitude);
 
           doneIt();
         }
@@ -243,4 +258,11 @@ describe('API: Users', function(){
       });
     });
   });
+
+
+  describe('GET /api/v#/users/:id', function(){
+    context('User exists', function(){
+      it('should return user public info')
+    })
+  })
 });
