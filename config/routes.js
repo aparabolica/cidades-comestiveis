@@ -1,6 +1,8 @@
 
-/* Controllers */
+/* Dependencies */
+var messaging = require('../lib/messaging');
 
+/* Controllers */
 var auth = require('./auth');
 var lands = require('../app/controllers/lands');
 var users = require('../app/controllers/users');
@@ -17,6 +19,8 @@ module.exports = function (app, config) {
   /* Users routes */
   var usersRoutes = require('express').Router();
   usersRoutes.post('/users', users.new);
+  usersRoutes.param('id', users.load);
+  usersRoutes.get('/users/:id', users.get);
   app.use(config.apiPrefix, usersRoutes);
 
   /* Lands routes */
@@ -25,9 +29,14 @@ module.exports = function (app, config) {
   landRoutes.post('/lands', [auth.requiresLogin, lands.create]);
   app.use(config.apiPrefix, landRoutes);
 
+  /* Send 404 (Not found) to non existent API routes */
+  app.all('/api/*', function(req,res){
+    return res.status(404).json(messaging.error('error.api.route_not_found'));
+  })
+
   /* For all other routes, send client app */
   app.get('/*', function(req, res) {
-  	res.sendFile(config.rootPath + '/public/views/index.html');
+    res.sendFile(config.rootPath + '/public/views/index.html');
   });
 
 }

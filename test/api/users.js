@@ -20,6 +20,9 @@ var messaging = require('../../lib/messaging')
 var config = require('../../config/config')['test'];
 var apiPrefix = config.apiPrefix;
 
+/* Expose object instances */
+var user1;
+
 /* The tests */
 
 describe('API: Users', function(){
@@ -38,11 +41,10 @@ describe('API: Users', function(){
   /* POST /api/v#/users */
 
   describe('POST /api/v#/users', function(){
-    context('when user info is valid', function(){
+    context('when parameters are valid', function(){
       it('return 201 (Created successfully) and the user info', function(doneIt){
-
         /* User info */
-        var user = {
+        user1 = {
           name: 'User 1',
           email: 'user1@email.com',
           password: '+8characthers',
@@ -54,7 +56,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .post(apiPrefix + '/users')
-          .send(user)
+          .send(user1)
           .expect(201)
           .expect('Content-Type', /json/)
           .end(onResponse);
@@ -67,8 +69,9 @@ describe('API: Users', function(){
             section;
 
           /* User basic info */
-          body.should.have.property('name', user.name);
-          body.should.have.property('email', user.email);
+          body.should.have.property('_id');
+          body.should.have.property('name', user1.name);
+          body.should.have.property('email', user1.email);
           body.should.have.property('role');
           body.should.have.property('registeredAt');
           body.should.not.have.property('password');
@@ -82,18 +85,20 @@ describe('API: Users', function(){
 
           /* Coordinates */
           var coordinates = locationGeojson.coordinates
-          coordinates[0].should.be.equal(user.longitude);
-          coordinates[1].should.be.equal(user.latitude);
+          coordinates[0].should.be.equal(user1.longitude);
+          coordinates[1].should.be.equal(user1.latitude);
+
+          /* Keep user id for later use */
+          user1.id = body._id;
 
           doneIt();
         }
       });
 
-      it('can log succesfully');
     });
 
     context('when user name', function(){
-      it('is empty return 400 (Bad request) and proper error message', function(doneIt){
+      it('is missing return 400 (Bad request) and proper error message', function(doneIt){
         /* User info */
         var user = {
           name: '',
@@ -262,7 +267,76 @@ describe('API: Users', function(){
 
   describe('GET /api/v#/users/:id', function(){
     context('User exists', function(){
-      it('should return user public info')
+      it('should return user public info', function(doneIt){
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users/'  + user1.id)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* User public info */
+          var body = res.body;
+          body.should.have.property('_id', user1.id);
+          body.should.have.property('name', user1.name);
+          body.should.have.property('registeredAt');
+          body.should.not.have.property('email');
+          body.should.not.have.property('password');
+          body.should.not.have.property('location');
+          doneIt();
+        }
+      })
+    });
+
+    context('User does not exists', function(){
+      it('should return 404 (Not found) and error message', function(doneIt){
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users/111111111111111111111111')
+          .expect(404)
+          .expect('Content-Type', /json/)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check error message */
+          res.body.messages.should.have.lengthOf(1);
+          messaging.hasValidMessages(res.body).should.be.true;
+          res.body.messages[0].should.have.property('text', 'errors.users.not_found');
+          doneIt();
+        }
+      })
     })
+
+    context('Invalid id (not a positive integer)', function(){
+      it('should return 404 (Not found) and error message', function(doneIt){
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users/1a')
+          .expect(404)
+          .expect('Content-Type', /json/)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check error message */
+          res.body.messages.should.have.lengthOf(1);
+          messaging.hasValidMessages(res.body).should.be.true;
+          res.body.messages[0].should.have.property('text', 'errors.users.invalid_id');
+          doneIt();
+        }
+      })
+    })
+
   })
 });
