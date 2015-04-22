@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var moment = require('moment');
 var validator = require('validator');
+var autoIncrement = require('mongoose-auto-increment');
 
 /**
  * User schema
@@ -112,14 +113,6 @@ UserSchema.path('location.coordinates').validate(function(v) {
 
 UserSchema.methods = {
 
-
-	/**
-	 * Private info - user properties that only he can see all
-	 *
-	 * @return {}
-	 * @api public
-	 */
-
 	privateInfo: function() {
 
 		var info = {
@@ -134,6 +127,15 @@ UserSchema.methods = {
 
 		return info;
 
+	},
+
+	publicInfo: function() {
+		return {
+			_id: this._id,
+			name: this.name,
+			bio: this.bio,
+			registeredAt: this.registeredAt
+		};
 	},
 
 	/**
@@ -222,6 +224,13 @@ UserSchema.static({
 
 
 })
+
+/**
+ * Plug-in
+ */
+
+autoIncrement.initialize(mongoose.connection);
+UserSchema.plugin(autoIncrement.plugin, 'User');
 
 /**
  * Register
