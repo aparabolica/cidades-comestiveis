@@ -12,7 +12,7 @@ var app = require('../../app');
 
 var expressHelper = require('../helpers/express');
 var clearDb = require('../helpers/clearDb');
-var factories = require('../helpers/factories');
+var factory = require('../helpers/factory');
 var messaging = require('../../lib/messaging')
 
 /* Config */
@@ -48,7 +48,7 @@ describe('API: Lands', function(){
      */
     function createUsers(doneCreateUsers) {
       async.series([function(done){
-        factories.createUser(function(err,usr){
+        factory.createUser(function(err,usr){
           should.not.exist(err);
           user1 = usr;
           expressHelper.login(user1.email, user1.password, function(token){

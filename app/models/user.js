@@ -212,16 +212,16 @@ UserSchema.methods = {
 
 UserSchema.static({
 
-	load: function (options, cb) {
-		this.findOne(options)
-			.select('email name bio status needsEmailsConfirmation role')
-			.exec(cb)
-	},
+	list: function (options, cb) {
+    var criteria = options.criteria || {}
 
-	getAdmin: function(done) {
-		this.findOne({role: 'admin'}, done);
-	}
-
+    this.find(criteria)
+      .sort('name') // sort by date
+			.select('_id name')
+      .limit(options.perPage)
+      .skip(options.perPage * options.page)
+      .exec(cb);
+  }
 
 })
 

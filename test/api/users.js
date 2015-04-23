@@ -3,6 +3,7 @@
 var request = require('supertest');
 var async = require('async');
 var should = require('should');
+var mongoose = require('mongoose');
 
 /* The app */
 
@@ -12,13 +13,17 @@ var app = require('../../app');
 
 var expressHelper = require('../helpers/express');
 var clearDb = require('../helpers/clearDb');
-var factories = require('../helpers/factories');
+var factory = require('../helpers/factory');
 var messaging = require('../../lib/messaging')
 
 /* Config */
 
 var config = require('../../config/config')['test'];
 var apiPrefix = config.apiPrefix;
+
+/* Mongoose models */
+
+var User = mongoose.model('User');
 
 /* Expose object instances */
 var user1;
@@ -33,7 +38,9 @@ describe('API: Users', function(){
     expressHelper.whenReady(function(){
       clearDb.all(function(err){
         should.not.exist(err);
-        doneBefore();
+
+        /* Create 25 users */
+        factory.createUsers(25, doneBefore);
       });
     });
   });
@@ -45,8 +52,8 @@ describe('API: Users', function(){
       it('return 201 (Created successfully) and the user info', function(doneIt){
         /* User info */
         user1 = {
-          name: 'User 1',
-          email: 'user1@email.com',
+          name: 'First user',
+          email: 'theveryfirstuser@email.com',
           password: '+8characthers',
           longitude: -46.63318,
           latitude: -23.55046
@@ -184,7 +191,7 @@ describe('API: Users', function(){
         /* User info */
         var user = {
           name: 'User2',
-          email: 'user1@email.com',
+          email: 'theveryfirstuser@email.com',
           password: '+8characthers'
         }
 
@@ -316,12 +323,12 @@ describe('API: Users', function(){
     })
 
     context('Invalid id (not a positive integer)', function(){
-      it('should return 404 (Not found) and error message', function(doneIt){
+      it('should return 400 (Bad request) and error message', function(doneIt){
 
         /* The request */
         request(app)
           .get(apiPrefix + '/users/1a')
-          .expect(404)
+          .expect(400)
           .expect('Content-Type', /json/)
           .end(onResponse);
 
@@ -339,4 +346,56 @@ describe('API: Users', function(){
     })
 
   })
+
+
+  describe('GET /api/v#/users', function(){
+    context('with invalid parameters', function(){
+      it('should return 400 (Bad request) and error message')
+    });
+
+    context('without parameters', function(){
+      it('should get first page', function(doneIt){
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check pagination */
+          var body = res.body;
+          body.should.have.property('count', 26);
+          body.should.have.property('perPage', 10);
+          body.should.have.property('page', 1);
+          body.should.have.property('users');
+
+          /* Check data */
+          var data = body.users;
+          data.should.have.lengthOf(10);
+
+          /* Check data */
+          User.find({}).sort('name').limit(10).exec(function(err, users){
+            if (err) return doneIt(err);
+            for (var i = 0; i < 10; i++) {
+              Object.keys(data[i]).should.have.length(2);
+              data[i].should.have.property('_id', users[i]._id);
+              data[i].should.have.property('name', users[i].name);
+            }
+             doneIt();
+          })
+        }
+      });
+    });
+  //
+  //   context('with optional parameters', function(){
+  //     it('should first page accordingly');
+  //     it('should last page accordingly');
+  //   });
+  //
+  //
+  });
 });

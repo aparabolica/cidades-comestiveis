@@ -18,9 +18,10 @@ module.exports = function (app, config) {
 
   /* Users routes */
   var usersRoutes = require('express').Router();
-  usersRoutes.post('/users', users.new);
   usersRoutes.param('id', users.load);
+  usersRoutes.get('/users', users.list);
   usersRoutes.get('/users/:id', users.get);
+  usersRoutes.post('/users', users.new);
   app.use(config.apiPrefix, usersRoutes);
 
   /* Lands routes */
