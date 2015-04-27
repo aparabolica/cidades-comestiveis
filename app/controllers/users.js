@@ -40,8 +40,26 @@ exports.get = function(req, res) {
 
 /* Get a list of users */
 exports.list = function(req, res) {
-  var page = (req.params['page'] > 0 ? req.params['page'] : 1) - 1;
-  var perPage = (req.params['page'] > 0 ? req.params['page'] : 10);
+
+  var page = req.query['page'];
+  var perPage = req.query['perPage'];
+
+  /* Validate query parameters */
+  if (page) {
+    if (!validator.isInt(page))
+      return res.status(400).json(messaging.error('errors.query.invalid_parameters'));
+    else
+      page = parseInt(page) - 1;
+  } else page = 0;
+
+  if (perPage){
+    if (!validator.isInt(perPage))
+      return res.status(400).json(messaging.error('errors.query.invalid_parameters'));
+    else
+      perPage = parseInt(perPage);
+  } else perPage = 10;
+
+  /* Mongoose Options */
   var options = {
     perPage: perPage,
     page: page

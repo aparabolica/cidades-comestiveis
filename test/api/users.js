@@ -350,7 +350,32 @@ describe('API: Users', function(){
 
   describe('GET /api/v#/users', function(){
     context('with invalid parameters', function(){
-      it('should return 400 (Bad request) and error message')
+      it('should return 400 (Bad request) and error message', function(doneIt){
+        var params = {
+          perPage: 'not an integer',
+          page: 'not an integer'
+        };
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users')
+          .query(params)
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check error message */
+          res.body.messages.should.have.lengthOf(1);
+          messaging.hasValidMessages(res.body).should.be.true;
+          res.body.messages[0].should.have.property('text', 'errors.query.invalid_parameters');
+          doneIt();
+        };
+
+      });
     });
 
     context('without parameters', function(){
@@ -376,8 +401,6 @@ describe('API: Users', function(){
           /* Check data */
           var data = body.users;
           data.should.have.lengthOf(10);
-
-          /* Check data */
           User.find({}).sort('name').limit(10).exec(function(err, users){
             if (err) return doneIt(err);
             for (var i = 0; i < 10; i++) {
@@ -390,12 +413,101 @@ describe('API: Users', function(){
         }
       });
     });
-  //
-  //   context('with optional parameters', function(){
-  //     it('should first page accordingly');
-  //     it('should last page accordingly');
-  //   });
-  //
-  //
+
+    context('with optional parameters', function(){
+
+      it('should get second page accordingly', function(doneIt){
+        var params = {
+          page: 2
+        };
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users')
+          .query(params)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check pagination */
+          var body = res.body;
+          body.should.have.property('count', 26);
+          body.should.have.property('perPage', 10);
+          body.should.have.property('page', 2);
+          body.should.have.property('users');
+
+          /* Check data */
+          var data = body.users;
+          data.should.have.lengthOf(10);
+          User.find({}).sort('name').skip(10).limit(10).exec(function(err, users){
+            if (err) return doneIt(err);
+            for (var i = 0; i < 10; i++) {
+              Object.keys(data[i]).should.have.length(2);
+              data[i].should.have.property('_id', users[i]._id);
+              data[i].should.have.property('name', users[i].name);
+            }
+            doneIt();
+          });
+        }
+      });
+
+      it('should get list with a different perPage setting', function(doneIt){
+        var params = {
+          page: 3,
+          perPage: 8
+        };
+
+        var skip = params.perPage * (params.page-1);
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/users')
+          .query(params)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check pagination */
+          var body = res.body;
+          body.should.have.property('count', 26);
+          body.should.have.property('perPage', params.perPage);
+          body.should.have.property('page', params.page);
+          body.should.have.property('users');
+
+          /* Check data */
+          var data = body.users;
+          data.should.have.lengthOf(params.perPage);
+
+          User.find({})
+            .sort('name')
+            .skip(skip)
+            .limit(params.perPage)
+            .exec(function(err, users){
+              if (err) return doneIt(err);
+
+              /* Verify user list */
+              for (var i = 0; i < params.perPage; i++) {
+
+                var responseUser = data[i];
+                var dbUser = users[i];
+
+                /* Verify user object */
+                Object.keys(responseUser).should.have.length(2);
+                responseUser.should.have.property('_id', dbUser._id);
+                responseUser.should.have.property('name', dbUser.name);
+              }
+              doneIt();
+          });
+        }
+      });
+    });
   });
 });
