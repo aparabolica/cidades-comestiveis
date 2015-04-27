@@ -24,6 +24,8 @@ Start the server:
 
 ## API Documentation
 
+Please visit [API documentation].
+
 Implemented routes:
 
   * [Users][User Routes]
@@ -37,7 +39,7 @@ Planned routes
 
 
 [API Documentation]: https://github.com/codigourbano/cidades-comestiveis/wiki/api-reference
-[User routes]: https://github.com/codigourbano/cidades-comestiveis/wiki/api-reference#user-routes
+[User routes]: https://github.com/codigourbano/cidades-comestiveis/wiki/api-reference#users-routes
 [urban agriculture]: https://en.wikipedia.org/wiki/Urban_agriculture
 [wiki]: https://github.com/codigourbano/cidades-comestiveis/wiki
 
