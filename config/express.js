@@ -21,7 +21,7 @@ module.exports = function (app, config, passport) {
   }));
 
   // Static files middleware
-  app.use(express.static(config.root + '/public'));
+  app.use(express.static(config.rootPath + '/public'));
 
   // Use winston on production
   var log;
@@ -53,31 +53,7 @@ module.exports = function (app, config, passport) {
     }
   }));
 
-  // CookieParser should be above session
-  app.use(cookieParser());
-  app.use(cookieSession({ secret: 'secret' }));
-  app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: config.sessionSecret,
-    store: new mongoStore({
-      url: config.db,
-      collection : 'sessions'
-    })
-  }));
-
   // use passport session
   app.use(passport.initialize());
   app.use(passport.session());
-
-  // adds CSRF support
-  if (process.env.NODE_ENV !== 'test') {
-    app.use(csrf());
-
-    // This could be moved to view-helpers :-)
-    app.use(function (req, res, next) {
-      res.locals.csrf_token = req.csrfToken();
-      next();
-    });
-  }
 };

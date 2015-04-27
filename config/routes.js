@@ -1,20 +1,44 @@
-var apiRoutes = require('express').Router();
 
+/* Dependencies */
+var messaging = require('../lib/messaging');
+
+/* Controllers */
 var auth = require('./auth');
+var lands = require('../app/controllers/lands');
+var users = require('../app/controllers/users');
 
 module.exports = function (app, config) {
 
-  // Authorization
-  apiRoutes.post('/login', auth.login);
-  apiRoutes.get('/logout', auth.logout);
 
-  // Set '/api/v1' as base path for API routes
-  app.use(config.apiPrefix, apiRoutes);
+  /* Authentication routes */
+  var authRoutes = require('express').Router();
+  authRoutes.post('/login', auth.login);
+  authRoutes.get('/logout', auth.logout);
+  app.use(config.apiPrefix, authRoutes);
 
-  // For all other routes, send client app
+  /* Users routes */
+  var usersRoutes = require('express').Router();
+  usersRoutes.param('id', users.load);
+  usersRoutes.post('/users', users.new);
+  usersRoutes.put('/users/:id', users.update);
+  usersRoutes.get('/users/:id', users.get);
+  usersRoutes.get('/users', users.list);
+  app.use(config.apiPrefix, usersRoutes);
+
+  /* Lands routes */
+  var landRoutes = require('express').Router();
+  landRoutes.get('/lands', [auth.requiresLogin, lands.create]);
+  landRoutes.post('/lands', [auth.requiresLogin, lands.create]);
+  app.use(config.apiPrefix, landRoutes);
+
+  /* Send 404 (Not found) to non existent API routes */
+  app.all('/api/*', function(req,res){
+    return res.status(404).json(messaging.error('error.api.route_not_found'));
+  })
+
+  /* For all other routes, send client app */
   app.get('/*', function(req, res) {
-  	res.sendFile(config.rootPath + '/public/views/index.html');
+    res.sendFile(config.rootPath + '/public/views/index.html');
   });
-
 
 }

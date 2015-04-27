@@ -22,11 +22,7 @@ module.exports = function (passport, config) {
       passwordField: 'password'
     },
     function(email, password, done) {
-      var options = {
-        criteria: { email: email },
-        select: 'name username email hashed_password salt'
-      };
-      User.load(options, function (err, user) {
+      User.findOne({email: email}, function (err, user) {
         if (err) return done(err)
 
         if (!user)
@@ -35,7 +31,7 @@ module.exports = function (passport, config) {
         if (!user.authenticate(password))
           return done(null, false, { message: 'Invalid password' });
 
-        return done(null, user);
+        return done(null, user.privateInfo() );
       });
     })
   );

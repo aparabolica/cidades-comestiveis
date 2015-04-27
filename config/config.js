@@ -6,16 +6,7 @@
 var
 	apiPrefix = '/api/v1',
 	path = require('path'),
-	rootPath = path.resolve(__dirname + '../..'),
-	sessionSecret = process.env.SESSION_SECRET || 'not so secret',
-	i18n = {
-		lng: 'pt-BR',
-		preload: ['pt-BR'],
-		shorcutFunction: 'defaultValue',
-		fallbackLng: 'en',
-		saveMissing: true,
-		debug: true
-	}
+	rootPath = path.resolve(__dirname + '../..');
 
 
 /**
@@ -26,22 +17,16 @@ module.exports = {
 	development: {
 		rootPath: rootPath,
 		apiPrefix: apiPrefix,
-		sessionSecret: sessionSecret,
-		db: 'mongodb://localhost/comestiveis_dev',
-		i18n: i18n
+		db: 'mongodb://localhost/comestiveis_dev'
 	},
 	test: {
 		rootPath: rootPath,
 		apiPrefix: apiPrefix,
-		sessionSecret: sessionSecret,
-		db: 'mongodb://localhost/comestiveis_test',
-		i18n: i18n
+		db: 'mongodb://localhost/comestiveis_test'
 	},
 	production: {
 		rootPath: rootPath,
 		apiPrefix: apiPrefix,
-		sessionSecret: sessionSecret,
-		db: process.env.MONGOLAB_URI || 'mongodb://localhost/comestiveis_production',
-		i18n: i18n
+		db: process.env.MONGOLAB_URI || 'mongodb://localhost/comestiveis_production'
 	}
 }
