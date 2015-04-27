@@ -75,8 +75,7 @@ UserSchema.path('email').validate(function (email, done) {
 		User.find({ email: email }).exec(function (err, users) {
 			done(!err && users.length === 0)
 		})
-	} else
-		fn(true);
+	} else done(true);
 }, 'email_already_registered');
 
 UserSchema.path('hashed_password').validate(function(v) {

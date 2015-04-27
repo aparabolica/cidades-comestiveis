@@ -1,5 +1,6 @@
 /* Dependencies */
 
+var _ = require('underscore');
 var messaging = require('../../lib/messaging')
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
@@ -27,11 +28,51 @@ exports.new = function(req, res) {
   var user = new User(req.body);
   user.save(function(err){
     if (err)
-      return res.status(400).json(messaging.mongooseErrors(err, 'user'));
+      return res.status(400).json(messaging.mongooseErrors(err, 'users'));
     else
       return res.status(201).json(user.privateInfo());
   });
 };
+
+/* Update user. */
+exports.update = function(req, res) {
+
+  var params = req.body;
+  var user = req.user;
+
+  /* No parameters informed */
+  if (Object.keys(params).length == 0)
+    return res.status(400).json(messaging.error('errors.users.missing_parameters'));
+
+  /* Stop e-mail change */
+  if (params.email)
+    return res.status(400).json(messaging.error('errors.users.cannot_change_email'));
+
+
+  /* User is changing password */
+  if (params.password) {
+    if (!params.currentPassword){
+      return res.status(400).json(messaging.error('errors.users.missing_current_password'));
+    }
+
+    if (!user.authenticate(params.currentPassword)){
+      return res.status(400).json(messaging.error('errors.users.wrong_password'));
+    }
+
+    user.password = params.password;
+  }
+
+  user = _.extend(user, params);
+
+  user.save(function(err){
+    if (err)
+      return res.status(400).json(messaging.mongooseErrors(err, 'users'));
+    else
+      return res.status(200).json(user.privateInfo());
+  });
+};
+
+
 
 /* Get public info about a user. */
 exports.get = function(req, res) {
