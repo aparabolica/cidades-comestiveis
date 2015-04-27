@@ -2,16 +2,47 @@
 
 A platform to map initiatives of [urban agriculture].
 
-Please read the documentation at the [wiki].
+## Install
 
-[urban agriculture]: https://en.wikipedia.org/wiki/Urban_agriculture
-[wiki]: https://github.com/codigourbano/cidades-comestiveis
+Requirements:
 
-## Contributing
+* [Node.js](https://nodejs.org)
+* [MongoDB](https://www.mongodb.org)
 
-Clone locally and install dependencies by running:
+Clone locally:
+
+    git clone https://github.com/codigourbano/cidades-comestiveis.git
+
+Install dependencies:
 
     npm install
+
+Start the server:
+
+    npm start
+
+
+## API Documentation
+
+Implemented routes:
+
+  * [Users][User Routes]
+
+Planned routes
+
+  * Lands
+  * Resources
+  * Resource categories
+  * Initiatives
+
+
+[API Documentation]: https://github.com/codigourbano/cidades-comestiveis/wiki/api-reference
+[User routes]: https://github.com/codigourbano/cidades-comestiveis/wiki/api-reference#user-routes
+[urban agriculture]: https://en.wikipedia.org/wiki/Urban_agriculture
+[wiki]: https://github.com/codigourbano/cidades-comestiveis/wiki
+
+
+## Contributing
 
 Write tests and run:
 
