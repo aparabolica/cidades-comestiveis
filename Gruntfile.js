@@ -40,7 +40,7 @@ module.exports = function(grunt) {
 				files: [{
 					expand: true,
 					cwd: 'src',
-					src: ['**/*.jade'],
+					src: ['**/*.jade', '!views/includes/**/*'],
 					dest: 'public',
 					ext: '.html'
 				}]
@@ -52,7 +52,7 @@ module.exports = function(grunt) {
 					{
 						cwd: 'src',
 						src: ['**', '!js/**', '!**/*.less', '!**/*.jade', '!**/*.js'],
-						dest: 'dist',
+						dest: 'public',
 						expand: true
 					}
 				]
