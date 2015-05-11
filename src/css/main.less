@@ -1,2 +1,47 @@
 @import (inline) "normalize.css";
 @import (inline) "skeleton.css";
+
+@font-face {
+	font-family: 'PressFeeling';
+	src: url('../fonts/PressFeeling.eot');
+	src: local('PressFeeling'), url('../fonts/PressFeeling.woff') format('woff'), url('../fonts/PressFeeling.ttf') format('truetype');
+}
+
+@orange: #ff6600;
+
+#masthead {
+	padding: 40px 0;
+	h1 {
+		line-height: 0;
+		text-indent: -9999px;
+		img {
+			display: block;
+		}
+	}
+}
+
+#mastnav {
+	font-family: "PressFeeling";
+	font-size: 28px;
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		float: right;
+		li {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+			a {
+				display: inline-block;
+				text-transform: lowercase;
+				padding: 20px 10px;
+				color: #111;
+				text-decoration: none;
+				&:hover {
+					color: @orange;
+				}
+			}
+		}
+	}
+}
