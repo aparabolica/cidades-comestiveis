@@ -99,7 +99,8 @@ app.controller('MapCtrl', [
 		angular.extend($scope, {
 			defaults: {
 				tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-				maxZoom: 14
+				maxZoom: 18,
+				scrollWheelZoom: false
 			},
 			center: {
 				lat: -23.550520,
