@@ -12,12 +12,19 @@ var app = require('../../app');
 
 var expressHelper = require('../helpers/express');
 var clearDb = require('../helpers/clearDb');
-var factories = require('../helpers/factories');
+var factory = require('../helpers/factory');
+var messaging = require('../../lib/messaging')
 
 /* Config */
 
-var apiPrefix = 'api/v1';
 var config = require('../../config/config')['test'];
+var apiPrefix = config.apiPrefix;
+
+
+/* Local instances */
+var user1;
+var user1AccessToken;
+
 
 /* The tests */
 
@@ -37,31 +44,18 @@ describe('API: Lands', function(){
     });
 
     /*
-     * Create user1, user2 and admin
+     * Create user1
      */
     function createUsers(doneCreateUsers) {
       async.series([function(done){
-          factories.createUser(function(err,usr){
-            should.not.exist(err);
-            user1 = usr;
-            expressHelper.login(user1.email, user1.password, function(token){
-              user1AccessToken = token;
-              done();
-            });
+        factory.createUser(function(err,usr){
+          should.not.exist(err);
+          user1 = usr;
+          expressHelper.login(user1.email, user1.password, function(token){
+            user1AccessToken = token;
+            done();
           });
-        }, function(done){
-          factories.createUser(function(err,usr){
-            should.not.exist(err);
-            user2 = usr;
-            done()
-          });
-        }, function(done){
-          factories.createUser(function(err,usr){
-            should.not.exist(err);
-            admin = usr;
-            admin.role = 'admin';
-            done()
-          });
+        });
       }], doneCreateUsers);
     }
   });
@@ -81,8 +75,8 @@ describe('API: Lands', function(){
           .end(function(err,res){
             should.not.exist(err);
             res.body.messages.should.have.lengthOf(1);
-            messages.hasValidMessages(res.body).should.be.true;
-            res.body.messages[0].should.have.property('text', i18n.t('access_token.unauthorized'));
+            messaging.hasValidMessages(res.body).should.be.true;
+            res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
             doneIt();
           });
       });

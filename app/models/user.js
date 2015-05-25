@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var moment = require('moment');
 var validator = require('validator');
+var autoIncrement = require('mongoose-auto-increment');
 
 /**
  * User schema
@@ -15,20 +16,15 @@ var validator = require('validator');
 
 var UserSchema = new Schema({
 	role: { type: String, enum: ['admin', 'moderator', 'user'], default: 'user'},
-	name: { type: String, default: '' },
-	email: { type: String, default: '', validate: [validator.isEmail, 'Invalid e-mail address.'] },
+	name: { type: String, required: 'missing_name'},
+	email: { type: String, required: 'missing_email', validate: [validator.isEmail, 'invalid_email'] },
 	token: { type: String },
-	username: String,
-	hashed_password: { type: String, default: '' },
-	authToken: { type: String, default: '' },
+	hashed_password: {type: String, required: 'missing_password'},
 	salt: { type: String, default: '' },
-	logins: Number,
-	lastLogin: Date,
-	updatedAt: Date,
-	localization: String,
 	bio: {type: String, default: '' },
-	web: String,
-	emailConfirmed: {type: Boolean, default: false}
+	location: { type: {type: String}, coordinates: []},
+	updatedAt: Date,
+	registeredAt: {type: Date, default: Date.now}
 });
 
 /**
@@ -44,23 +40,32 @@ UserSchema
 	})
 	.get(function() { return this._password });
 
+UserSchema
+	.virtual('longitude')
+	.set(function(longitude) {
+		var self = this;
+		if (!self.location.coordinates.length){
+			self.location.type = 'Point';
+			self.location.coordinates = [null,null];
+		}
+		this.location.coordinates[0] = longitude;
+	})
+
+UserSchema
+	.virtual('latitude')
+	.set(function(latitude) {
+		var self=this;
+		if (!self.location.coordinates.length) {
+			self.location.type = 'Point';
+			self.location.coordinates = [null,null];
+		}
+		this.location.coordinates[1] = latitude;
+	})
+
+
 /**
  * Validations
  */
-
-var validatePresenceOf = function (value) {
-	return value && value.length;
-}
-
-// the below 5 validations only apply if you are signing up traditionally
-
-UserSchema.path('name').validate(function (name) {
-	return name.length;
-}, 'Name cannot be blank.');
-
-UserSchema.path('email').validate(function (email) {
-	return email.length
-}, 'Email cannot be blank.');
 
 UserSchema.path('email').validate(function (email, done) {
 	var User = mongoose.model('User')
@@ -70,21 +75,36 @@ UserSchema.path('email').validate(function (email, done) {
 		User.find({ email: email }).exec(function (err, users) {
 			done(!err && users.length === 0)
 		})
-	} else
-		fn(true);
-}, 'E-mail address already in use.');
+	} else done(true);
+}, 'email_already_registered');
 
-UserSchema.path('username').validate(function (username, fn) {
-	var User = mongoose.model('User');
+UserSchema.path('hashed_password').validate(function(v) {
+  if (this._password && (this._password.length < 6)) {
+    this.invalidate('password', 'short_password');
+  }
 
-	// Check only when it is a new user or when username field is modified
-	if (this.isNew || this.isModified('username')) {
-		User.find({ username: username }).exec(function (err, users) {
-			fn(!err && users.length === 0)
-		})
-	} else
-		fn(true);
-}, 'Username already in use.');
+  if (this.isNew && !this._password) {
+    this.invalidate('password', 'missing_password');
+  }
+}, null);
+
+UserSchema.path('location.coordinates').validate(function(v) {
+	var self = this;
+
+	if (self.location.coordinates.length != 0) {
+		var lon = self.location.coordinates[0];
+		var lat = self.location.coordinates[1];
+
+		/* validate longitude */
+		if (!lon) self.invalidate('location.coordinates', 'missing_longitude');
+		else if (!validator.isFloat(lon)) self.invalidate('location.coordinates', 'invalid_longitude');
+
+		/* validate longitude */
+		if (!lat) self.invalidate('location', 'missing_latitude');
+		else if (!validator.isFloat(lat)) self.invalidate('location.coordinates', 'invalid_latitude');
+	}
+}, null);
+
 
 /**
  * Methods
@@ -92,28 +112,29 @@ UserSchema.path('username').validate(function (username, fn) {
 
 UserSchema.methods = {
 
-
-	/**
-	 * Info - avoids sending sensitive information to the client
-	 *
-	 * @return {}
-	 * @api public
-	 */
-
-	info: function() {
+	privateInfo: function() {
 
 		var info = {
 			_id: this._id,
 			name: this.name,
-			username: this.username,
 			email: this.email,
-			status: this.status,
 			role: this.role,
-			bio: this.bio
+			bio: this.bio,
+			registeredAt: this.registeredAt,
+			location: this.location
 		};
 
 		return info;
 
+	},
+
+	publicInfo: function() {
+		return {
+			_id: this._id,
+			name: this.name,
+			bio: this.bio,
+			registeredAt: this.registeredAt
+		};
 	},
 
 	/**
@@ -190,18 +211,25 @@ UserSchema.methods = {
 
 UserSchema.static({
 
-	load: function (options, cb) {
-		this.findOne(options)
-			.select('email name username bio status needsEmailsConfirmation role')
-			.exec(cb)
-	},
+	list: function (options, cb) {
+    var criteria = options.criteria || {}
 
-	getAdmin: function(done) {
-		this.findOne({role: 'admin'}, done);
-	}
-
+    this.find(criteria)
+      .sort('name') // sort by date
+			.select('_id name')
+      .limit(options.perPage)
+      .skip(options.perPage * options.page)
+      .exec(cb);
+  }
 
 })
+
+/**
+ * Plug-in
+ */
+
+autoIncrement.initialize(mongoose.connection);
+UserSchema.plugin(autoIncrement.plugin, 'User');
 
 /**
  * Register
