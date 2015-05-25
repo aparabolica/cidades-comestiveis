@@ -1,5 +1,14 @@
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	leaflet#map(defaults="defaults" center="center")
+	#map-actions
+		.add-new.primary
+			a.label.icon-plus(href="#")
+			.hover-content
+				span.description Adicionar novo
+		.search
+			span.label.icon-magnifying-glass
+			.hover-content
+				input(type="text")
 	nav#map-filters
 		a(href="#")
 			span.icon

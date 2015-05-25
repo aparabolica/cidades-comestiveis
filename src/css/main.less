@@ -2,6 +2,7 @@
 
 @import (inline) "normalize.css";
 @import (inline) "skeleton.css";
+@import (inline) "icons.css";
 
 @font-face {
 	font-family: 'PressFeeling';
@@ -58,6 +59,30 @@
 	.box-shadow(0 0 0);
 }
 
+.leaflet-left .leaflet-control {
+	margin-left: 20px;
+}
+
+.leaflet-top .leaflet-control {
+	margin-top: 20px;
+}
+
+.leaflet-right .leaflet-control {
+	margin-right: 20px;
+}
+
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 20px;
+}
+
+.leaflet-top.leaflet-left {
+	top: auto;
+	bottom: 0;
+	.leaflet-control {
+		margin-bottom: 20px;
+	}
+}
+
 .leaflet-control-zoom {
 	a {
 		background: @orange;
@@ -92,6 +117,77 @@
 		.leaflet-control-container {
 			opacity: 0;
 			.transition(opacity .2s linear);
+		}
+	}
+	#map-actions {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		z-index: 9999;
+		opacity: 0;
+		pointer-events: none;
+		.transition(all .2s linear);
+		> div {
+			position: relative;
+			margin: 0 0 20px;
+			.label {
+				display: block;
+				background: @orange;
+				color: #000;
+				padding: 20px;
+				.border-radius(100%);
+				font-size: 40px;
+				text-align: center;
+				line-height: 40px;
+				width: 40px;
+				height: 40px;
+				text-decoration: none;
+				position: relative;
+				z-index: 2;
+				margin: 0 auto;
+			}
+			.hover-content {
+				.border-radius(0 40px 40px 0);
+				position: absolute;
+				left: 40px;
+				padding: 15px 40px;
+				height: 50px;
+				background: @orange;
+				color: #000;
+				top: 0;
+				overflow: hidden;
+				width: 0;
+				.transition(all .2s linear);
+				opacity: 0;
+				input[type=text] {
+					background: transparent;
+					border: 0;
+					color: #000;
+					font-size: 20px;
+				}
+			}
+			&:hover {
+				.hover-content {
+					width: auto;
+					opacity: 1;
+					max-width: 200px;
+				}
+			}
+			&.primary {
+				.label {
+					font-size: 70px;
+					line-height: 70px;
+					padding: 15px;
+					width: 70px;
+					height: 70px;
+				}
+				.hover-content {
+					left: 50px;
+					height: 60px;
+					padding: 20px 70px;
+					.border-radius(0 70px 70px 0);
+				}
+			}
 		}
 	}
 	#map-filters {
@@ -138,6 +234,7 @@
 				opacity: 1;
 			}
 		}
+		#map-actions,
 		#map-filters {
 			opacity: 1;
 			pointer-events: all;
