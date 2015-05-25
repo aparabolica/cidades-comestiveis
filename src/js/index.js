@@ -81,24 +81,33 @@ app.config([
 require('./service');
 
 app.controller('HomeCtrl', [
+	'$rootScope',
 	'$scope',
 	'CCService',
-	function($scope, CC) {
+	function($rootScope, $scope, CC) {
 
 		// CC.user.query(function(data) {
 		// 	console.log(data);
 		// });
+
+		$scope.mapActive = false;
+
+		$scope.initMap = function() {
+			$scope.mapActive = true;
+			$rootScope.$broadcast('map.activated');
+		};
 
 	}
 ])
 
 app.controller('MapCtrl', [
 	'$scope',
-	function($scope) {
+	'leafletData',
+	function($scope, leaflet) {
 
 		angular.extend($scope, {
 			defaults: {
-				tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+				tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 				maxZoom: 18,
 				scrollWheelZoom: false
 			},
@@ -107,6 +116,14 @@ app.controller('MapCtrl', [
 				lng: -46.633309,
 				zoom: 12
 			}
+		});
+
+		$scope.$on('map.activated', function() {
+			leaflet.getMap('map').then(function(map) {
+				setTimeout(function() {
+					map.invalidateSize(true);
+				}, 250);
+			});
 		});
 
 	}

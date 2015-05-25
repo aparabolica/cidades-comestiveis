@@ -1,2 +1,43 @@
-.map(ng-controller="MapCtrl")
-	leaflet(defaults="defaults" center="center")
+.map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
+	leaflet#map(defaults="defaults" center="center")
+	nav#map-filters
+		a(href="#")
+			span.icon
+				img(src="/img/icons/insumo.png")
+			| Insumos
+		a(href="#")
+			span.icon
+				img(src="/img/icons/conhecimento.png")
+			| Conhecimentos
+		a(href="#")
+			span.icon
+				img(src="/img/icons/trabalho.png")
+			| Trabalho
+		a(href="#")
+			span.icon
+				img(src="/img/icons/ferramentas.png")
+			| Ferramentas
+		a(href="#")
+			span.icon
+				img(src="/img/icons/terreno.png")
+			| Terrenos
+.row
+	.container
+		.eight.columns.offset-by-two
+			section#map-intro(ng-class="{hidden:mapActive}")
+				p In congue neque vestibulum tellus viverra ornare. Sed in sem dolor.
+					| Sed id urna vel leo efficitur feugiat a a enim. Curabitur rhoncus elit
+					| vitae tristique venenatis. Suspendisse ac neque ligula. Sed imperdiet
+					| lacus lorem, eu molestie felis vehicula ut.
+				a.button(href="javascript:void(0);" ng-click="initMap()") Acesse
+
+.row
+	#site-intro
+		.container
+			.two.columns.offset-by-one
+				img(src="/img/mobile.png")
+			.eight.columns
+				p In congue neque vestibulum tellus viverra ornare. Sed in sem dolor.
+					| Sed id urna vel leo efficitur feugiat a a enim. Curabitur rhoncus elit
+					| vitae tristique venenatis. Suspendisse ac neque ligula. Sed imperdiet
+					| lacus lorem, eu molestie felis vehicula ut.
