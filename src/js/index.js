@@ -117,9 +117,11 @@ app.controller('MapCtrl', [
 				zoom: 12
 			}
 		});
-
-		$scope.$on('map.activated', function() {
-			leaflet.getMap('map').then(function(map) {
+		leaflet.getMap('map').then(function(map) {
+			setTimeout(function() {
+				map.invalidateSize(true);
+			}, 250);
+			$scope.$on('map.activated', function() {
 				setTimeout(function() {
 					map.invalidateSize(true);
 				}, 250);
