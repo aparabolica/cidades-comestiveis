@@ -1,0 +1,10 @@
+header
+	h2 Adicionar ao mapa!
+form#new-item
+	section#new-item-category
+		h3 Selecione a categoria
+		ul.categories
+			li.category-item(ng-repeat="category in categories")
+				a(href="javascript:void(0);")
+					span(class="c-icon-{{category.label}} icon")
+					| {{category.name}}

@@ -4,8 +4,10 @@ window._ = require('underscore');
 require('angular-ui-router');
 require('angular-resource');
 require('angular-leaflet-directive');
+require('ng-dialog');
 
 var app = angular.module('cc', [
+	'ngDialog',
 	'ui.router', 
 	'ngResource',
 	'leaflet-directive'
@@ -127,6 +129,44 @@ app.controller('MapCtrl', [
 				}, 250);
 			});
 		});
+
+	}
+])
+
+app.controller('NewCtrl', [
+	'$scope',
+	'ngDialog',
+	function($scope, ngDialog) {
+
+		$scope.categories = [
+			{
+				name: 'Insumo',
+				label: 'insumo'
+			},
+			{
+				name: 'Conhecimento',
+				label: 'conhecimento'
+			},
+			{
+				name: 'Trabalho',
+				label: 'trabalho'
+			},
+			{
+				name: 'Ferramentas',
+				label: 'ferramentas'
+			},
+			{
+				name: 'Terreno',
+				label: 'terreno'
+			}
+		];
+
+		$scope.addNew = function() {
+			ngDialog.open({
+				template: '/views/new.html',
+				scope: $scope
+			});
+		};
 
 	}
 ]);

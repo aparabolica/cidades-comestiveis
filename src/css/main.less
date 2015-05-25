@@ -3,6 +3,9 @@
 @import (inline) "normalize.css";
 @import (inline) "skeleton.css";
 @import (inline) "icons.css";
+@import (inline) "category-icons.css";
+
+@import (inline) "ngdialog.css";
 
 @font-face {
 	font-family: 'PressFeeling';
@@ -15,6 +18,15 @@
 }
 
 @orange: #ff6600;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "PressFeeling";
+}
 
 #masthead {
 	padding: 30px 0;
@@ -159,6 +171,10 @@
 				width: 0;
 				.transition(all .2s linear);
 				opacity: 0;
+				font-family: "PressFeeling";
+				font-size: 28px;
+				font-weight: normal;
+				line-height: 100%;
 				input[type=text] {
 					background: transparent;
 					border: 0;
@@ -216,14 +232,7 @@
 				width: 50px;
 				height: 50px;
 				margin-right: 20px;
-				img {
-					display: block;
-					width: auto;
-					height: auto;
-					max-width: 100%;
-					max-height: 100%;
-					margin: 0 auto;
-				}
+				text-align: center;
 			}
 		}
 	}
@@ -275,5 +284,65 @@
 		padding: 40px 0;
 		font-size: 28px;
 		font-family: "PressFeeling";
+	}
+}
+
+.ngdialog-overlay {
+	background: rgba(0,0,0,0.7);
+}
+
+.ngdialog.ngdialog-theme-default {
+	.ngdialog-content {
+		width: 80%;
+		max-width: 800px;
+		background: #fff;
+		.border-radius(10px);
+		header {
+			background: @orange;
+			color: #fff;
+			margin: -1em -1em 1em -1em;
+			padding: 1em;
+			.border-radius(10px 10px 0 0);
+			h1,
+			h2 {
+				color: #fff;
+				margin: 0;
+			}
+		}
+	}
+}
+
+#new-item {
+	#new-item-category {
+		.categories {
+			display: block;
+			width: 100%;
+			text-align: center;
+			.category-item {
+				display: inline-block;
+				margin: 10px;
+				font-family: "PressFeeling";
+				font-size: 34px;
+				text-transform: uppercase;
+				a {
+					display: inline-block;
+					color: #666;
+					padding: 10px 20px;
+					border: 1px solid @orange;
+					line-height: 40px;
+					text-decoration: none;
+					.border-radius(10px);
+					.icon {
+						margin-right: 20px;
+						font-size: 40px;
+						line-height: 40px;
+					}
+					&:hover {
+						background: @orange;
+						color: #fff;
+					}
+				}
+			}
+		}
 	}
 }

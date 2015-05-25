@@ -1,34 +1,29 @@
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	leaflet#map(defaults="defaults" center="center")
 	#map-actions
-		.add-new.primary
-			a.label.icon-plus(href="#")
+		.add-new.primary(ng-controller="NewCtrl")
+			a.label.icon-plus(href="javascript:void(0);" ng-click="addNew()")
 			.hover-content
-				span.description Adicionar novo
+				span.description Adicionar ao mapa
 		.search
 			span.label.icon-magnifying-glass
 			.hover-content
 				input(type="text")
 	nav#map-filters
 		a(href="#")
-			span.icon
-				img(src="/img/icons/insumo.png")
+			span.icon.c-icon-insumo
 			| Insumos
 		a(href="#")
-			span.icon
-				img(src="/img/icons/conhecimento.png")
+			span.icon.c-icon-conhecimento
 			| Conhecimentos
 		a(href="#")
-			span.icon
-				img(src="/img/icons/trabalho.png")
+			span.icon.c-icon-trabalho
 			| Trabalho
 		a(href="#")
-			span.icon
-				img(src="/img/icons/ferramentas.png")
+			span.icon.c-icon-ferramentas
 			| Ferramentas
 		a(href="#")
-			span.icon
-				img(src="/img/icons/terreno.png")
+			span.icon.c-icon-terreno
 			| Terrenos
 .row
 	.container
