@@ -170,8 +170,8 @@ POST /api/v1/area
 
 ### Responses
 
-* `201` success
-* `400` bad request
+* `201` status + Area JSON object;
+* `400` status + Error messages;
 
 [back to index]
 
