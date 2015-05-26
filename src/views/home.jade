@@ -1,8 +1,41 @@
+#dashboard(ng-show="user" ng-init="dashboardActive = false")
+	.container
+		.twelve.columns
+			.sharing
+				span.arrow(ng-class="{'icon-chevron-down': !dashboardActive, 'icon-chevron-up': dashboardActive}")
+				h2(ng-click="dashboardActive ? dashboardActive = false : dashboardActive = true") Meus compartilhamentos
+				ul.sharing-list.toggle(ng-show="dashboardActive")
+					li.sharing-item
+						span.icon.c-icon-conhecimento
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-conhecimento
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-trabalho
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-terreno
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-terreno
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-insumo
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-ferramentas
+						span Lorem ipsum
+					li.sharing-item
+						span.icon.c-icon-terreno
+						span Lorem ipsum
+
+
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	leaflet#map(defaults="defaults" center="center")
-	#map-actions
+	#map-actions(ng-controller="LoginCtrl")
 		.add-new.primary(ng-controller="NewCtrl")
-			a.label.icon-plus(href="javascript:void(0);" ng-click="addNew()")
+			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? newDialog() : loginDialog(newDialog)")
 			.hover-content
 				span.description Adicionar ao mapa
 		.search
@@ -28,7 +61,7 @@
 .row
 	.container
 		.eight.columns.offset-by-two
-			section#map-intro(ng-class="{hidden:mapActive}")
+			section#map-intro(ng-class="{hidden:mapActive}" ng-init="user ? initMap() : null")
 				p In congue neque vestibulum tellus viverra ornare. Sed in sem dolor.
 					| Sed id urna vel leo efficitur feugiat a a enim. Curabitur rhoncus elit
 					| vitae tristique venenatis. Suspendisse ac neque ligula. Sed imperdiet

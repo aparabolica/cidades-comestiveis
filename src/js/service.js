@@ -4,8 +4,6 @@ angular.module('cc')
 	'$cookies',
 	function($cookies) {
 
-		console.log($cookies);
-
 		var auth = '';
 
 		try {

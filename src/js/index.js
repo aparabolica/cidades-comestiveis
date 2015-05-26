@@ -91,9 +91,9 @@ app.controller('HomeCtrl', [
 	'CCService',
 	function($rootScope, $scope, CC) {
 
-		CC.user.query(function(data) {
-			console.log(data);
-		});
+		// CC.user.query(function(data) {
+		// 	console.log(data);
+		// });
 
 		$scope.mapActive = false;
 
@@ -105,16 +105,14 @@ app.controller('HomeCtrl', [
 	}
 ]);
 
-app.controller('HeaderCtrl', [
+app.controller('MainCtrl', [
 	'CCAuth',
 	'$scope',
 	function(Auth, $scope) {
 		$scope.$watch(function() {
 			return Auth.getToken();
 		}, function(user) {
-			console.log(user);
 			$scope.user = user || false;
-			// console.log($scope.user);
 		});
 	}
 ]);
@@ -155,37 +153,39 @@ app.controller('NewCtrl', [
 	'ngDialog',
 	function($scope, ngDialog) {
 
-		$scope.categories = [
-			{
-				name: 'Insumo',
-				label: 'insumo'
-			},
-			{
-				name: 'Conhecimento',
-				label: 'conhecimento'
-			},
-			{
-				name: 'Trabalho',
-				label: 'trabalho'
-			},
-			{
-				name: 'Ferramentas',
-				label: 'ferramentas'
-			},
-			{
-				name: 'Terreno',
-				label: 'terreno'
-			}
-		];
-
-		$scope.selectCategory = function(cat) {
-			$scope.selectedCategory = cat;
-		};
-
-		$scope.addNew = function() {
+		$scope.newDialog = function() {
 			ngDialog.open({
 				template: '/views/new.html',
-				scope: $scope
+				controller: ['$scope', function($scope) {
+
+					$scope.categories = [
+						{
+							name: 'Insumo',
+							label: 'insumo'
+						},
+						{
+							name: 'Conhecimento',
+							label: 'conhecimento'
+						},
+						{
+							name: 'Trabalho',
+							label: 'trabalho'
+						},
+						{
+							name: 'Ferramentas',
+							label: 'ferramentas'
+						},
+						{
+							name: 'Terreno',
+							label: 'terreno'
+						}
+					];
+
+					$scope.selectCategory = function(cat) {
+						$scope.selectedCategory = cat;
+					};
+
+				}]
 			});
 		};
 
@@ -199,18 +199,25 @@ app.controller('LoginCtrl', [
 	'CCAuth',
 	function($scope, ngDialog, CC, Auth) {
 
-		var dialog;
+		var dialog, user;
 
-		$scope.loginDialog = function() {
+		$scope.loginDialog = function(callback) {
 			dialog = ngDialog.open({
 				template: '/views/login.html',
-				scope: $scope
+				scope: $scope,
+				preCloseCallback: function() {
+					if(user && typeof callback == 'function') {
+						console.log(callback);
+						callback();
+					}
+				}
 			});
 		}
 
 		$scope.$watch(function() {
 			return Auth.getToken();
-		}, function(user) {
+		}, function(res) {
+			user = res;
 			if(dialog && user) {
 				dialog.close();
 				dialog = false;
