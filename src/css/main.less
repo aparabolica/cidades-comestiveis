@@ -338,14 +338,32 @@ h6 {
 			margin: 0 20px 20px 0;
 			font-family: "PressFeeling";
 			font-size: 32px;
+			cursor: pointer;
 			.icon {
 				width: 40px;
 				text-align: center;
 				display: inline-block;
 				margin-right: 10px;
 			}
+			.edit-icon {
+				margin-left: 10px;
+				font-size: 12px;
+				.border-radius(100%);
+				background: #fff;
+				color: @orange;
+				padding: 5px;
+				line-height: 32px;
+				opacity: 0;
+				pointer-events: none;
+				.transition(opacity .2s linear);
+			}
 			&:nth-of-type(3n) {
 				margin-right: 0;
+			}
+			&:hover {
+				.edit-icon {
+					opacity: 1;
+				}
 			}
 		}
 	}
