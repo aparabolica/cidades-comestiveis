@@ -3,11 +3,13 @@ window._ = require('underscore');
 
 require('angular-ui-router');
 require('angular-resource');
+require('angular-cookies');
 require('angular-leaflet-directive');
 require('ng-dialog');
 
 var app = angular.module('cc', [
 	'ngDialog',
+	'ngCookies',
 	'ui.router', 
 	'ngResource',
 	'leaflet-directive'
@@ -81,6 +83,7 @@ app.config([
 ]);
 
 require('./service');
+require('./auth');
 
 app.controller('HomeCtrl', [
 	'$rootScope',
@@ -88,9 +91,9 @@ app.controller('HomeCtrl', [
 	'CCService',
 	function($rootScope, $scope, CC) {
 
-		// CC.user.query(function(data) {
-		// 	console.log(data);
-		// });
+		CC.user.query(function(data) {
+			console.log(data);
+		});
 
 		$scope.mapActive = false;
 
@@ -100,7 +103,21 @@ app.controller('HomeCtrl', [
 		};
 
 	}
-])
+]);
+
+app.controller('HeaderCtrl', [
+	'CCAuth',
+	'$scope',
+	function(Auth, $scope) {
+		$scope.$watch(function() {
+			return Auth.getToken();
+		}, function(user) {
+			console.log(user);
+			$scope.user = user || false;
+			// console.log($scope.user);
+		});
+	}
+]);
 
 app.controller('MapCtrl', [
 	'$scope',
@@ -161,12 +178,64 @@ app.controller('NewCtrl', [
 			}
 		];
 
+		$scope.selectCategory = function(cat) {
+			$scope.selectedCategory = cat;
+		};
+
 		$scope.addNew = function() {
 			ngDialog.open({
 				template: '/views/new.html',
 				scope: $scope
 			});
 		};
+
+	}
+]);
+
+app.controller('LoginCtrl', [
+	'$scope',
+	'ngDialog',
+	'CCService',
+	'CCAuth',
+	function($scope, ngDialog, CC, Auth) {
+
+		var dialog;
+
+		$scope.loginDialog = function() {
+			dialog = ngDialog.open({
+				template: '/views/login.html',
+				scope: $scope
+			});
+		}
+
+		$scope.$watch(function() {
+			return Auth.getToken();
+		}, function(user) {
+			if(dialog && user) {
+				dialog.close();
+				dialog = false;
+			}
+		});
+
+		$scope.register = function(data) {
+			CC.user.save(data, function() {
+				CC.login({
+					email: data.email,
+					password: data.password
+				});
+			});
+		}
+
+		$scope.login = function(data) {
+			CC.login(data);
+		}
+
+		$scope.logout = function() {
+			if(Auth.getToken()) {
+				CC.logout();
+			}
+		}
+
 
 	}
 ]);

@@ -5,6 +5,24 @@ form#new-item
 		h3 Selecione a categoria
 		ul.categories
 			li.category-item(ng-repeat="category in categories")
-				a(href="javascript:void(0);")
+				a(href="javascript:void(0);" ng-click="selectCategory(category)" ng-class="{selected:category==selectedCategory}")
 					span(class="c-icon-{{category.label}} icon")
 					| {{category.name}}
+
+	section#main-info.clearfix
+		p
+			label Nome
+			input(type="text")
+		p
+			label Endereço
+			input(type="text")
+		.half-group
+			p.half
+				label CEP
+				input(type="text")
+			p.half
+				label Número
+				input(type="text")
+		p
+			label Informações
+			textarea

@@ -1,0 +1,29 @@
+header
+	h2 Entrar
+#auth.clearfix
+	.half-group
+		.half
+			form#login(ng-submit="login(credentials)")
+				h3 Fazer login
+				p
+					label Email
+					input(type="text" ng-model="credentials.email")
+				p
+					label Senha
+					input(type="password" ng-model="credentials.password")
+				p
+					input(type="submit" value="Entrar")
+		.half
+			form#register(ng-submit="register(newUser)")
+				h3 Cadastre-se!
+				p
+					label Email
+					input(type="text" ng-model="newUser.email")
+				p
+					label Nome
+					input(type="text" ng-model="newUser.name")
+				p
+					label Senha
+					input(type="password" ng-model="newUser.password")
+				p
+					input(type="submit" value="Cadastrar")
