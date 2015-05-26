@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
  */
 
 var AreaSchema = new Schema({
-	creator: { type: Schema.ObjectId, ref: 'User', required: true},
+	creator: { type: Number, ref: 'User', required: true},
 	address: { type: String, required: true },
 	description: { type: String },
 	geometry: { type: {type: String}, coordinates: []},

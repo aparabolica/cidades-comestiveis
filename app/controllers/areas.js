@@ -7,7 +7,7 @@ exports.create = function(req, res, next) {
 
 	var area = new Area(req.body);
 
-	area.creator = req.user;
+	area.creator = req.user._id;
 
 	area.save(function(err){
     // console.log(err)

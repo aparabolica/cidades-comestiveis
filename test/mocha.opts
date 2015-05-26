@@ -1,6 +1,5 @@
 --require should
---reporter spec
+--reporter dot
 --ui bdd
 --recursive
 --check-leaks
---watch

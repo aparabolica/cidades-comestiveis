@@ -98,12 +98,14 @@ describe('API: Areas', function(){
           .set('Authorization', user1AccessToken)
           .send(area)
           .expect(201)
+          .expect('Content-Type', /json/)
           .end(function(err, res){
             should.not.exist(err);
             var body = res.body;
 
             /* User basic info */
             body.should.have.property('address', area.address);
+            body.should.have.property('creator', user1._id);
 
             /* Location geojson */
             var geometryGeojson = body.geometry;
