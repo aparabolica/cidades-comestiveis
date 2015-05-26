@@ -1,114 +1,72 @@
-## Shared Resources
+# API Reference
 
-### New resource
+# Index
 
-**Authentication needed**: be logged as user.
+  * [User](#users): [new](#new-user), [update](#update-user), [get](#get-user), [list](#list-users)
+  * Land: new, get, list, update, delete
+  * Resources: new, get, list, update, delete
+  * Resource categories: new, get, list, update, delete
+  * Initiatives: new, get, list, update, delete
+
+---
+
+# Users routes
+
+## New user
 
 ```
-POST /api/v1/resources
+POST /api/v1/users
 ```
 
-#### Input
+### Parameters
 
- - `categories`: *array* of category ids
- - `description`: *string* short explanation of resource
- - `available_at`: *date* formatted as [ISO 8601]
- - `expires_at`: *date* formatted as [ISO 8601]
+ - `name`: *string* User name
+ - `email`: *string* User e-mail
+ - `password`: *string* Password
+ - `longitude`: *number* User longitude *(optional)*
+ - `latitude`: *number* User latitude *(optional)*
 
 
-#### Response
+### Possible responses
 
-Status codes:
- - `201` Created successfully
- - `400` Bad request
+#### **Success**
+  * Status: `201 (created)`
+  * Response has created user as JSON:  
+    ```json
+    {
+      "_id": 1,
+      "name": "João da Silva",
+      "location": [-3.53198127, -10.3964720]
+    }
+    ```
 
-On success, returns the created resource.
+#### **Failure**
+  * Status: `400 (bad request)`
+  * Response includes errors as JSON
+
 
 [back to index]
 
 ---
 
-### Get resource
 
-**Authentication needed**: none.
+## Update user
 
-```
-GET /api/v1/resources/:id
-```
-
-#### Options parameters
-
-* populate_categories: any value passed will cause the response to include category objects.
-
-#### Response
-
-Object containing resource data
-
-Status codes:
- - `200` Ok
- - `400` Bad request
-
-Example:
-
-```json
-{
-  "id": 1,
-  "categories": [22,35,24],
-  "location": [-12.5198127, -22.33232720]
-}
-```
-
-[back to index]
-
----
-
-### List resources
+**Authentication needed**: logged with same user id.
 
 ```
-GET /api/v1/resources
+PUT /api/v1/users/:id
 ```
 
-#### Input filter parameters
+### Parameters
 
-  * `per_page`: _number_ default: 10. maximum: 20 (optional)
-  * `page`: _number_ (optional)
-  * `categories`: _string_ category ids, separated by comma
+ - `name`: *string* User name *(optional)*
+ - `currentPassword`: *string* Old password *(needed if new password is present)*
+ - `password`: *string* New password *(optional)*
+ - `longitude`: *number* User longitude *(optional)*
+ - `latitute`: *number* User latitude *(optional)*
 
-#### Response
-
-Object containing resource data
-
-Status codes:
- - `200` Ok
- - `400` Bad request
-
-Response body:
- - `count` _int_
- - `per_page` _int_
- - `page` _int_
- - `data` _[resouce_id]_
-
-(back to index)
-
----
-
-
-### Update resource
-
-**Authentication needed**: should be resource owner.
-
-```
-PUT /api/v1/resources/:id
-```
-
-#### Input parameters
-
-- `categories`: *array* of category ids
-- `description`: *string* short explanation of resource
-- `available_at`: *date* formatted as [ISO 8601]
-- `expires_at`: *date* formatted as [ISO 8601]
-
-#### Response
+### Response
 
 Status codes:
  - `200` Ok
@@ -116,27 +74,107 @@ Status codes:
  - `401` Unauthorized
  - `404` Not found
 
-On success, returns the updated resource.
+On success, returns the updated user.
 
 [back to index]
 
-### Delete resource
+---
 
-Authentication needed: must be resource owner or admin.
+## Get user
 
 ```
-DELETE /api/v1/resources/:id
+GET /api/v1/users/:id
 ```
 
-#### Response
+### Parameters
 
-Status codes:
- - `204` Deleted successfully
- - `401` Unauthorized
- - `404` Resource not found
+This route doesn't accept parameters.
 
- [back to index]
+### Possible responses
+
+#### **Success**
+  * Status: `200 (OK)`
+  * Response has user as JSON:  
+
+#### **Failure**
+  * Status: `400 (bad request)`
+  * Response includes errors as JSON
+
+#### **Not found**
+  * Status: `404 (not found)`
+  * Response includes errors as JSON
+
+[back to index]
+
+---
+
+## List users
+
+```
+GET /api/v1/users
+```
+
+### Parameters
+
+  - `perPage`: _number_ (default: 10)
+  - `page`: _number_ (optional)
+
+### Response
+
+### Possible responses
+
+#### **Success**
+  * Status: `200 (OK)`
+  * Response has pagination parameters and user list:
+
+    ```javascript
+    {
+      count: 26,
+      perPage: 10,
+      page: 2,
+      users: [{
+        _id: 33,
+        name: 'Mariazinha'
+      },{
+        _id: 55,
+        name: 'Joãozinho'
+      }]
+    }
+    ```
+
+#### **Failure**
+  * Status: `400 (bad request)`
+  * Response includes errors as JSON
+
+#### **Not found**
+  * Status: `404 (not found)`
+  * Response includes errors as JSON
+
+[back to index]
 
 [back to index]: #index
 
-[ISO 8601]: https://en.wikipedia.org/wiki/ISO_8601
+# Areas routes
+
+## New area
+
+```
+POST /api/v1/area
+```
+
+### Parameters
+
+ - `address` (*string*, ***required***)
+ - `description` (*string*)
+ - `geometry` (*[geojson]*)
+
+### Responses
+
+* `201` status + Area JSON object;
+* `400` status + Error messages;
+
+[back to index]
+
+---
+
+[geojson]: http://geojson.org/geojson-spec.html

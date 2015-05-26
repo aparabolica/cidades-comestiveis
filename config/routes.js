@@ -4,7 +4,7 @@ var messaging = require('../lib/messaging');
 
 /* Controllers */
 var auth = require('./auth');
-var lands = require('../app/controllers/lands');
+var areas = require('../app/controllers/areas');
 var users = require('../app/controllers/users');
 
 module.exports = function (app, config) {
@@ -25,11 +25,11 @@ module.exports = function (app, config) {
   usersRoutes.get('/users', users.list);
   app.use(config.apiPrefix, usersRoutes);
 
-  /* Lands routes */
-  var landRoutes = require('express').Router();
-  landRoutes.get('/lands', [auth.requiresLogin, lands.create]);
-  landRoutes.post('/lands', [auth.requiresLogin, lands.create]);
-  app.use(config.apiPrefix, landRoutes);
+  /* Areas routes */
+  var areaRoutes = require('express').Router();
+  areaRoutes.get('/areas', [auth.requiresLogin, areas.create]);
+  areaRoutes.post('/areas', [auth.requiresLogin, areas.create]);
+  app.use(config.apiPrefix, areaRoutes);
 
   /* Send 404 (Not found) to non existent API routes */
   app.all('/api/*', function(req,res){
