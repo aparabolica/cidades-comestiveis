@@ -122,7 +122,29 @@ describe('API: Areas', function(){
           })
       });
 
-      it('return 400 (Bad request) for invalid area data');
+      it('return 400 (Bad request) for invalid area data', function(doneIt){
+        var area = {
+          address: '',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ultricies felis at.'
+        }
+
+        request(app)
+          .post(apiPrefix + '/areas')
+          .set('Authorization', user1AccessToken)
+          .send(area)
+          .expect(400)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+
+            res.body.messages.should.have.lengthOf(1);
+  					messaging.hasValidMessages(res.body).should.be.true;
+  					res.body.messages[0].should.have.property('text', 'mongoose.errors.areas.missing_address');
+
+            doneIt();
+          });
+      });
     });
   });
 
