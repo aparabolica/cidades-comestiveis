@@ -15,21 +15,39 @@ var AreaSchema = new Schema({
 	description: { type: String },
 	geometry: { type: {type: String}, coordinates: []},
 	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date},
+	updatedAt: {type: Date}
 })
 
 /* Geo index */
 AreaSchema.index({ geometry: '2dsphere' })
 
-/* Auto-increment */
+/** Auto-increment */
 AreaSchema.plugin(autoIncrement.plugin, 'Area');
 
-/* Pre/Post middleware */
+/** Pre/Post middleware */
 
 AreaSchema.pre('save', function(next){
-	this.updatedAt = new Date();
+	if (!this.isNew)
+		this.updatedAt = new Date();
 	next();
 });
+
+/** Statics */
+
+AreaSchema.static({
+
+	list: function (options, cb) {
+    var criteria = options.criteria || {}
+
+    this.find(criteria)
+      .sort('address') // sort by date
+			.populate('creator', '_id name')
+      .limit(options.perPage)
+      .skip(options.perPage * options.page)
+      .exec(cb);
+  }
+
+})
 
 /* Register model */
 mongoose.model('Area', AreaSchema)

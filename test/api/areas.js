@@ -3,6 +3,8 @@
 var request = require('supertest');
 var async = require('async');
 var should = require('should');
+var mongoose = require('mongoose');
+var moment = require('moment');
 
 /* The app */
 
@@ -19,7 +21,6 @@ var messaging = require('../../lib/messaging')
 
 var config = require('../../config/config')['test'];
 var apiPrefix = config.apiPrefix;
-
 
 /* Local data */
 var user1;
@@ -45,12 +46,12 @@ describe('API: Areas', function(){
     expressHelper.whenReady(function(){
       clearDb.all(function(err){
         should.not.exist(err);
-        async.series([createUsers], doneBefore)
+        async.series([createUsers, createAreas], doneBefore)
       });
     });
 
     /*
-     * Create user1
+     * Create users
      */
     function createUsers(doneCreateUsers) {
       async.series([function(done){
@@ -81,6 +82,17 @@ describe('API: Areas', function(){
           });
         });
       }], doneCreateUsers);
+    }
+
+    /*
+     * Create areas
+     */
+    function createAreas(doneCreateAreas) {
+      async.parallel([function(doneCreateAreas1){
+        factory.createAreas(39, user1._id, doneCreateAreas1);
+      }, function(doneCreateAreas2){
+        factory.createAreas(45, user2._id, doneCreateAreas2);
+      }], doneCreateAreas);
     }
   });
 
@@ -236,8 +248,71 @@ describe('API: Areas', function(){
   */
 
   describe('GET /api/version/areas', function(){
-    it('return status 200 (OK) and object json for valid id');
-    it('return 400 (Bad request)');
+    context('valid parameters', function(){
+      it('return 200 and first page when no parameters are passed', function(doneIt){
+
+        var areaCount = 85;
+        var defaultPerPage = 30;
+        var defaultPage = 1;
+
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/areas')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check pagination */
+          var body = res.body;
+          body.should.have.property('count', areaCount);
+          body.should.have.property('perPage', defaultPerPage);
+          body.should.have.property('page', defaultPage);
+          body.should.have.property('areas');
+
+          /* Check data */
+          var data = body.areas;
+          data.should.have.lengthOf(defaultPerPage);
+          mongoose.model('Area').find({}).sort('address').limit(defaultPerPage).populate('creator', '_id name').lean().exec(function(err, areas){
+            if (err) return doneIt(err);
+            for (var i = 0; i < defaultPerPage; i++) {
+
+              var area = areas[i];
+              data[i].should.have.property('_id', area._id);
+              data[i].should.have.property('address', area.address);
+              data[i].should.have.property('description', area.description);
+              data[i].should.have.property('createdAt');
+
+              var createdAt = moment(data[i].createdAt).format();
+              createdAt.should.equal(moment(area.createdAt).format());
+
+              var creator = area.creator;
+              data[i].should.have.property('creator');
+              data[i]['creator'].should.have.property('name', creator.name);
+              data[i]['creator'].should.have.property('_id', creator._id);
+
+              var geometry = area.geometry;
+              data[i].should.have.property('geometry');
+              data[i]['geometry'].should.have.property('type', geometry.type);
+
+              var coordinates = geometry.coordinates;
+              data[i]['geometry'].should.have.property('coordinates');
+              data[i]['geometry']['coordinates'].should.containDeepOrdered(coordinates);
+            }
+             doneIt();
+          });
+        }
+      });
+      it('return 200 and proper page when parameters are passed')
+    });
+
+    context('bad parameters', function(){
+      it('return 400 and error messages');
+    });
   });
 
 
