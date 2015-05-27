@@ -196,5 +196,33 @@ Parameters:
 
 ---
 
+## List areas
+
+```
+GET /api/v1/areas
+```
+
+Parameters:
+
+
+* `page` (*integer*, default: `1`)
+* `perPage` (*integer*, default: `30`, maximum: `100`)
+
+Posible responses:
+
+* `200` status and JSON as example:
+
+```javascript
+{
+  count: 232,
+  page: 3,
+  perPage: 30
+  areas: [ (area objects) ]
+}
+```
+
+* `400` status for malformed parameters
+
+[back to index]
 
 [geojson]: http://geojson.org/geojson-spec.html

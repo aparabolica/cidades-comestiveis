@@ -22,7 +22,7 @@ var messaging = require('../../lib/messaging')
 var config = require('../../config/config')['test'];
 var apiPrefix = config.apiPrefix;
 
-/* Local data */
+/* Some users */
 var user1;
 var user1AccessToken;
 var user1Area1;
@@ -31,6 +31,10 @@ var user2AccessToken;
 var user3;
 var user3AccessToken;
 
+/* Pagination */
+var areaCount = 85;
+var defaultPerPage = 30;
+var defaultPage = 1;
 
 
 /* The tests */
@@ -251,11 +255,6 @@ describe('API: Areas', function(){
     context('valid parameters', function(){
       it('return 200 and first page when no parameters are passed', function(doneIt){
 
-        var areaCount = 85;
-        var defaultPerPage = 30;
-        var defaultPage = 1;
-
-
         /* The request */
         request(app)
           .get(apiPrefix + '/areas')
@@ -307,7 +306,69 @@ describe('API: Areas', function(){
           });
         }
       });
-      it('return 200 and proper page when parameters are passed')
+
+      it('return 200 and proper page when parameters are passed', function(doneIt){
+
+        var options = {
+          page: 3,
+          perPage: 14
+        }
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/areas')
+          .query(options)
+          // .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check pagination */
+          var body = res.body;
+          body.should.have.property('count', areaCount);
+          body.should.have.property('perPage', options.perPage);
+          body.should.have.property('page', options.page);
+          body.should.have.property('areas');
+
+          /* Check data */
+          var data = body.areas;
+          data.should.have.lengthOf(options.perPage);
+          mongoose.model('Area').find({}).sort('address')
+              .limit(options.perPage).skip(options.perPage*(options.page-1))
+              .populate('creator', '_id name')
+              .lean().exec(function(err, areas){
+            if (err) return doneIt(err);
+            for (var i = 0; i < options.perPage; i++) {
+
+              var area = areas[i];
+              data[i].should.have.property('_id', area._id);
+              data[i].should.have.property('address', area.address);
+              data[i].should.have.property('description', area.description);
+              data[i].should.have.property('createdAt');
+
+              var createdAt = moment(data[i].createdAt).format();
+              createdAt.should.equal(moment(area.createdAt).format());
+
+              var creator = area.creator;
+              data[i].should.have.property('creator');
+              data[i]['creator'].should.have.property('name', creator.name);
+              data[i]['creator'].should.have.property('_id', creator._id);
+
+              var geometry = area.geometry;
+              data[i].should.have.property('geometry');
+              data[i]['geometry'].should.have.property('type', geometry.type);
+
+              var coordinates = geometry.coordinates;
+              data[i]['geometry'].should.have.property('coordinates');
+              data[i]['geometry']['coordinates'].should.containDeepOrdered(coordinates);
+            }
+             doneIt();
+          });
+        }
+      });
     });
 
     context('bad parameters', function(){

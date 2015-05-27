@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Area = mongoose.model('Area');
 var messaging = require('../../lib/messaging');
+var validator = require('validator');
 
 /* Create new area. */
 exports.create = function(req, res, next) {
@@ -29,7 +30,7 @@ exports.show = function(req, res, next) {
 
 /* List areas */
 exports.list = function(req, res, next) {
-  var page = req.query['page'] ;
+  var page = req.query['page'];
   var perPage = req.query['perPage'];
 
   /* Validate query parameters */
