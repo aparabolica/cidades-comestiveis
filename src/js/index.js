@@ -158,7 +158,8 @@ app.controller('MapCtrl', [
 
 		angular.extend($scope, {
 			defaults: {
-				tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
 				maxZoom: 18,
 				scrollWheelZoom: false
 			},
@@ -241,16 +242,65 @@ app.controller('UserCtrl', [
 		$scope.editUserDialog = function() {
 			dialog = ngDialog.open({
 				template: '/views/edit-profile.html',
-				controller: ['$scope', 'CCAuth', 'CCService', function($scope, Auth, CC) {
+				controller: ['$scope', 'CCAuth', 'CCService', 'leafletData', function($scope, Auth, CC, leafletData) {
+
 					$scope.user = angular.extend({}, Auth.getToken());
 
-					delete $scope.user.email;
+					console.log($scope.user);
+
+					$scope.map = {
+						defaults: {
+							// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+							tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
+							maxZoom: 18,
+							scrollWheelZoom: false
+						},
+						center: {
+							lat: -23.550520,
+							lng: -46.633309,
+							zoom: 12
+						}
+					}
+
+					if($scope.user.location && $scope.user.location.coordinates.length) {
+						$scope.map.center = {
+							lat: $scope.user.location.coordinates[0],
+							lng: $scope.user.location.coordinates[1],
+							zoom: 18
+						};
+					}
+
+					$scope.geolocation = navigator.geolocation;
+
+					leafletData.getMap('user-location').then(function(map) {
+						$scope.locate = function() {
+							if($scope.geolocation) {
+								$scope.geolocation.getCurrentPosition(function(pos) {
+									$scope.user.location = {
+										type: 'Point',
+										coordinates: [pos.coords.latitude, pos.coords.longitude]
+									};
+									map.setView([pos.coords.latitude, pos.coords.longitude], 18);
+								});
+							}
+						}
+						$scope.$on('leafletDirectiveMap.dragend', function() {
+							var coords = map.getCenter();
+							$scope.user.location = {
+								type: 'Point',
+								coordinates: [coords.lat, coords.lng]
+							};
+						});
+					});
+
 					$scope.save = function(user) {
+						delete user.email;
 						CC.user.update(user, function(data) {
 							Auth.setToken(angular.extend(Auth.getToken(), data));
 							dialog.close();
 						});
 					}
+
 				}]
 			});
 		}

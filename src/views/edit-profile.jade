@@ -12,7 +12,11 @@ form#edit-profile(ng-submit="save(user)")
 		textarea(id="bio_input" ng-model="user.bio")
 
 	p
-		label Localização
+		label Localização 
+			a.button(href="javascript:void(0);" ng-click="locate()") 
+				span.icon-hair-cross 
+				| Geolocalizar
+	.center-location-map
+		leaflet#user-location(defaults="map.defaults" center="map.center")
 
-	leaflet
 	input(type="submit" value="Atualizar")

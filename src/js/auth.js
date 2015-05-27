@@ -31,20 +31,3 @@ angular.module('cc')
 		$httpProvider.interceptors.push('authInterceptor');
 	}
 ]);
-// .run([
-// 	'$rootScope',
-// 	'CCAuth',
-// 	function($rootScope, Auth) {
-
-// 		$rootScope.$watch(function() {
-// 			return Auth.getToken();
-// 		}, function(nonce) {
-// 			if(nonce) {
-// 				WP.getUser().then(function(data) {
-// 					CC.setUser(data);
-// 				});
-// 			}
-// 		});
-
-// 	}
-// ])
