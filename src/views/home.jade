@@ -41,7 +41,7 @@
 
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	leaflet#map(defaults="defaults" center="center")
-	#map-actions(ng-controller="LoginCtrl")
+	#map-actions
 		.add-new.primary(ng-controller="NewCtrl")
 			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? newDialog() : loginDialog(newDialog)")
 			.hover-content

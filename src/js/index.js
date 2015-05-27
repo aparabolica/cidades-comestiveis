@@ -85,6 +85,52 @@ app.config([
 require('./service');
 require('./auth');
 
+app.controller('MainCtrl', [
+	'CCAuth',
+	'ngDialog',
+	'$rootScope',
+	'$scope',
+	'$timeout',
+	function(Auth, ngDialog, $rootScope, $scope, $timeout) {
+
+		var dialog, user;
+
+		$scope.$watch(function() {
+			return Auth.getToken();
+		}, function(res) {
+			$scope.user = user = res || false;
+			if(dialog && user) {
+				dialog.close();
+				dialog = false;
+			}
+		});
+
+		$scope = angular.extend($scope, Auth);
+
+		$scope.loginDialog = function(callback) {
+			dialog = ngDialog.open({
+				template: '/views/login.html',
+				controller: ['$scope', 'CCAuth', function($scope, Auth) {
+					$scope = angular.extend($scope, Auth);
+				}],
+				preCloseCallback: function() {
+					if(user) {
+						if(typeof callback == 'function') {
+							$timeout(function() {
+								callback();
+							}, 50);
+						} else if(typeof callback == 'string') {
+							$timeout(function() {
+								$rootScope.$broadcast('cc.loggedin', callback);
+							}, 50);
+						}
+					}
+				}
+			});
+		}
+	}
+]);
+
 app.controller('HomeCtrl', [
 	'$rootScope',
 	'$scope',
@@ -102,18 +148,6 @@ app.controller('HomeCtrl', [
 			$rootScope.$broadcast('map.activated');
 		};
 
-	}
-]);
-
-app.controller('MainCtrl', [
-	'CCAuth',
-	'$scope',
-	function(Auth, $scope) {
-		$scope.$watch(function() {
-			return Auth.getToken();
-		}, function(user) {
-			$scope.user = user || false;
-		});
 	}
 ]);
 
@@ -150,8 +184,9 @@ app.controller('MapCtrl', [
 
 app.controller('NewCtrl', [
 	'$scope',
+	'$timeout',
 	'ngDialog',
-	function($scope, ngDialog) {
+	function($scope, $timeout, ngDialog) {
 
 		$scope.newDialog = function() {
 			ngDialog.open({
@@ -188,61 +223,6 @@ app.controller('NewCtrl', [
 				}]
 			});
 		};
-
-	}
-]);
-
-app.controller('LoginCtrl', [
-	'$scope',
-	'ngDialog',
-	'CCService',
-	'CCAuth',
-	function($scope, ngDialog, CC, Auth) {
-
-		var dialog, user;
-
-		$scope.loginDialog = function(callback) {
-			dialog = ngDialog.open({
-				template: '/views/login.html',
-				scope: $scope,
-				preCloseCallback: function() {
-					if(user && typeof callback == 'function') {
-						console.log(callback);
-						callback();
-					}
-				}
-			});
-		}
-
-		$scope.$watch(function() {
-			return Auth.getToken();
-		}, function(res) {
-			user = res;
-			if(dialog && user) {
-				dialog.close();
-				dialog = false;
-			}
-		});
-
-		$scope.register = function(data) {
-			CC.user.save(data, function() {
-				CC.login({
-					email: data.email,
-					password: data.password
-				});
-			});
-		}
-
-		$scope.login = function(data) {
-			CC.login(data);
-		}
-
-		$scope.logout = function() {
-			if(Auth.getToken()) {
-				CC.logout();
-			}
-		}
-
 
 	}
 ]);

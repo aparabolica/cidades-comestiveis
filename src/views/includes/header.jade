@@ -4,7 +4,7 @@ header#masthead
 			h1 Cidades Comestíveis
 				img(src="/img/logo.png" alt="Logo do Cidades Comestíveis")
 		.six.columns
-			nav#authnav(ng-controller="LoginCtrl")
+			nav#authnav
 				a(href="javascript:void(0);" ng-click="loginDialog()" ng-show="!user") Entrar
 				span(ng-show="user") Olá {{user.name}}. 
 					a(href="javascript:void(0);" ng-click="logout()") Sair
@@ -15,4 +15,4 @@ header#masthead
 					li
 						a(href="#") O projeto
 					li
-						a(href="#") FAQ
+						a(href="#") Dúvidas frequentes

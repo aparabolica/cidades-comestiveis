@@ -1,20 +1,59 @@
 angular.module('cc')
 
 .factory('CCAuth', [
+	'CCService',
+	'$http',
+	'$window',
+	'$q',
 	'$cookies',
-	function($cookies) {
+	function(CC, $http, $window, $q, $cookies) {
 
-		var auth = '';
+		var apiUrl = '/api/v1';
+
+		$window.auth = '';
 
 		try {
-			auth = JSON.parse($cookies.auth);
+			$window.auth = JSON.parse($cookies.auth);
 		} catch(err) {
-			auth = false;
+			$window.auth = false;
 		}
 
 		return {
+			register: function(data) {
+				CC.user.save(data, function() {
+					CC.login({
+						email: data.email,
+						password: data.password
+					});
+				});
+			},
+			login: function(credentials) {
+				var self = this;
+				var deferred = $q.defer();
+				$http.post(apiUrl + '/login', credentials).success(function(data) {
+					self.setToken(data);
+					deferred.resolve(data);
+				});
+				return deferred.promise;
+			},
+			logout: function() {
+				var self = this;
+				if(auth) {
+					var deferred = $q.defer();
+					$http.get(apiUrl + '/logout').success(function(data) {
+						self.setToken('');
+						deferred.resolve(true);
+					}).error(function() {
+						self.setToken('');
+						deferred.resolve(true);
+					});
+					return deferred.promise;
+				} else {
+					return false;
+				}
+			},
 			setToken: function(data) {
-				auth = data;
+				$window.auth = data;
 				try {
 					$cookies.auth = JSON.stringify(data);
 				} catch(err) {
@@ -22,7 +61,7 @@ angular.module('cc')
 				}
 			},
 			getToken: function() {
-				return auth;
+				return $window.auth;
 			}
 		}
 
@@ -33,31 +72,11 @@ angular.module('cc')
 	'$q',
 	'$http',
 	'$resource',
-	'CCAuth',
-	function($q, $http, $resource, Auth) {
+	function($q, $http, $resource) {
 
 		var apiUrl = '/api/v1';
 
 		return {
-			login: function(credentials) {
-				var deferred = $q.defer();
-				$http.post(apiUrl + '/login', credentials).success(function(data) {
-					Auth.setToken(data);
-					deferred.resolve(data);
-				});
-				return deferred.promise;
-			},
-			logout: function() {
-				var deferred = $q.defer();
-				$http.get(apiUrl + '/logout').success(function(data) {
-					Auth.setToken('');
-					deferred.resolve(true);
-				}).error(function() {
-					Auth.setToken('');
-					deferred.resolve(true);
-				});
-				return deferred.promise;
-			},
 			user: $resource(apiUrl + '/users/:id', { id: '@id' }, {
 				query: {
 					method: 'GET',
