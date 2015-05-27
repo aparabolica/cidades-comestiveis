@@ -6,8 +6,11 @@ header#masthead
 		.six.columns
 			nav#authnav
 				a(href="javascript:void(0);" ng-click="loginDialog()" ng-show="!user") Entrar
-				span(ng-show="user") Olá {{user.name}}. 
-					a(href="javascript:void(0);" ng-click="logout()") Sair
+				#user-dashboard(ng-controller="UserCtrl" ng-show="user") Olá {{user.name}} 
+					span.icon-chevron-down
+					.user-settings
+						a(href="javascript:void(0);" ng-click="editUserDialog()") Editar perfil
+						a(href="javascript:void(0);" ng-click="logout()") Sair
 			nav#mastnav.clearfix
 				ul
 					li

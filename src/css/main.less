@@ -90,6 +90,33 @@ h6 {
 		color: #fff;
 		text-decoration: none;
 	}
+	#user-dashboard {
+		position: relative;
+		.user-settings {
+			position: absolute;
+			top: 22px;
+			left: -20px;
+			right: -20px;
+			padding: 5px 20px;
+			display: none;
+			background: @orange;
+			.border-radius(0 0 10px 10px);
+			font-size: 14px;
+			a {
+				display: block;
+				border-top: 1px dotted #fff;
+				line-height: 30px;
+				// &:last-child {
+				// 	border-bottom: 0;
+				// }
+			}
+		}
+		&:hover {
+			.user-settings {
+				display: block;
+			}
+		}
+	}
 }
 
 .leaflet-bar {
@@ -147,14 +174,22 @@ h6 {
 
 .map {
 	position: relative;
+	border-top: 2px solid @orange;
 	.leaflet-container {
 		width: 100%;
 		height: 400px;
-		.transition(height .2s linear);
+		float: left;
+		.transition(all .2s linear);
 		.leaflet-control-container {
 			opacity: 0;
 			.transition(opacity .2s linear);
 		}
+	}
+	#map-list-results {
+		width: 0%;
+		height: 400px;
+		overflow: auto;
+		float: left;
 	}
 	#map-actions {
 		position: absolute;
@@ -259,10 +294,14 @@ h6 {
 	}
 	&.active {
 		.leaflet-container {
+			width: 66.6666%;
 			height: 600px;
 			.leaflet-control-container {
 				opacity: 1;
 			}
+		}
+		#map-list-results {
+			width: 33.3333%;
 		}
 		#map-actions,
 		#map-filters {
@@ -311,7 +350,7 @@ h6 {
 #dashboard {
 	background: @orange;
 	color: #fff;
-	padding: 10px 0;
+	padding: 10px 0 8px;
 	h2 {
 		color: #fff;
 		margin: 0;
@@ -461,11 +500,6 @@ h6 {
 }
 
 #auth {
-	// h3 {
-	// 	margin: -20px -20px 20px -20px;
-	// 	background: #f0f0f0;
-	// 	padding: 20px;
-	// }
 	#login {
 		background: #f0f0f0;
 		margin: -20px 0 0 -20px;

@@ -77,7 +77,7 @@ angular.module('cc')
 		var apiUrl = '/api/v1';
 
 		return {
-			user: $resource(apiUrl + '/users/:id', { id: '@id' }, {
+			user: $resource(apiUrl + '/users/:id', { id: '@_id' }, {
 				query: {
 					method: 'GET',
 					isArray: false

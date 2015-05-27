@@ -231,6 +231,33 @@ app.controller('NewCtrl', [
 	}
 ]);
 
+app.controller('UserCtrl', [
+	'$scope',
+	'ngDialog',
+	function($scope, ngDialog) {
+
+		var dialog;
+
+		$scope.editUserDialog = function() {
+			dialog = ngDialog.open({
+				template: '/views/edit-profile.html',
+				controller: ['$scope', 'CCAuth', 'CCService', function($scope, Auth, CC) {
+					$scope.user = angular.extend({}, Auth.getToken());
+
+					delete $scope.user.email;
+					$scope.save = function(user) {
+						CC.user.update(user, function(data) {
+							Auth.setToken(angular.extend(Auth.getToken(), data));
+							dialog.close();
+						});
+					}
+				}]
+			});
+		}
+
+	}
+]);
+
 angular.element(document).ready(function() {
 	angular.bootstrap(document, ['cc']);
 });
