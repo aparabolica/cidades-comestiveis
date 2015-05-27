@@ -372,7 +372,31 @@ describe('API: Areas', function(){
     });
 
     context('bad parameters', function(){
-      it('return 400 and error messages');
+      it('return 400 and error messages', function(doneIt){
+        var params = {
+          perPage: 'not an integer',
+          page: 'not an integer'
+        };
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/areas')
+          .query(params)
+          .expect('Content-Type', /json/)
+          .expect(400)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check error message */
+          res.body.messages.should.have.lengthOf(1);
+          messaging.hasValidMessages(res.body).should.be.true;
+          res.body.messages[0].should.have.property('text', 'errors.areas.list.invalid_pagination');
+          doneIt();
+        };
+      });
     });
   });
 
