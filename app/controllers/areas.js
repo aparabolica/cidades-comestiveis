@@ -21,6 +21,7 @@ exports.show = function(req, res, next) {
 
   Area.findById(area_id).populate('creator', '_id name').exec(function(err, area) {
     if (err) res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+    else if (!area) res.status(404).json(messaging.error('errors.areas.not_found'));
     else res.status(200).json(area);
   });
 

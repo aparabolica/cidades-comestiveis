@@ -183,7 +183,6 @@ describe('API: Areas', function(){
     it('return status 200 and object json for valid id', function(doneIt){
       request(app)
         .get(apiPrefix + '/areas/' + user1Area1._id)
-        .set('Authorization', user1AccessToken)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res){
@@ -213,7 +212,23 @@ describe('API: Areas', function(){
           doneIt();
         });
     });
-    it('return 404 for id not found');
+
+    it('return 404 for id not found', function(doneIt){
+      request(app)
+        .get(apiPrefix + '/areas/999999/')
+        .expect(404)
+        .expect('Content-Type', /json/)
+        .end(function(err, res){
+          should.not.exist(err);
+          var body = res.body;
+
+          res.body.messages.should.have.lengthOf(1);
+          messaging.hasValidMessages(res.body).should.be.true;
+          res.body.messages[0].should.have.property('text', 'errors.areas.not_found');
+
+          doneIt();
+        });
+    });
   });
 
   /*
