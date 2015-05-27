@@ -159,7 +159,7 @@ GET /api/v1/users
 ## New area
 
 ```
-POST /api/v1/area
+POST /api/v1/areas/
 ```
 
 ### Parameters
@@ -176,5 +176,25 @@ POST /api/v1/area
 [back to index]
 
 ---
+
+## Show area
+
+```
+GET /api/v1/areas/:area_id
+```
+
+Parameters:
+
+* `area_id` (*integer,* ***required***)
+
+### Responses
+
+* `200` status + Area JSON object;
+* `404` not found
+
+[back to index]
+
+---
+
 
 [geojson]: http://geojson.org/geojson-spec.html

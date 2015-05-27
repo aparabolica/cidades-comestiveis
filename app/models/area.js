@@ -1,12 +1,15 @@
 var validator = require('validator');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var autoIncrement = require('mongoose-auto-increment');
+autoIncrement.initialize(mongoose.connection);
 
 /**
  * Schema
  */
 
 var AreaSchema = new Schema({
+	_id: Number,
 	creator: { type: Number, ref: 'User', required: 'missing_creator'},
 	address: { type: String, required: 'missing_address'},
 	description: { type: String },
@@ -17,6 +20,9 @@ var AreaSchema = new Schema({
 
 /* Geo index */
 AreaSchema.index({ geometry: '2dsphere' })
+
+/* Auto-increment */
+AreaSchema.plugin(autoIncrement.plugin, 'Area');
 
 /* Pre/Post middleware */
 

@@ -27,7 +27,7 @@ module.exports = function (app, config) {
 
   /* Areas routes */
   var areaRoutes = require('express').Router();
-  areaRoutes.get('/areas', [auth.requiresLogin, areas.create]);
+  areaRoutes.get('/areas/:id', areas.show);
   areaRoutes.post('/areas', [auth.requiresLogin, areas.create]);
   app.use(config.apiPrefix, areaRoutes);
 
