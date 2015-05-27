@@ -232,28 +232,24 @@ h6 {
 		}
 	}
 	#map-filters {
-		position: absolute;
-		z-index: 2;
-		top: 20px;
-		right: 20px;
 		background: @orange;
-		padding: 10px 30px;
-		.border-radius(10px);
+		padding: 10px 0;
 		opacity: 0;
 		pointer-events: none;
 		.transition(all .2s linear);
-		min-width: 25%;
+		display: table;
+		width: 100%;
 		a {
 			font-family: "PressFeeling";
-			display: block;
+			display: table-cell;
 			color: #fff;
-			font-size: 42px;
+			font-size: 36px;
 			line-height: 50px;
 			text-decoration: none;
 			margin: 20px 0;
+			text-align: center;
 			.icon {
-				display: block;
-				float: left;
+				display: inline-block;
 				width: 50px;
 				height: 50px;
 				margin-right: 20px;

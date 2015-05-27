@@ -213,6 +213,10 @@ app.controller('NewCtrl', [
 						{
 							name: 'Terreno',
 							label: 'terreno'
+						},
+						{
+							name: 'Iniciativa',
+							label: 'iniciativa'
 						}
 					];
 
