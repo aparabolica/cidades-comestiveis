@@ -1,5 +1,4 @@
 angular.module('cc')
-
 .factory('authInterceptor', [
 	'$rootScope',
 	'$window',

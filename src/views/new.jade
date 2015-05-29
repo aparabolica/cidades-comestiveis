@@ -1,7 +1,9 @@
 header
-	h2 Adicionar ao mapa!
+	h2 
+		span(ng-hide="item._id") Adicionar ao mapa!
+		span(ng-show="item._id") Editando item
 form#new-item(ng-submit="save(item)")
-	section#new-item-category
+	section#new-item-category(ng-hide="item._id")
 		h3 Selecione a categoria
 		ul.categories
 			li.category-item(ng-repeat="category in categories")

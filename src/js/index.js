@@ -33,6 +33,14 @@ app.config([
 				url: '/',
 				controller: 'HomeCtrl',
 				templateUrl: '/views/home.html'
+			})
+			.state('home.newItem', {
+				url: 'new/',
+				controller: 'ItemCtrl'
+			})
+			.state('home.editItem', {
+				url: 'edit/:type/:id/',
+				controller: 'ItemCtrl'
 			});
 
 		/*
@@ -129,6 +137,13 @@ app.controller('MainCtrl', [
 				}
 			});
 		}
+
+		$scope.mapActive = false;
+
+		$scope.initMap = function() {
+			$scope.mapActive = true;
+			$rootScope.$broadcast('map.activated');
+		};
 	}
 ]);
 
@@ -138,29 +153,21 @@ app.controller('HomeCtrl', [
 	'CCService',
 	function($rootScope, $scope, CC) {
 
-		// CC.user.query(function(data) {
-		// 	console.log(data);
-		// });
-
 		CC.area.query(function(data) {
 			$scope.areas = data.areas;
-			console.log($scope.areas);
+			_.each($scope.areas, function(area) {
+				area.dataType = 'area';
+			});
 		});
-
-		$scope.mapActive = false;
-
-		$scope.initMap = function() {
-			$scope.mapActive = true;
-			$rootScope.$broadcast('map.activated');
-		};
 
 	}
 ]);
 
 app.controller('MapCtrl', [
 	'$scope',
+	'$state',
 	'leafletData',
-	function($scope, leaflet) {
+	function($scope, $state, leaflet) {
 
 		angular.extend($scope, {
 			defaults: {
@@ -184,25 +191,55 @@ app.controller('MapCtrl', [
 					map.invalidateSize(true);
 				}, 250);
 			});
+			$scope.$on('leafletDirectiveMarker.mouseover', function(event, args) {
+				args.leafletEvent.target.openPopup();
+				args.leafletEvent.target.setZIndexOffset(1000);
+			});
+
+			$scope.$on('leafletDirectiveMarker.mouseout', function(event, args) {
+				args.leafletEvent.target.closePopup();
+				args.leafletEvent.target.setZIndexOffset(0);
+			});
+
+			$scope.$on('leafletDirectiveMarker.click', function(event, args) {
+				// console.log(args);
+				$state.go('home.editItem', { type: args.model.object.dataType, id:  args.model.object._id });
+			});
 		});
 
 	}
 ])
 
-app.controller('NewCtrl', [
+app.controller('ItemCtrl', [
 	'$scope',
+	'$state',
+	'$stateParams',
 	'$timeout',
+	'CCService',
 	'ngDialog',
-	function($scope, $timeout, ngDialog) {
+	function($scope, $state, $stateParams, $timeout, CC, ngDialog) {
 
 		var dialog;
 
-		$scope.newDialog = function() {
+		$scope.$watch($state.current.name, function() {
+			if($state.current.name == 'home.editItem') {
+				CC[$stateParams.type].get({id: $stateParams.id}, function(item) {
+					$scope.itemDialog(item, $stateParams.type);
+				});
+			}
+		});
+
+		$scope.itemDialog = function(item, type) {
 			dialog = ngDialog.open({
 				template: '/views/new.html',
+				preCloseCallback: function() {
+					if($state.current.name == 'home.editItem') {
+						$state.go('home');
+					}
+				},
 				controller: ['$scope', 'leafletData', 'CCService', function($scope, leafletData, CC) {
 
-					$scope.item = {};
+					$scope.item = item || {};
 
 					$scope.categories = [
 						{
@@ -227,7 +264,7 @@ app.controller('NewCtrl', [
 						},
 						{
 							name: 'Terreno',
-							label: 'terreno',
+							label: 'area',
 							api: 'area',
 							fields: ['address','description','geometry']
 						},
@@ -237,6 +274,8 @@ app.controller('NewCtrl', [
 							fields: []
 						}
 					];
+
+					$scope.selectedCategory = _.find($scope.categories, function(c) { return c.label == type; }) || null;
 
 					$scope.selectCategory = function(cat) {
 						$scope.selectedCategory = cat;
@@ -296,9 +335,18 @@ app.controller('NewCtrl', [
 
 					$scope.save = function(item) {
 						if($scope.selectedCategory) {
-							CC[$scope.selectedCategory.api].save(item, function(data) {
-								dialog.close();
-							});
+							// New item
+							if(!item._id) {
+								CC[$scope.selectedCategory.api].save(item, function(data) {
+									dialog.close();
+								});
+							// Update item
+							} else {
+								CC[$scope.selectedCategory.api].update(item, function(data) {
+									dialog.close();
+									$state.go('home');
+								});
+							}
 						}
 					};
 

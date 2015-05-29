@@ -20,8 +20,9 @@ angular.module('cc')
 
 		return {
 			register: function(data) {
+				var self = this;
 				CC.user.save(data, function() {
-					CC.login({
+					self.login({
 						email: data.email,
 						password: data.password
 					});
@@ -95,7 +96,7 @@ angular.module('cc')
 					method: 'PUT'
 				}
 			}),
-			area: $resource(apiUrl + '/areas/:id', { id: '@id' }, {
+			area: $resource(apiUrl + '/areas/:id', { id: '@_id' }, {
 				query: {
 					method: 'GET',
 					isArray: false

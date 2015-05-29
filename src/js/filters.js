@@ -10,6 +10,7 @@ angular.module('cc')
 				var markers = {};
 				_.each(input, function(area) {
 					markers[area._id] = {
+						object: area,
 						lat: area.geometry.coordinates[0],
 						lng: area.geometry.coordinates[1],
 						// icon: icon,

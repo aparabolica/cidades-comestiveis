@@ -1,3 +1,4 @@
+.ui-view(autoscroll="false")
 #dashboard(ng-show="user" ng-init="dashboardActive = false")
 	.container
 		.twelve.columns
@@ -18,11 +19,11 @@
 						span Lorem ipsum
 						span.edit-icon.icon-pencil
 					li.sharing-item
-						span.icon.c-icon-terreno
+						span.icon.c-icon-area
 						span Lorem ipsum
 						span.edit-icon.icon-pencil
 					li.sharing-item
-						span.icon.c-icon-terreno
+						span.icon.c-icon-area
 						span Lorem ipsum
 						span.edit-icon.icon-pencil
 					li.sharing-item
@@ -34,7 +35,7 @@
 						span Lorem ipsum
 						span.edit-icon.icon-pencil
 					li.sharing-item
-						span.icon.c-icon-terreno
+						span.icon.c-icon-area
 						span Lorem ipsum
 						span.edit-icon.icon-pencil
 
@@ -45,8 +46,8 @@
 		#map-list-results
 
 	#map-actions
-		.add-new.primary(ng-controller="NewCtrl")
-			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? newDialog() : loginDialog(newDialog)")
+		.add-new.primary(ng-controller="ItemCtrl")
+			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? itemDialog() : loginDialog(itemDialog)")
 			.hover-content
 				span.description Adicionar ao mapa
 		.search
@@ -67,7 +68,7 @@
 			span.icon.c-icon-ferramentas
 			| Ferramentas
 		a(href="javascript:void(0);")
-			span.icon.c-icon-terreno
+			span.icon.c-icon-area
 			| Terrenos
 		a(href="javascript:void(0);")
 			span.icon.c-icon-iniciativa

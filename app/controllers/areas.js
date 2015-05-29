@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Area = mongoose.model('Area');
 var messaging = require('../../lib/messaging');
 var validator = require('validator');
+var _ = require('underscore');
 
 /* Create new area. */
 exports.create = function(req, res, next) {
@@ -12,6 +13,28 @@ exports.create = function(req, res, next) {
   area.save(function(err) {
     if (err) res.status(400).json(messaging.mongooseErrors(err, 'areas'));
     else res.status(201).json(area);
+  });
+}
+
+/* Update area. */
+exports.update = function(req, res, next) {
+  var area_id = parseInt(req.params.id);
+
+
+  Area.findById(area_id).exec(function(err, area) {
+    if (err) res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+    else if(req.user._id != area.creator) res.status(400).json(messaging.error('errors.areas.not_allowed'));
+    else if (!area) res.status(404).json(messaging.error('errors.areas.not_found'));
+    else {
+      area = _.extend(area, req.body);
+      area.save(function(err) {
+        if(err) {
+          return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+        } else {
+          return res.status(200).json(area);
+        }
+      })
+    }
   });
 }
 
