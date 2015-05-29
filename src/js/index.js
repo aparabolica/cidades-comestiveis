@@ -84,6 +84,7 @@ app.config([
 
 require('./service');
 require('./auth');
+require('./filters');
 
 app.controller('MainCtrl', [
 	'CCAuth',
@@ -141,6 +142,11 @@ app.controller('HomeCtrl', [
 		// 	console.log(data);
 		// });
 
+		CC.area.query(function(data) {
+			$scope.areas = data.areas;
+			console.log($scope.areas);
+		});
+
 		$scope.mapActive = false;
 
 		$scope.initMap = function() {
@@ -189,40 +195,111 @@ app.controller('NewCtrl', [
 	'ngDialog',
 	function($scope, $timeout, ngDialog) {
 
+		var dialog;
+
 		$scope.newDialog = function() {
-			ngDialog.open({
+			dialog = ngDialog.open({
 				template: '/views/new.html',
-				controller: ['$scope', function($scope) {
+				controller: ['$scope', 'leafletData', 'CCService', function($scope, leafletData, CC) {
+
+					$scope.item = {};
 
 					$scope.categories = [
 						{
 							name: 'Insumo',
-							label: 'insumo'
+							label: 'insumo',
+							fields: []
 						},
 						{
 							name: 'Conhecimento',
-							label: 'conhecimento'
+							label: 'conhecimento',
+							fields: []
 						},
 						{
 							name: 'Trabalho',
-							label: 'trabalho'
+							label: 'trabalho',
+							fields: []
 						},
 						{
 							name: 'Ferramentas',
-							label: 'ferramentas'
+							label: 'ferramentas',
+							fields: []
 						},
 						{
 							name: 'Terreno',
-							label: 'terreno'
+							label: 'terreno',
+							api: 'area',
+							fields: ['address','description','geometry']
 						},
 						{
 							name: 'Iniciativa',
-							label: 'iniciativa'
+							label: 'iniciativa',
+							fields: []
 						}
 					];
 
 					$scope.selectCategory = function(cat) {
 						$scope.selectedCategory = cat;
+					};
+
+					$scope.hasField = function(field) {
+						if($scope.selectedCategory) {
+							return _.find($scope.selectedCategory.fields, function(f) { return f == field; });
+						}
+						return false;
+					};
+
+					$scope.map = {
+						defaults: {
+							// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+							tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
+							maxZoom: 18,
+							scrollWheelZoom: false
+						},
+						center: {
+							lat: -23.550520,
+							lng: -46.633309,
+							zoom: 12
+						}
+					}
+
+					if($scope.item.geometry && $scope.item.geometry.coordinates.length) {
+						$scope.map.center = {
+							lat: $scope.item.geometry.coordinates[0],
+							lng: $scope.item.geometry.coordinates[1],
+							zoom: 18
+						};
+					}
+
+					$scope.geolocation = navigator.geolocation;
+
+					leafletData.getMap('item-geometry').then(function(map) {
+						$scope.locate = function() {
+							if($scope.geolocation) {
+								$scope.geolocation.getCurrentPosition(function(pos) {
+									$scope.item.geometry = {
+										type: 'Point',
+										coordinates: [pos.coords.latitude, pos.coords.longitude]
+									};
+									map.setView([pos.coords.latitude, pos.coords.longitude], 18);
+								});
+							}
+						}
+						$scope.$on('leafletDirectiveMap.dragend', function() {
+							var coords = map.getCenter();
+							$scope.item.geometry = {
+								type: 'Point',
+								coordinates: [coords.lat, coords.lng]
+							};
+						});
+					});
+
+					$scope.save = function(item) {
+						if($scope.selectedCategory) {
+							CC[$scope.selectedCategory.api].save(item, function(data) {
+								dialog.close();
+							});
+						}
 					};
 
 				}]
@@ -245,8 +322,6 @@ app.controller('UserCtrl', [
 				controller: ['$scope', 'CCAuth', 'CCService', 'leafletData', function($scope, Auth, CC, leafletData) {
 
 					$scope.user = angular.extend({}, Auth.getToken());
-
-					console.log($scope.user);
 
 					$scope.map = {
 						defaults: {

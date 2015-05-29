@@ -1,6 +1,6 @@
 header
 	h2 Adicionar ao mapa!
-form#new-item
+form#new-item(ng-submit="save(item)")
 	section#new-item-category
 		h3 Selecione a categoria
 		ul.categories
@@ -10,19 +10,29 @@ form#new-item
 					| {{category.name}}
 
 	section#main-info.clearfix
-		p
-			label Nome
-			input(type="text")
-		p
-			label Endereço
-			input(type="text")
-		.half-group
-			p.half
-				label CEP
-				input(type="text")
-			p.half
-				label Número
-				input(type="text")
-		p
-			label Informações
-			textarea
+
+		.name-field(ng-show="hasField('name')")
+			p
+				label(for="name_field") Nome
+				input(id="name_field" type="text" ng-model="item.name")
+
+		.description-field(ng-show="hasField('description')")
+			p
+				label(for="description_field") Descrição
+				textarea(id="description_field" ng-model="item.description")
+
+		.address-field(ng-show="hasField('address')")
+			p
+				label(for="address_field") Endereço
+				input(id="address_field" type="text" ng-model="item.address")
+
+		.geometry-field(ng-show="hasField('geometry')")
+			p
+				label Localização 
+					a.button(href="javascript:void(0);" ng-click="locate()") 
+						span.icon-hair-cross 
+						| Geolocalizar
+			.center-location-map
+				leaflet#item-geometry(defaults="map.defaults" center="map.center")
+
+		input(type="submit" value="Enviar" ng-show="selectedCategory")

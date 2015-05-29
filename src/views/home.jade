@@ -41,7 +41,7 @@
 
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	.clearfix
-		leaflet#map(defaults="defaults" center="center")
+		leaflet#map(defaults="defaults" center="center" markers="markers = (areas | areaToMarker)")
 		#map-list-results
 
 	#map-actions

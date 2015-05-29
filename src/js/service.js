@@ -95,7 +95,7 @@ angular.module('cc')
 					method: 'PUT'
 				}
 			}),
-			land: $resource(apiUrl + '/lands/:id', { id: '@id' }, {
+			area: $resource(apiUrl + '/areas/:id', { id: '@id' }, {
 				query: {
 					method: 'GET',
 					isArray: false
