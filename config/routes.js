@@ -27,8 +27,9 @@ module.exports = function (app, config) {
 
   /* Areas routes */
   var areaRoutes = require('express').Router();
-  areaRoutes.get('/areas', [auth.requiresLogin, areas.create]);
   areaRoutes.post('/areas', [auth.requiresLogin, areas.create]);
+  areaRoutes.get('/areas/:id', areas.show);
+  areaRoutes.get('/areas', areas.list);
   app.use(config.apiPrefix, areaRoutes);
 
   /* Send 404 (Not found) to non existent API routes */

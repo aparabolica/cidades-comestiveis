@@ -159,7 +159,7 @@ GET /api/v1/users
 ## New area
 
 ```
-POST /api/v1/area
+POST /api/v1/areas/
 ```
 
 ### Parameters
@@ -176,5 +176,53 @@ POST /api/v1/area
 [back to index]
 
 ---
+
+## Show area
+
+```
+GET /api/v1/areas/:area_id
+```
+
+Parameters:
+
+* `area_id` (*integer,* ***required***)
+
+### Responses
+
+* `200` status + Area JSON object;
+* `404` not found
+
+[back to index]
+
+---
+
+## List areas
+
+```
+GET /api/v1/areas
+```
+
+Parameters:
+
+
+* `page` (*integer*, default: `1`)
+* `perPage` (*integer*, default: `30`, maximum: `100`)
+
+Posible responses:
+
+* `200` status and JSON as example:
+
+```javascript
+{
+  count: 232,
+  page: 3,
+  perPage: 30
+  areas: [ (area objects) ]
+}
+```
+
+* `400` status for malformed parameters
+
+[back to index]
 
 [geojson]: http://geojson.org/geojson-spec.html
