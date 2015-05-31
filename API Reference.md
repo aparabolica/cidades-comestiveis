@@ -275,4 +275,104 @@ Posible responses:
 
 [back to index]
 
+# Initiatives routes
+
+## New area
+
+```
+POST /api/v1/areas/
+```
+
+### Parameters
+
+ - `name` (*string*, ***required***)
+ - `description` (*string*)
+ - `website` (*string*)
+ - `facebook` (*string*)
+ - `areas` (*[:area_id]*)
+
+### Responses
+
+* `201` status + Area JSON object;
+* `400` status + Error messages;
+
+[back to index]
+
+---
+
+## Show initiative
+
+```
+GET /api/v1/initiatives/:initiative_id
+```
+
+Parameters:
+
+* `initiative_id` (*integer,* ***required***)
+
+### Responses
+
+* `200` status + Area JSON object;
+* `404` not found
+
+[back to index]
+
+---
+
+## Udpate initiative
+
+An initiative can updated by its creator or admins.
+
+```
+PUT /api/v1/initiatives/:initiative_id
+```
+
+### Parameters
+
+- `name` (*string*, ***required***)
+- `description` (*string*)
+- `website` (*string*)
+- `facebook` (*string*)
+- `areas` (*[:area_id]*)
+
+### Responses
+
+* `200` (success) + Area JSON object;
+* `400` (bad request) + Error messages;
+* `401` (unauthorized);
+
+[back to index]
+
+---
+
+## List initiatives
+
+```
+GET /api/v1/initiatives
+```
+
+Parameters:
+
+
+* `page` (*integer*, default: `1`)
+* `perPage` (*integer*, default: `30`, maximum: `100`)
+
+Posible responses:
+
+* `200` status and JSON as example:
+
+```javascript
+{
+  count: 232,
+  page: 3,
+  perPage: 30
+  initiatives: [ (initiative objects) ]
+}
+```
+
+* `400` status for malformed parameters
+
+[back to index]
+
+
 [geojson]: http://geojson.org/geojson-spec.html

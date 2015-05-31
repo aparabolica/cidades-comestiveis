@@ -8,6 +8,7 @@ var rosie = require('rosie').Factory;
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Area = mongoose.model('Area');
+var Initiative = mongoose.model('Initiative');
 
 /**
  * USERS
@@ -71,5 +72,34 @@ exports.createAreas = function(n, creator_id, doneCreateAreas){
 		self.createArea(creator_id, doneEach)
 	}, function(err){
 		doneCreateAreas();
+	});
+}
+
+/**
+ * Initiatives
+ **/
+
+rosie.define('Initiative')
+	.sequence('name', function(i) { return 'name ' + i })
+	.sequence('description', function(i) { return 'some description for initiative ' + i })
+	.sequence('website', function(i) { return 'www ' + i })
+	.sequence('facebook', function(i) { return 'facebook ' + i });
+
+
+exports.createInitiative = function(creator_id, area_id, done){
+	var initiative = new Initiative(rosie.build('Initiative'));
+	initiative.creator = creator_id;
+	initiative.save(function(err){
+		done(err, initiative);
+	})
+}
+
+exports.createInitiatives = function(n, creator_id, area_id, doneCreateInitiatives){
+	var self = this;
+
+	async.timesSeries(n, function(n,doneEach){
+		self.createInitiative(creator_id, area_id, doneEach)
+	}, function(err){
+		doneCreateInitiatives();
 	});
 }
