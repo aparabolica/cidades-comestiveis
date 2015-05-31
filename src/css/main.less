@@ -14,7 +14,11 @@
 }
 
 body,
-html {
+html,
+input,
+textarea,
+select,
+select option {
 	font-family: 'PressFeeling';
 	font-size: 22px;
 }
@@ -476,13 +480,16 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				margin-right: 10px;
 			}
 			.edit-icon {
+				float: right;
+				margin-top: 8px;
 				margin-left: 10px;
 				font-size: 12px;
 				.border-radius(100%);
 				background: #fff;
 				color: @orange;
-				padding: 5px;
-				line-height: 32px;
+				padding: 0 5px;
+				line-height: 24px;
+				height: 24px;
 				opacity: 0;
 				pointer-events: none;
 				.transition(opacity .2s linear);
@@ -493,7 +500,7 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				overflow: hidden;
 				text-overflow: '...';
 				display: inline-block;
-				line-height: 40px;
+				line-height: 32px;
 			}
 			&:nth-of-type(3n) {
 				margin-right: 0;

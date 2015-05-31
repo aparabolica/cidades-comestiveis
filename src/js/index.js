@@ -1,6 +1,8 @@
 window.angular = require('angular');
 window._ = require('underscore');
 
+window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
 require('angular-ui-router');
 require('angular-resource');
 require('angular-cookies');
@@ -32,7 +34,13 @@ app.config([
 			.state('home', {
 				url: '/',
 				controller: 'HomeCtrl',
-				templateUrl: '/views/home.html'
+				templateUrl: function() {
+					if(!isMobile) {
+						return '/views/home.html';
+					} else {
+						return '/views/mobile/home.html';
+					}
+				}
 			})
 			.state('home.newItem', {
 				url: 'new/',
@@ -237,8 +245,8 @@ app.controller('DashboardCtrl', [
 		}, function(user) {
 			$scope.items = false;
 			$scope.user = user;
-			CC.area.query(function(data) {
-				$scope.items = data.areas;
+			CC.user.getContributions({id: $scope.user._id}, function(data) {
+				$scope.items = data.contributions;
 			});
 		});
 

@@ -85,6 +85,10 @@ angular.module('cc')
 				},
 				update: {
 					method: 'PUT'
+				},
+				getContributions: {
+					method: 'GET',
+					url: apiUrl + '/users/:id/contributions'
 				}
 			}),
 			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {
@@ -209,7 +213,7 @@ angular.module('cc')
 							name: 'Terreno',
 							label: 'area',
 							api: 'area',
-							fields: ['address','description','geometry']
+							fields: ['address','description', 'has-garden', 'access','geometry']
 						},
 						{
 							name: 'Iniciativa',
