@@ -80,12 +80,13 @@ UserSchema.path('email').validate(function (email, done) {
 }, 'email_already_registered');
 
 UserSchema.path('hashed_password').validate(function(v) {
-  if (this._password && (this._password.length < 6)) {
-    this.invalidate('password', 'short_password');
+	var self = this;
+  if (self._password && (self._password.length < 6)) {
+    self.invalidate('password', 'short_password');
   }
 
-  if (this.isNew && !this._password) {
-    this.invalidate('password', 'missing_password');
+  if (self.isNew && !self._password) {
+    self.invalidate('password', 'missing_password');
   }
 }, null);
 
@@ -106,6 +107,18 @@ UserSchema.path('location.coordinates').validate(function(v) {
 	}
 }, null);
 
+/** Pre/Post middleware */
+
+UserSchema.pre('save', function(next){
+	var self = this;
+	if (self.isNew) {
+		mongoose.model('User').count(function(err, count){
+			if (err) return next(err);
+			if (count == 0) self.role = 'admin';
+			next();
+		});
+	} else next();
+});
 
 /**
  * Methods
