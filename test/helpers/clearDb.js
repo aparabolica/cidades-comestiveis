@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var async = require('async');
 var User = mongoose.model('User');
 var Area = mongoose.model('Area');
+var Initiative = mongoose.model('Initiative');
 
 
 exports.database = function (done) {
@@ -18,6 +19,9 @@ exports.database = function (done) {
     },
     function (cb) {
       Area.collection.remove(cb)
+    },
+    function (cb) {
+      Initiative.collection.remove(cb)
     }
   ], done)
 }

@@ -46,7 +46,7 @@ exports.update = function(req, res, next) {
 exports.show = function(req, res, next) {
   var area = req.object;
 
-  User.populate(area, {path:'creator'},function(err, result){
+  User.populate(area, {path:'creator', select: '_id name'},function(err, result){
     if(err)
       res.status(400).json(messaging.mongooseErrors(err, 'areas'));
     else

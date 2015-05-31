@@ -4,8 +4,9 @@ var messaging = require('../lib/messaging');
 
 /* Controllers */
 var auth = require('./auth');
-var areas = require('../app/controllers/areas');
 var users = require('../app/controllers/users');
+var areas = require('../app/controllers/areas');
+var initiatives = require('../app/controllers/initiatives');
 
 module.exports = function (app, config) {
 
@@ -34,6 +35,15 @@ module.exports = function (app, config) {
   areaRoutes.put('/areas/:id', [auth.isLogged, auth.canUpdate, areas.update]);
   areaRoutes.get('/areas', areas.list);
   app.use(config.apiPrefix, areaRoutes);
+
+  /* Initiative routes */
+  var initiativeRoutes = require('express').Router();
+  initiativeRoutes.param('id', initiatives.load);
+  initiativeRoutes.post('/initiatives', [auth.isLogged, initiatives.create]);
+  initiativeRoutes.get('/initiatives/:id', initiatives.show);
+  initiativeRoutes.put('/initiatives/:id', [auth.isLogged, auth.canUpdate, initiatives.update]);
+  initiativeRoutes.get('/initiatives', initiatives.list);
+  app.use(config.apiPrefix, initiativeRoutes);
 
   /* Send 404 (Not found) to non existent API routes */
   app.all('/api/*', function(req,res){
