@@ -108,6 +108,32 @@ This route doesn't accept parameters.
 
 ---
 
+## Get user contributions
+
+```
+GET /api/v1/users/:id/contributions
+```
+
+### Parameters
+
+This route doesn't accept parameters.
+
+### Possible responses
+
+* `200` status and JSON as example:
+
+```javascript
+{
+  contributions: [ (area, resources and initiatives objects) ]
+}
+```
+* 400 (bad request) and errors
+* 404 (not found)
+
+[back to index]
+
+---
+
 ## List users
 
 ```

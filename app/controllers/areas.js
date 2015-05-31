@@ -1,21 +1,20 @@
 var mongoose = require('mongoose');
 var Area = mongoose.model('Area');
+var User = mongoose.model('User');
 var messaging = require('../../lib/messaging');
 var validator = require('validator');
 var _ = require('underscore');
 
 exports.load = function(req,res,next,id){
-  var area_id = parseInt(id);
-
-  if (area_id == NaN) return res.status(400).json(messaging.error('errors.areas.invalid_id'));
-
   Area.findById(id, function(err, area){
-    if (err) return res.status(500);
-
-    if (!area) return res.status(404).json(messaging.error('errors.areas.not_found'));
-
-    req.object = area;
-    next();
+    if (err)
+      return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+    else if (!area)
+      return res.status(404).json(messaging.error('errors.areas.not_found'));
+    else {
+      req.object = area;
+      next();
+    }
   });
 }
 
@@ -37,23 +36,22 @@ exports.update = function(req, res, next) {
 
   area.save(function(err) {
     if(err)
-      return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+      res.status(400).json(messaging.mongooseErrors(err, 'areas'));
     else
-      return res.status(200).json(area);
+      res.status(200).json(area);
   });
 }
 
 /* Show area. */
 exports.show = function(req, res, next) {
+  var area = req.object;
 
-  var area_id = parseInt(req.params.id);
-
-  Area.findById(area_id).populate('creator', '_id name').exec(function(err, area) {
-    if (err) res.status(400).json(messaging.mongooseErrors(err, 'areas'));
-    else if (!area) res.status(404).json(messaging.error('errors.areas.not_found'));
-    else res.status(200).json(area);
+  User.populate(area, {path:'creator'},function(err, result){
+    if(err)
+      res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+    else
+      res.status(200).json(result);
   });
-
 }
 
 /* List areas */

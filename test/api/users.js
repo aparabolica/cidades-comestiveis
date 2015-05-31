@@ -28,6 +28,7 @@ var User = mongoose.model('User');
 
 /* Expose object instances */
 var user1;
+var user2;
 
 /* The tests */
 
@@ -50,6 +51,15 @@ describe('API: Users', function(){
         }, function (doneEach){
           /* Create 25 users */
           factory.createUsers(24, doneEach);
+        }, function(doneEach){
+          User.findOne({role: 'user'}, function(err, user){
+            should.not.exist(err);
+
+            user2 = user;
+
+            factory.createAreas(9, user, doneEach);
+
+          });
         }], doneBefore);
       });
     });
@@ -492,7 +502,7 @@ describe('API: Users', function(){
 
 
   describe('GET /api/v#/users/:id', function(){
-    context('User exists', function(){
+    context('and user exists', function(){
       it('should return user public info', function(doneIt){
         /* The request */
         request(app)
@@ -540,31 +550,29 @@ describe('API: Users', function(){
         }
       })
     })
-
-    context('Invalid id (not a positive integer)', function(){
-      it('should return 400 (Bad request) and error message', function(doneIt){
-
-        /* The request */
-        request(app)
-          .get(apiPrefix + '/users/1a')
-          .expect(400)
-          .expect('Content-Type', /json/)
-          .end(onResponse);
-
-        /* Verify response */
-        function onResponse(err, res) {
-          if (err) return doneIt(err);
-
-          /* Check error message */
-          res.body.messages.should.have.lengthOf(1);
-          messaging.hasValidMessages(res.body).should.be.true;
-          res.body.messages[0].should.have.property('text', 'errors.users.invalid_id');
-          doneIt();
-        }
-      })
-    })
-
   })
+
+  describe('GET /api/v#/users/:id/contributions', function(){
+    it('should return a list of areas', function(doneIt){
+      /* The request */
+      request(app)
+        .get(apiPrefix + '/users/'  + user2.id + '/contributions')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(onResponse);
+
+      /* Verify response */
+      function onResponse(err, res) {
+        if (err) return doneIt(err);
+
+        /* User public info */
+        var body = res.body;
+        body.should.have.property('contributions');
+        body.contributions.should.be.instanceOf(Array).and.have.length(9);
+        doneIt();
+      }
+    });
+  });
 
 
   describe('GET /api/v#/users', function(){
@@ -624,7 +632,7 @@ describe('API: Users', function(){
             if (err) return doneIt(err);
             for (var i = 0; i < 10; i++) {
               Object.keys(data[i]).should.have.length(2);
-              data[i].should.have.property('_id', users[i]._id);
+              data[i].should.have.property('_id', users[i]._id.toHexString());
               data[i].should.have.property('name', users[i].name);
             }
              doneIt();
@@ -666,7 +674,7 @@ describe('API: Users', function(){
             if (err) return doneIt(err);
             for (var i = 0; i < 10; i++) {
               Object.keys(data[i]).should.have.length(2);
-              data[i].should.have.property('_id', users[i]._id);
+              data[i].should.have.property('_id', users[i]._id.toHexString());
               data[i].should.have.property('name', users[i].name);
             }
             doneIt();
@@ -720,7 +728,7 @@ describe('API: Users', function(){
 
                 /* Verify user object */
                 Object.keys(responseUser).should.have.length(2);
-                responseUser.should.have.property('_id', dbUser._id);
+                responseUser.should.have.property('_id', dbUser._id.toHexString());
                 responseUser.should.have.property('name', dbUser.name);
               }
               doneIt();

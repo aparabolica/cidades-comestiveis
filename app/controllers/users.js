@@ -4,22 +4,23 @@ var _ = require('underscore');
 var messaging = require('../../lib/messaging')
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var Area = mongoose.model('Area');
 var validator = require('validator');
 
 
 /* Load user object */
 exports.load = function (req, res, next, id){
 
-  /* Catch invalid ids (non positive integers) */
-  if (!validator.isInt(id,{min: 1}))
-    return res.status(400).json(messaging.error('errors.users.invalid_id'));
-
   /* Try to load user */
   User.findById(id, function (err, user) {
-    if (err) return next(err);
-    if (!user) return res.status(404).json(messaging.error('errors.users.not_found'));
-    req.user = user;
-    next();
+    if (err)
+      return res.status(400).json(messaging.mongooseErrors(err, 'users'));
+    else if (!user)
+      return res.status(404).json(messaging.error('errors.users.not_found'));
+    else {
+      req.user = user;
+      next();
+    }
   });
 };
 
@@ -48,7 +49,6 @@ exports.update = function(req, res) {
   if (params.email)
     return res.status(400).json(messaging.error('errors.users.cannot_change_email'));
 
-
   /* User is changing password */
   if (params.password) {
     if (!params.currentPassword){
@@ -72,11 +72,20 @@ exports.update = function(req, res) {
   });
 };
 
-
-
 /* Get public info about a user. */
 exports.get = function(req, res) {
   res.status(200).json(req.user.publicInfo());
+};
+
+/* Get user contributions. */
+exports.contributions = function(req, res) {
+  var user = req.user;
+  Area.find({creator: user}).sort({'createdAt': -1}).exec(function(err, areas){
+    if (err)
+      return res.status(400).json(messaging.mongooseErrors(err, 'users'));
+    else
+      res.status(200).json({contributions: areas});
+  })
 };
 
 /* Get a list of users */

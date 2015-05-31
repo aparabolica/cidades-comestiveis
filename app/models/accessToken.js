@@ -16,7 +16,7 @@ var AccessTokenSchema = new Schema({
 	expired: {type: Boolean, default: false},
 	createdAt: {type: Date, default: Date.now},
 	expiresAt: {type: Date, required: true, default: moment().add(15, 'day').toDate() },
-	user: { type: Number, ref: 'User' }
+	user: { type: Schema.ObjectId, ref: 'User' }
 });
 
 /**

@@ -37,7 +37,6 @@
     "method-override": "^2.3.2",
     "moment": "^2.10.3",
     "mongoose": "^4.0.1",
-    "mongoose-auto-increment": "^4.0.0",
     "morgan": "^1.5.2",
     "ng-dialog": "^0.3.12",
     "passport": "^0.2.1",

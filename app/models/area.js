@@ -1,28 +1,24 @@
 var validator = require('validator');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment');
-autoIncrement.initialize(mongoose.connection);
 
 /**
  * Schema
  */
 
 var AreaSchema = new Schema({
-	_id: Number,
-	creator: { type: Number, ref: 'User', required: 'missing_creator'},
+	creator: { type: Schema.ObjectId, ref: 'User', required: 'missing_creator'},
 	address: { type: String, required: 'missing_address'},
 	description: { type: String },
 	geometry: { type: {type: String}, coordinates: []},
 	createdAt: {type: Date, default: Date.now},
-	updatedAt: {type: Date}
-})
+	updatedAt: {type: Date},
+	hasGarden: {type: Boolean, default: false},
+	access: {type: String, enum: ['public', 'permissive', 'restricted'], default: 'public'}
+});
 
 /* Geo index */
 AreaSchema.index({ geometry: '2dsphere' })
-
-/** Auto-increment */
-AreaSchema.plugin(autoIncrement.plugin, 'Area');
 
 /** Pre/Post middleware */
 

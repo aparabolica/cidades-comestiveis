@@ -150,7 +150,7 @@ describe('API: Areas', function(){
 
             /* User basic info */
             body.should.have.property('address', area.address);
-            body.should.have.property('creator', user1._id);
+            body.should.have.property('creator', user1._id.toHexString());
 
             /* Location geojson */
             var geometryGeojson = body.geometry;
@@ -213,7 +213,7 @@ describe('API: Areas', function(){
           /* User basic info */
           body.should.have.property('address', user1Area1.address);
           body.should.have.property('creator');
-          body['creator'].should.have.property('_id', user1._id);
+          body['creator'].should.have.property('_id', user1._id.toHexString());
           body['creator'].should.have.property('name', user1.name);
 
           /* Location geojson */
@@ -236,7 +236,7 @@ describe('API: Areas', function(){
 
     it('return 404 for id not found', function(doneIt){
       request(app)
-        .get(apiPrefix + '/areas/999999/')
+        .get(apiPrefix + '/areas/556899153f90be8f422f3d3f')
         .expect(404)
         .expect('Content-Type', /json/)
         .end(function(err, res){
@@ -286,7 +286,7 @@ describe('API: Areas', function(){
             for (var i = 0; i < defaultPerPage; i++) {
 
               var area = areas[i];
-              data[i].should.have.property('_id', area._id);
+              data[i].should.have.property('_id', area._id.toHexString());
               data[i].should.have.property('address', area.address);
               data[i].should.have.property('description', area.description);
               data[i].should.have.property('createdAt');
@@ -297,7 +297,7 @@ describe('API: Areas', function(){
               var creator = area.creator;
               data[i].should.have.property('creator');
               data[i]['creator'].should.have.property('name', creator.name);
-              data[i]['creator'].should.have.property('_id', creator._id);
+              data[i]['creator'].should.have.property('_id', creator._id.toHexString());
 
               var geometry = area.geometry;
               data[i].should.have.property('geometry');
@@ -349,7 +349,7 @@ describe('API: Areas', function(){
             for (var i = 0; i < options.perPage; i++) {
 
               var area = areas[i];
-              data[i].should.have.property('_id', area._id);
+              data[i].should.have.property('_id', area._id.toHexString());
               data[i].should.have.property('address', area.address);
               data[i].should.have.property('description', area.description);
               data[i].should.have.property('createdAt');
@@ -360,7 +360,7 @@ describe('API: Areas', function(){
               var creator = area.creator;
               data[i].should.have.property('creator');
               data[i]['creator'].should.have.property('name', creator.name);
-              data[i]['creator'].should.have.property('_id', creator._id);
+              data[i]['creator'].should.have.property('_id', creator._id.toHexString());
 
               var geometry = area.geometry;
               data[i].should.have.property('geometry');
@@ -453,7 +453,7 @@ describe('API: Areas', function(){
 
             /* User basic info */
             body.should.have.property('address', areaChanges.address);
-            body.should.have.property('creator', user1._id);
+            body.should.have.property('creator', user1._id.toHexString());
 
             /* Location geojson */
             var geometryGeojson = body.geometry;
@@ -500,7 +500,7 @@ describe('API: Areas', function(){
 
             /* User basic info */
             body.should.have.property('address', areaChanges.address);
-            body.should.have.property('creator', user1._id);
+            body.should.have.property('creator', user1._id.toHexString());
 
             /* Location geojson */
             var geometryGeojson = body.geometry;
