@@ -15,7 +15,6 @@ var autoIncrement = require('mongoose-auto-increment');
  */
 
 var UserSchema = new Schema({
-	_id: {type: Number},
 	role: { type: String, enum: ['admin', 'moderator', 'user'], default: 'user'},
 	name: { type: String, required: 'missing_name'},
 	email: { type: String, required: 'missing_email', validate: [validator.isEmail, 'invalid_email'] },
@@ -237,13 +236,6 @@ UserSchema.static({
   }
 
 })
-
-/**
- * Plug-in
- */
-
-autoIncrement.initialize(mongoose.connection);
-UserSchema.plugin(autoIncrement.plugin, 'User');
 
 /**
  * Register
