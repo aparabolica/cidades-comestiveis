@@ -13,6 +13,12 @@
 	src: local('PressFeeling'), url('../fonts/PressFeeling.woff') format('woff'), url('../fonts/PressFeeling.ttf') format('truetype');
 }
 
+body,
+html {
+	font-family: 'PressFeeling';
+	font-size: 22px;
+}
+
 .row {
 	margin-bottom: 40px;
 }
@@ -36,8 +42,28 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: "PressFeeling";
-	font-weight: normal;
+	font-family: 'PressFeeling';
+	font-weight: 300;
+}
+
+h1 {
+	font-size: 60px;
+}
+
+h2 {
+	font-size: 54px;
+}
+
+h3 {
+	font-size: 48px;
+}
+
+h4 {
+	font-size: 42px;
+}
+
+pre, blockquote, dl, figure, table, p, ul, ol, form {
+	margin-bottom: 20px;
 }
 
 #masthead {
@@ -94,14 +120,14 @@ h6 {
 		position: relative;
 		.user-settings {
 			position: absolute;
-			top: 22px;
+			top: 28px;
 			left: -20px;
 			right: -20px;
 			padding: 5px 20px;
 			display: none;
 			background: @orange;
 			.border-radius(0 0 10px 10px);
-			font-size: 14px;
+			font-size: 18px;
 			a {
 				display: block;
 				border-top: 1px dotted #fff;
@@ -320,9 +346,11 @@ h6 {
 	font-family: "PressFeeling";
 	.border-radius(10px);
 	.transition(all .2s linear);
+	max-height: 600px;
 	&.hidden {
 		opacity: 0;
 		pointer-events: none;
+		max-height: 0;
 	}
 	.button {
 		border: 0;
@@ -339,11 +367,74 @@ h6 {
 }
 
 #site-intro {
-	padding: 20px;
+	padding-top: 20px;
 	p {
-		padding: 40px 0;
 		font-size: 28px;
-		font-family: "PressFeeling";
+		color: #666;
+	}
+	.intro-details {
+		border-top: 1px solid @orange;
+		border-bottom: 1px solid @orange;
+		padding: 20px 0;
+		.mobile {
+			border-right: 1px solid @orange;
+			padding-right: 40px;
+			line-height: 150%;
+			p {
+				padding-top: 10px;
+				margin: 0;
+			}
+			.icon {
+				text-align: center;
+				padding: 10px 0;
+				display: block;
+				float: left;
+				width: 115px;
+				font-size: 92px;
+				color: @orange;
+				.border-radius(5px);
+				border: 1px solid @orange;
+				margin-right: 20px;
+			}
+		}
+		.ten-steps {
+			p {
+				color: @orange;
+				line-height: 100%;
+				margin: 0;
+			}
+			span {
+				display: block;
+			}
+			.number {
+				font-size: 135px;
+				line-height: 100%;
+				float: left;
+				margin-right: 10px;
+			}
+			.first-line {
+				font-size: 70px;
+				padding-top: 20px;
+			}
+			.second-line {
+				font-size: 54px;
+				padding-top: 20px;
+			}
+		}
+	}
+	.mudasp {
+		border-bottom: 1px solid @orange;
+		padding: 20px 0;
+		img {
+			float: left;
+			margin: 40px 80px 40px 40px;
+		}
+		p {
+			padding-top: 10px;
+			margin: 0;
+			font-size: 42px;
+			line-height: 120%;
+		}
 	}
 }
 
@@ -400,7 +491,7 @@ h6 {
 				width: calc(~"100% - 40px - 10px - 40px - 10px");
 				white-space: nowrap;
 				overflow: hidden;
-				text-overflow: ellipsis;
+				text-overflow: '...';
 				display: inline-block;
 				line-height: 40px;
 			}
@@ -443,7 +534,7 @@ h6 {
 			p {
 				label {
 					font-family: "PressFeeling";
-					font-size: 3.4rem;
+					font-size: 32px;
 					font-weight: normal;
 					display: block;
 					margin-bottom: 10px;

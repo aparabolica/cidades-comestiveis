@@ -50,19 +50,28 @@
 	.container
 		.eight.columns.offset-by-two
 			section#map-intro(ng-class="{hidden:mapActive}" ng-init="user ? initMap() : null")
-				p In congue neque vestibulum tellus viverra ornare. Sed in sem dolor.
-					| Sed id urna vel leo efficitur feugiat a a enim. Curabitur rhoncus elit
-					| vitae tristique venenatis. Suspendisse ac neque ligula. Sed imperdiet
-					| lacus lorem, eu molestie felis vehicula ut.
+				p Imagine que delícia seria morar em uma cidade onde a comida é de graça e cresce pelas calçadas, jardins, telhados e rotatórias. Deu fome, não? Essa cidade só é possível se você levantar-se do sofá e construí-la. Vamos? Tire suas sementes do armário, afie suas ferramentas, suje suas mãos de terra e converse com seus conhecidos (ou desconhecidos!) para criar uma horta comunitária! Vamos juntos comer nossa cidade?
 				a.button(href="javascript:void(0);" ng-click="initMap()") Acesse
 
 .row
 	#site-intro
 		.container
-			.two.columns.offset-by-one
-				img(src="/img/mobile.png")
-			.eight.columns
-				p In congue neque vestibulum tellus viverra ornare. Sed in sem dolor.
-					| Sed id urna vel leo efficitur feugiat a a enim. Curabitur rhoncus elit
-					| vitae tristique venenatis. Suspendisse ac neque ligula. Sed imperdiet
-					| lacus lorem, eu molestie felis vehicula ut.
+			.twelve.columns
+				p Cidades Comestíveis é um projeto de cidade que visa estimular uma rede colaborativa de compartilhamento de recursos, conhecimentos e trabalho entre pessoas interessadas em cultivar hortas comunitárias e caseiras. No mapa, é possível indicar e encontrar terrenos ociosos e pessoas interessadas em trabalhar, buscando incentivar e facilitar o processo de criação e manutenção de hortas comunitárias. Cidadãos e cidadãs interessados em iniciar uma horta comunitária pela cidade, a hora é agora!
+		.intro-details
+			.container
+				.five.columns
+					.mobile.clearfix
+						span.icon.c-icon-iniciativa
+						p Adicione terrenos no mapa direto pelo celular acessando o site!
+				.seven.columns
+					.ten-steps
+						p
+							span.number 10 
+							span.first-line passos para fazer 
+							span.second-line uma horta comunitária.
+		.mudasp
+			.container
+				.twelve.columns
+					img(src="/img/mudasp.png" alt="Muda SP")
+					p Cidades Comestíveis é uma projeto incentivado pelo MUDA_SP! Conheça o movimento!
