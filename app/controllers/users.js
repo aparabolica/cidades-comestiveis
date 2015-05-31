@@ -4,6 +4,7 @@ var _ = require('underscore');
 var messaging = require('../../lib/messaging')
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var Area = mongoose.model('Area');
 var validator = require('validator');
 
 
@@ -74,6 +75,17 @@ exports.update = function(req, res) {
 /* Get public info about a user. */
 exports.get = function(req, res) {
   res.status(200).json(req.user.publicInfo());
+};
+
+/* Get user contributions. */
+exports.contributions = function(req, res) {
+  var user = req.user;
+  Area.find({creator: user}).sort({'createdAt': -1}).exec(function(err, areas){
+    if (err)
+      return res.status(400).json(messaging.mongooseErrors(err, 'users'));
+    else
+      res.status(200).json({contributions: areas});
+  })
 };
 
 /* Get a list of users */

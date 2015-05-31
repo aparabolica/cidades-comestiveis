@@ -22,6 +22,7 @@ module.exports = function (app, config) {
   usersRoutes.post('/users', users.new);
   usersRoutes.put('/users/:id', users.update);
   usersRoutes.get('/users/:id', users.get);
+  usersRoutes.get('/users/:id/contributions', users.contributions);
   usersRoutes.get('/users', users.list);
   app.use(config.apiPrefix, usersRoutes);
 

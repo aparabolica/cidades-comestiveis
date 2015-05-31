@@ -28,6 +28,7 @@ var User = mongoose.model('User');
 
 /* Expose object instances */
 var user1;
+var user2;
 
 /* The tests */
 
@@ -50,6 +51,15 @@ describe('API: Users', function(){
         }, function (doneEach){
           /* Create 25 users */
           factory.createUsers(24, doneEach);
+        }, function(doneEach){
+          User.findOne({role: 'user'}, function(err, user){
+            should.not.exist(err);
+
+            user2 = user;
+
+            factory.createAreas(9, user, doneEach);
+
+          });
         }], doneBefore);
       });
     });
@@ -541,6 +551,28 @@ describe('API: Users', function(){
       })
     })
   })
+
+  describe('GET /api/v#/users/:id/contributions', function(){
+    it('should return a list of areas', function(doneIt){
+      /* The request */
+      request(app)
+        .get(apiPrefix + '/users/'  + user2.id + '/contributions')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(onResponse);
+
+      /* Verify response */
+      function onResponse(err, res) {
+        if (err) return doneIt(err);
+
+        /* User public info */
+        var body = res.body;
+        body.should.have.property('contributions');
+        body.contributions.should.be.instanceOf(Array).and.have.length(9);
+        doneIt();
+      }
+    });
+  });
 
 
   describe('GET /api/v#/users', function(){
