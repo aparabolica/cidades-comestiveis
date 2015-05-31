@@ -4,6 +4,21 @@ var messaging = require('../../lib/messaging');
 var validator = require('validator');
 var _ = require('underscore');
 
+exports.load = function(req,res,next,id){
+  var area_id = parseInt(id);
+
+  if (area_id == NaN) return res.status(400).json(messaging.error('errors.areas.invalid_id'));
+
+  Area.findById(id, function(err, area){
+    if (err) return res.status(500);
+
+    if (!area) return res.status(404).json(messaging.error('errors.areas.not_found'));
+
+    req.object = area;
+    next();
+  });
+}
+
 /* Create new area. */
 exports.create = function(req, res, next) {
   var area = new Area(req.body);
@@ -18,23 +33,13 @@ exports.create = function(req, res, next) {
 
 /* Update area. */
 exports.update = function(req, res, next) {
-  var area_id = parseInt(req.params.id);
+  var area = _.extend(req.object, req.body);
 
-
-  Area.findById(area_id).exec(function(err, area) {
-    if (err) res.status(400).json(messaging.mongooseErrors(err, 'areas'));
-    else if(req.user._id != area.creator) res.status(400).json(messaging.error('errors.areas.not_allowed'));
-    else if (!area) res.status(404).json(messaging.error('errors.areas.not_found'));
-    else {
-      area = _.extend(area, req.body);
-      area.save(function(err) {
-        if(err) {
-          return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
-        } else {
-          return res.status(200).json(area);
-        }
-      })
-    }
+  area.save(function(err) {
+    if(err)
+      return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+    else
+      return res.status(200).json(area);
   });
 }
 

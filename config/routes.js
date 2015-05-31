@@ -27,10 +27,10 @@ module.exports = function (app, config) {
 
   /* Areas routes */
   var areaRoutes = require('express').Router();
-  areaRoutes.post('/areas', [auth.requiresLogin, areas.create]);
+  areaRoutes.param('id', areas.load);
+  areaRoutes.post('/areas', [auth.isLogged, areas.create]);
   areaRoutes.get('/areas/:id', areas.show);
-  areaRoutes.put('/areas/:id', [auth.requiresLogin, areas.update]);
-  areaRoutes.post('/areas/:id', [auth.requiresLogin, areas.update]);
+  areaRoutes.put('/areas/:id', [auth.isLogged, auth.canUpdate, areas.update]);
   areaRoutes.get('/areas', areas.list);
   app.use(config.apiPrefix, areaRoutes);
 
