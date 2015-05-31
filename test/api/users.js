@@ -40,8 +40,17 @@ describe('API: Users', function(){
       clearDb.all(function(err){
         should.not.exist(err);
 
-        /* Create 25 users */
-        factory.createUsers(25, doneBefore);
+        async.series([function(doneEach){
+          factory.createUser(function(err, admin){
+            should.not.exist(err);
+
+            admin.should.have.property('role', 'admin');
+            doneEach();
+          });
+        }, function (doneEach){
+          /* Create 25 users */
+          factory.createUsers(24, doneEach);
+        }], doneBefore);
       });
     });
   });
@@ -421,6 +430,8 @@ describe('API: Users', function(){
 
           User.findById(user1.id, function(err, user){
             if (err) return doneIt(err);
+
+            should.exist(user);
 
             should(user.authenticate(payload.password)).be.true;
             doneIt();
