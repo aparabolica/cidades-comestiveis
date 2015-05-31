@@ -1,43 +1,16 @@
 .ui-view(autoscroll="false")
-#dashboard(ng-show="user" ng-init="dashboardActive = false")
+#dashboard(ng-controller="DashboardCtrl" ng-show="user" ng-init="dashboardActive = false")
 	.container
 		.twelve.columns
 			.sharing
 				span.arrow(ng-class="{'icon-chevron-down': !dashboardActive, 'icon-chevron-up': dashboardActive}")
 				h2(ng-click="dashboardActive ? dashboardActive = false : dashboardActive = true") Meus compartilhamentos
 				ul.sharing-list.toggle(ng-show="dashboardActive")
-					li.sharing-item
-						span.icon.c-icon-conhecimento
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-conhecimento
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-trabalho
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-area
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-area
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-insumo
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-ferramentas
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
-					li.sharing-item
-						span.icon.c-icon-area
-						span Lorem ipsum
-						span.edit-icon.icon-pencil
+					li.sharing-item(ng-repeat="item in items")
+						a(ui-sref="home.editItem({id: item._id, type: 'area'})")
+							span.icon.c-icon-area
+							span.title {{item.description}}
+							span.edit-icon.icon-pencil
 
 
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
@@ -47,7 +20,7 @@
 
 	#map-actions
 		.add-new.primary(ng-controller="ItemCtrl")
-			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? itemDialog() : loginDialog(itemDialog)")
+			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? editDialog() : loginDialog(editDialog)")
 			.hover-content
 				span.description Adicionar ao mapa
 		.search
