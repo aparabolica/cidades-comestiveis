@@ -75,7 +75,7 @@ exports.logout = function(req, res, next) {
 
 };
 
-exports.requiresLogin = function (req, res, next) {
+exports.isLogged = function (req, res, next) {
 
 	passport.authenticate('bearer', { session: false }, function(err, user, info) {
 
@@ -101,5 +101,14 @@ exports.requiresLogin = function (req, res, next) {
 		return res.forbidden('You are not allowed to perform this action.');
 
 	})(req, res, next);
+
+}
+
+exports.canUpdate = function(req,res,next) {
+
+	if ((req.object.creator == req.user._id) || (req.user.role == 'admin'))
+		next();
+	else
+		return res.status(401).send(messaging.error('access_token.unauthorized'));
 
 }

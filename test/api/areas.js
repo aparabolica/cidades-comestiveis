@@ -3,12 +3,16 @@
 var request = require('supertest');
 var async = require('async');
 var should = require('should');
-var mongoose = require('mongoose');
 var moment = require('moment');
+var mongoose = require('mongoose');
 
 /* The app */
 
 var app = require('../../app');
+
+/* Models */
+
+var Area = mongoose.model('Area');
 
 /* Helpers */
 
@@ -23,13 +27,13 @@ var config = require('../../config/config')['test'];
 var apiPrefix = config.apiPrefix;
 
 /* Some users */
+var admin1;
+var admin1AccessToken;
 var user1;
 var user1AccessToken;
 var user1Area1;
 var user2;
 var user2AccessToken;
-var user3;
-var user3AccessToken;
 
 /* Pagination */
 var areaCount = 85;
@@ -61,27 +65,28 @@ describe('API: Areas', function(){
       async.series([function(done){
         factory.createUser(function(err,usr){
           should.not.exist(err);
-          user1 = usr;
-          expressHelper.login(user1.email, user1.password, function(token){
-            user1AccessToken = token;
+          // first user is admin
+          admin1 = usr;
+          expressHelper.login(admin1.email, admin1.password, function(token){
+            admin1AccessToken = token;
             done();
           });
         });
       }, function(done){
         factory.createUser(function(err,usr){
           should.not.exist(err);
-          user2 = usr;
-          expressHelper.login(user2.email, user2.password, function(token){
-            user2AccessToken = token;
+          user1 = usr;
+          expressHelper.login(user1.email, user1.password, function(token){
+            user1AccessToken = token;
             done();
           });
         });
       },function(done){
         factory.createUser(function(err,usr){
           should.not.exist(err);
-          user3 = usr;
-          expressHelper.login(user3.email, user3.password, function(token){
-            user3AccessToken = token;
+          user2 = usr;
+          expressHelper.login(user2.email, user2.password, function(token){
+            user2AccessToken = token;
             done();
           });
         });
@@ -407,13 +412,138 @@ describe('API: Areas', function(){
 
   describe('PUT /api/version/areas/:id', function(){
     context('not logged in', function(){
-      it('should return 401 (Unauthorized)');
+      it('should return 401 (Unauthorized)', function(doneIt){
+        Area.findOne(function(err, area){
+          should.not.exist(err);
+          should.exist(area);
+          request(app)
+            .put(apiPrefix + '/areas/'+area.id)
+            .expect(401)
+            .end(function(err,res){
+              should.not.exist(err);
+              res.body.messages.should.have.lengthOf(1);
+              messaging.hasValidMessages(res.body).should.be.true;
+              res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+              doneIt();
+            });
+        });
+      });
     });
 
-    context('when logged as user', function(){
-      it('return 201 (Created) for valid area data');
+    context('when logged as user1', function(){
+      it('return 200 (Success) for valid area data', function(doneIt){
+        var areaChanges = {
+          address: 'changed address',
+          description: 'changed description',
+          geometry: {
+            type: 'Point',
+            coordinates: [-46.222222, -23.11111]
+          }
+        }
+
+        request(app)
+          .put(apiPrefix + '/areas/'+ user1Area1._id)
+          .set('Authorization', user1AccessToken)
+          .send(areaChanges)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+
+            /* User basic info */
+            body.should.have.property('address', areaChanges.address);
+            body.should.have.property('creator', user1._id);
+
+            /* Location geojson */
+            var geometryGeojson = body.geometry;
+            geometryGeojson.should.have.property('type', areaChanges.geometry.type);
+            geometryGeojson.should.have.property('coordinates');
+            geometryGeojson.coordinates.should.be.an.Array;
+
+            /* Coordinates */
+            var coordinates = geometryGeojson.coordinates
+            coordinates[0].should.be.equal(areaChanges.geometry.coordinates[0]);
+            coordinates[1].should.be.equal(areaChanges.geometry.coordinates[1]);
+
+            /* Keep area for later usage */
+            user1Area1 = res.body;
+
+            doneIt();
+          });
+      });
+
       it('return 400 (Bad request) for invalid area data');
+      it('return 404 (Not found) for id not found');
     });
+
+    context('when editor is not the creator', function(){
+      it('return 200 (Success) for admins', function(doneIt){
+        var areaChanges = {
+          address: 'changed address by admin',
+          description: 'changed description by admin',
+          geometry: {
+            type: 'Point',
+            coordinates: [-46.222222, -23.11111]
+          }
+        }
+
+        request(app)
+          .put(apiPrefix + '/areas/'+ user1Area1._id)
+          .set('Authorization', admin1AccessToken)
+          .send(areaChanges)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+
+            /* User basic info */
+            body.should.have.property('address', areaChanges.address);
+            body.should.have.property('creator', user1._id);
+
+            /* Location geojson */
+            var geometryGeojson = body.geometry;
+            geometryGeojson.should.have.property('type', areaChanges.geometry.type);
+            geometryGeojson.should.have.property('coordinates');
+            geometryGeojson.coordinates.should.be.an.Array;
+
+            /* Coordinates */
+            var coordinates = geometryGeojson.coordinates
+            coordinates[0].should.be.equal(areaChanges.geometry.coordinates[0]);
+            coordinates[1].should.be.equal(areaChanges.geometry.coordinates[1]);
+
+            /* Keep area for later usage */
+            user1Area1 = res.body;
+
+            doneIt();
+          });
+      });
+
+      it('return 401 (Unauthorized) for other users', function(doneIt){
+        var areaChanges = {
+          address: 'changed address by user2',
+          description: 'changed description by user2',
+          geometry: {
+            type: 'Point',
+            coordinates: [-46.222222, -23.11111]
+          }
+        }
+
+        request(app)
+          .put(apiPrefix + '/areas/'+user1Area1._id)
+          .set('Authorization', user2AccessToken)
+          .send(areaChanges)
+          .expect(401)
+          .end(function(err,res){
+            should.not.exist(err);
+            res.body.messages.should.have.lengthOf(1);
+            messaging.hasValidMessages(res.body).should.be.true;
+            res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+            doneIt();
+          });
+      });
+    })
   });
 
   /*

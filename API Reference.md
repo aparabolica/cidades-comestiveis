@@ -196,6 +196,30 @@ Parameters:
 
 ---
 
+## Udpate area
+
+An area can updated by its creator or  admins.
+
+```
+PUT /api/v1/areas/:area_id
+```
+
+### Parameters
+
+ - `address` (*string*, ***required***)
+ - `description` (*string*)
+ - `geometry` (*[geojson]*)
+
+### Responses
+
+* `200` (success) + Area JSON object;
+* `400` (bad request) + Error messages;
+* `401` (unauthorized);
+
+[back to index]
+
+---
+
 ## List areas
 
 ```

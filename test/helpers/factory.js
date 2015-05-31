@@ -25,6 +25,14 @@ exports.createUser = function(done){
 	})
 }
 
+exports.createAdmin = function(done){
+	var user = new User(rosie.build('User'));
+	user.role = 'admin';
+	user.save(function(err){
+		done(err, user);
+	})
+}
+
 exports.createUsers = function(n, doneCreateUsers){
 	var self = this;
 	async.timesSeries(n, function(n,doneEach){
