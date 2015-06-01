@@ -80,12 +80,14 @@ exports.get = function(req, res) {
 /* Get user contributions. */
 exports.contributions = function(req, res) {
   var user = req.user;
-  Area.find({creator: user}).sort({'createdAt': -1}).exec(function(err, areas){
+
+  user.contributions(function(err, contribs){
     if (err)
       return res.status(400).json(messaging.mongooseErrors(err, 'users'));
     else
-      res.status(200).json({contributions: areas});
-  })
+      return res.status(200).json({contributions: contribs});
+  });
+
 };
 
 /* Get a list of users */

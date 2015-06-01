@@ -99,7 +99,5 @@ exports.createInitiatives = function(n, creator_id, area_id, doneCreateInitiativ
 
 	async.timesSeries(n, function(n,doneEach){
 		self.createInitiative(creator_id, area_id, doneEach)
-	}, function(err){
-		doneCreateInitiatives();
-	});
+	}, doneCreateInitiatives);
 }

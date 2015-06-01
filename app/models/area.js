@@ -43,7 +43,7 @@ AreaSchema.static({
       .exec(cb);
   }
 
-})
+});
 
 /* Register model */
 mongoose.model('Area', AreaSchema)

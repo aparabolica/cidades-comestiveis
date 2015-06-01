@@ -25,6 +25,7 @@ var apiPrefix = config.apiPrefix;
 /* Mongoose models */
 
 var User = mongoose.model('User');
+var Area = mongoose.model('Area');
 
 /* Expose object instances */
 var user1;
@@ -51,14 +52,19 @@ describe('API: Users', function(){
         }, function (doneEach){
           /* Create 25 users */
           factory.createUsers(24, doneEach);
+
         }, function(doneEach){
           User.findOne({role: 'user'}, function(err, user){
             should.not.exist(err);
 
             user2 = user;
-
             factory.createAreas(9, user, doneEach);
+          });
+        }, function(doneEach){
+          Area.findOne({}, function(err, area){
+            should.not.exist(err);
 
+            factory.createInitiatives(12, user2._id, area._id, doneEach);
           });
         }], doneBefore);
       });
@@ -553,7 +559,7 @@ describe('API: Users', function(){
   })
 
   describe('GET /api/v#/users/:id/contributions', function(){
-    it('should return a list of areas', function(doneIt){
+    it('should return a list of areas and initiatives', function(doneIt){
       /* The request */
       request(app)
         .get(apiPrefix + '/users/'  + user2.id + '/contributions')
@@ -568,7 +574,12 @@ describe('API: Users', function(){
         /* User public info */
         var body = res.body;
         body.should.have.property('contributions');
-        body.contributions.should.be.instanceOf(Array).and.have.length(9);
+        body.contributions.should.be.instanceOf(Array).and.have.length(21);
+
+        _.each(body.contributions, function(c){
+          c.should.have.property('type');
+        })
+
         doneIt();
       }
     });
