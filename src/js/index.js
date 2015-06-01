@@ -3,7 +3,7 @@ window._ = require('underscore');
 
 window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-window.isMobile = true;
+// window.isMobile = true;
 
 require('angular-ui-router');
 require('angular-resource');
@@ -69,7 +69,7 @@ app.config([
 			})
 			.state('home.newItem', {
 				url: 'new/',
-				controller: 'ItemCtrl'
+				controller: 'NewItemCtrl'
 			})
 			.state('home.editItem', {
 				url: 'edit/:type/:id/',
@@ -118,15 +118,18 @@ app.config([
 	'$rootScope',
 	'$location',
 	'$window',
-	function($rootScope, $location, $window) {
+	'ngDialog',
+	function($rootScope, $location, $window, ngDialog) {
 		/*
 		 * Analytics
 		 */
 		$rootScope.$on('$stateChangeSuccess', function(ev, toState, toParams, fromState, fromParams) {
+
 			if($window._gaq && fromState.name) {
 				$window._gaq.push(['_trackPageview', $location.path()]);
 			}
 			if(fromState.name) {
+				ngDialog.closeAll();
 				document.body.scrollTop = document.documentElement.scrollTop = 0;
 			}
 		});
@@ -310,6 +313,30 @@ app.controller('EditItemCtrl', [
 					edit();
 				} else {
 					LoginDialog(edit);
+				}
+			}
+		});
+	}
+]);
+
+app.controller('NewItemCtrl', [
+	'$scope',
+	'$state',
+	'$stateParams',
+	'CCService',
+	'CCAuth',
+	'CCLoginDialog',
+	'CCItemEdit',
+	function($scope, $state, $stateParams, CC, Auth, LoginDialog, ItemEdit) {
+
+		$scope.editDialog = ItemEdit;
+
+		$scope.$watch($state.current.name, function() {
+			if($state.current.name == 'home.newItem') {
+				if(Auth.getToken()) {
+					ItemEdit();
+				} else {
+					LoginDialog(ItemEdit);
 				}
 			}
 		});

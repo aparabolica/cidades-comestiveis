@@ -192,7 +192,7 @@ angular.module('cc')
 			dialog = ngDialog.open({
 				template: '/views/new.html',
 				preCloseCallback: function() {
-					if($state.current.name == 'home.editItem') {
+					if($state.current.name == 'home.editItem' || $state.current.name == 'home.newItem') {
 						$state.go('home');
 					}
 				},
@@ -299,6 +299,7 @@ angular.module('cc')
 							if(!item._id) {
 								CC[$scope.selectedCategory.api].save(item, function(data) {
 									dialog.close();
+									$state.go('home');
 								});
 							// Update item
 							} else {
@@ -307,6 +308,7 @@ angular.module('cc')
 									$state.go('home');
 								});
 							}
+
 						}
 					};
 

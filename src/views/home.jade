@@ -44,8 +44,8 @@
 						h3 Descrição/nome
 
 	#map-actions
-		.add-new.primary(ng-controller="ItemCtrl")
-			a.label.icon-plus(href="javascript:void(0);" ng-click="user ? editDialog() : loginDialog(editDialog)")
+		.add-new.primary
+			a.label.icon-plus(ui-sref="home.newItem")
 			.hover-content
 				span.description Adicionar ao mapa
 		.search

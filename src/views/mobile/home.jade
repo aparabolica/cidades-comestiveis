@@ -37,7 +37,7 @@
 	.map(ng-controller="MapCtrl" ng-show="user")
 		leaflet#map(defaults="defaults" center="center" markers="markers = (areas | areaToMarker)")
 
-	a.share-button(ng-controller="ItemCtrl" href="javascript:void(0);" ng-click="editDialog()")
+	a.share-button(ui-sref="home.newItem")
 		.icon-plus
 
 	.ui-view
