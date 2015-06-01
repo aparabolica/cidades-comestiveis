@@ -70,6 +70,11 @@ app.config([
 				url: '/projeto/',
 				controller: 'PageCtrl',
 				templateUrl: '/views/projeto.html'
+			})
+			.state('manifesto', {
+				url: '/manifesto/',
+				controller: 'PageCtrl',
+				templateUrl: '/views/manifesto.html'
 			});
 
 		/*
