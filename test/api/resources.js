@@ -161,7 +161,6 @@ describe('API: Resources', function(){
           .expect(201)
           .expect('Content-Type', /json/)
           .end(function(err, res){
-            console.log(res.error)
             should.not.exist(err);
             var body = res.body;
 

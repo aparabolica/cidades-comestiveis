@@ -20,8 +20,6 @@ ResourceSchema.static({
 	list: function (options, cb) {
     var criteria = options.criteria || {}
 
-    console.log(options);
-
     this.find(criteria)
       .sort('availableUntil')
       .populate('creator', '_id name')
