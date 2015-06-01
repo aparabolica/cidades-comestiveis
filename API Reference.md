@@ -374,5 +374,102 @@ Posible responses:
 
 [back to index]
 
+---
+
+# Resource Type routes
+
+## New resource type
+
+```
+POST /api/v1/resource_types/
+```
+
+### Parameters
+
+- `name` (*string*, ***required***)
+- `description` (*string*)
+- `category` (`['Supply', 'Tool', 'Knowledge', 'Work']`)
+
+### Responses
+
+* `201` status + Area JSON object;
+* `400` status + Error messages;
+
+[back to index]
+
+---
+
+## Show resource type
+
+```
+GET /api/v1/resource_types/:resource_types
+```
+
+Parameters:
+
+* `resource_types` (*integer,* ***required***)
+
+### Responses
+
+* `200` status + Area JSON object;
+* `404` not found
+
+[back to index]
+
+---
+
+## Udpate resource type
+
+An initiative can updated by its creator or admins.
+
+```
+PUT /api/v1/resource_types/:resource_types
+```
+
+### Parameters
+
+- `name` (*string*, ***required***)
+- `description` (*string*)
+- `category` (`['Supply', 'Tool', 'Knowledge', 'Work']`)
+
+### Responses
+
+* `200` (success) + Area JSON object;
+* `400` (bad request) + Error messages;
+* `401` (unauthorized);
+
+[back to index]
+
+---
+
+## List resource type
+
+```
+GET /api/v1/resource_types
+```
+
+Parameters:
+
+
+* `page` (*integer*, default: `1`)
+* `perPage` (*integer*, default: `30`, maximum: `100`)
+
+Posible responses:
+
+* `200` status and JSON as example:
+
+```javascript
+{
+  count: 232,
+  page: 3,
+  perPage: 30
+  resourceTypes: [ (resource types objects) ]
+}
+```
+
+* `400` status for malformed parameters
+
+[back to index]
+
 
 [geojson]: http://geojson.org/geojson-spec.html

@@ -1,4 +1,3 @@
-var validator = require('validator');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 

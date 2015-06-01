@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Area = mongoose.model('Area');
 var Initiative = mongoose.model('Initiative');
+var ResourceType = mongoose.model('ResourceType');
 
 /**
  * USERS
@@ -100,4 +101,29 @@ exports.createInitiatives = function(n, creator_id, area_id, doneCreateInitiativ
 	async.timesSeries(n, function(n,doneEach){
 		self.createInitiative(creator_id, area_id, doneEach)
 	}, doneCreateInitiatives);
+}
+
+/**
+ * Resource Types
+ **/
+
+rosie.define('ResourceType')
+	.sequence('name', function(i) { return 'name ' + i })
+	.sequence('category', function(i) { return 'Tool' })
+	.sequence('description', function(i) { return 'some description for initiative ' + i })
+
+
+exports.createResourceType = function(done){
+	var rt = new ResourceType(rosie.build('ResourceType'));
+	rt.save(function(err){
+		done(err, rt);
+	})
+}
+
+exports.createResourceTypes = function(n, doneCreateResourceTypes){
+	var self = this;
+
+	async.timesSeries(n, function(n,doneEach){
+		self.createResourceType(doneEach)
+	}, doneCreateResourceTypes);
 }
