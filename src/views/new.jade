@@ -13,51 +13,53 @@ form#new-item(ng-submit="save(item)")
 
 	section#main-info.clearfix
 
-		.name-field(ng-show="hasField('name')")
-			p
-				label(for="name_field") Nome
-				input(id="name_field" type="text" ng-model="item.name")
+		.row
 
-		.description-field(ng-show="hasField('description')")
-			p
-				label(for="description_field") Descrição
-				textarea(id="description_field" ng-model="item.description")
+			.name-field(ng-show="hasField('name')")
+				p
+					label(for="name_field") Nome
+					input(id="name_field" type="text" ng-model="item.name")
 
-		.website-field(ng-show="hasField('website')")
-			p
-				label(for="website_field") Website
-				input(id="website_field" type="text" ng-model="item.website")
+			.description-field(ng-show="hasField('description')")
+				p
+					label(for="description_field") Descrição
+					textarea(id="description_field" ng-model="item.description")
 
-		.facebook-field(ng-show="hasField('facebook')")
-			p
-				label(for="facebook_field") Facebook
-				input(id="facebook_field" type="text" ng-model="item.facebook")
+			.website-field(ng-show="hasField('website')")
+				p
+					label(for="website_field") Website
+					input(id="website_field" type="text" ng-model="item.website")
 
-		.has-garden-field(ng-show="hasField('has-garden')")
-			p.checkbox-input
-				input(id="has_garden_field" type="checkbox" ng-model="item.hasGarden")
-				label(for="has_garden_field") Este terreno já possui uma horta
+			.facebook-field(ng-show="hasField('facebook')")
+				p
+					label(for="facebook_field") Facebook
+					input(id="facebook_field" type="text" ng-model="item.facebook")
 
-		.access-field(ng-show="hasField('access')")
-			p
-				label(for="access_field") Acesso
-				select(id="access_field" ng-model="item.access")
-					option(value="public") Permitido
-					option(value="permissive") Permissivo
-					option(value="restricted") Restrito
+			.has-garden-field(ng-show="hasField('has-garden')")
+				p.checkbox-input
+					input(id="has_garden_field" type="checkbox" ng-model="item.hasGarden")
+					label(for="has_garden_field") Este terreno já possui uma horta
 
-		.address-field(ng-show="hasField('address')")
-			p
-				label(for="address_field") Endereço
-				input(id="address_field" type="text" ng-model="item.address")
+			.access-field(ng-show="hasField('access')")
+				p
+					label(for="access_field") Acesso
+					select(id="access_field" ng-model="item.access")
+						option(value="public") Permitido
+						option(value="permissive") Permissivo
+						option(value="restricted") Restrito
 
-		.geometry-field(ng-show="hasField('geometry')")
-			p
-				label Localização 
-					a.button(href="javascript:void(0);" ng-click="locate()") 
-						span.icon-hair-cross 
-						| Minha localização
-			.center-location-map
-				leaflet#item-geometry(defaults="map.defaults" center="map.center")
+			.address-field(ng-show="hasField('address')")
+				p
+					label(for="address_field") Endereço
+					input(id="address_field" type="text" ng-model="item.address")
+
+			.geometry-field(ng-show="hasField('geometry')")
+				p
+					label Localização 
+						a.button(href="javascript:void(0);" ng-click="locate()") 
+							span.icon-hair-cross 
+							| Minha localização
+				.center-location-map
+					leaflet#item-geometry(defaults="map.defaults" center="map.center")
 
 		input(type="submit" value="Enviar" ng-show="selectedCategory")
