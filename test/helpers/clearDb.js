@@ -11,6 +11,7 @@ var User = mongoose.model('User');
 var Area = mongoose.model('Area');
 var Initiative = mongoose.model('Initiative');
 var ResourceType = mongoose.model('ResourceType');
+var Resource = mongoose.model('Resource');
 
 
 exports.database = function (done) {
@@ -26,6 +27,9 @@ exports.database = function (done) {
     },
     function (cb) {
       ResourceType.collection.remove(cb)
+    },
+    function (cb) {
+      Resource.collection.remove(cb)
     }
   ], done)
 }

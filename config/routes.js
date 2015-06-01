@@ -8,6 +8,7 @@ var users = require('../app/controllers/users');
 var areas = require('../app/controllers/areas');
 var initiatives = require('../app/controllers/initiatives');
 var resourceTypes = require('../app/controllers/resourceTypes');
+var resources = require('../app/controllers/resources');
 
 module.exports = function (app, config) {
 
@@ -56,6 +57,15 @@ module.exports = function (app, config) {
   resourceTypesRoutes.put('/resource_types/:id', [auth.isLogged, auth.isAdmin, resourceTypes.update]);
   resourceTypesRoutes.get('/resource_types', resourceTypes.list);
   app.use(config.apiPrefix, resourceTypesRoutes);
+
+  /* Resource routes */
+  var resourcesRoutes = require('express').Router();
+  resourcesRoutes.param('id', resources.load);
+  resourcesRoutes.post('/resources', [auth.isLogged, resources.create]);
+  resourcesRoutes.get('/resources/:id', resources.show);
+  resourcesRoutes.put('/resources/:id', [auth.isLogged, auth.canUpdate, resources.update]);
+  resourcesRoutes.get('/resources', resources.list);
+  app.use(config.apiPrefix, resourcesRoutes);
 
   /* Send 404 (Not found) to non existent API routes */
   app.all('/api/*', function(req,res){
