@@ -7,8 +7,8 @@
 				h2(ng-click="dashboardActive ? dashboardActive = false : dashboardActive = true") Meus compartilhamentos
 				ul.sharing-list.toggle(ng-show="dashboardActive")
 					li.sharing-item(ng-repeat="item in items")
-						a(ui-sref="home.editItem({id: item._id, type: 'area'})")
-							span.icon.c-icon-area
+						a(ui-sref="home.editItem({id: item._id, type: item.type})")
+							span.icon(class="c-icon-{{item.type}}")
 							span.title {{item.description}}
 							span.edit-icon.icon-pencil
 
