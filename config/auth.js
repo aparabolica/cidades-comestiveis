@@ -104,6 +104,15 @@ exports.isLogged = function (req, res, next) {
 
 }
 
+exports.isAdmin = function(req,res,next) {
+
+	if (req.user.role == 'admin')
+		next();
+	else
+		return res.status(401).send(messaging.error('access_token.unauthorized'));
+
+}
+
 exports.canUpdate = function(req,res,next) {
 
 	if ((req.object.creator == req.user._id.toHexString()) || (req.user.role == 'admin'))
