@@ -1,8 +1,9 @@
 header#masthead
 	.container
 		.six.columns
-			h1 Cidades Comestíveis
-				img(src="/img/logo.png" alt="Logo do Cidades Comestíveis")
+			h1 
+				a(ui-sref="home") Cidades Comestíveis
+					img(src="/img/logo.png" alt="Logo do Cidades Comestíveis")
 		.six.columns
 			nav#authnav
 				a(href="javascript:void(0);" ng-click="loginDialog()" ng-show="!user") Entrar

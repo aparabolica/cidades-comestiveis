@@ -76,6 +76,9 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 		line-height: 0;
 		text-indent: -9999px;
 		margin: 0;
+		a {
+			outline: none;
+		}
 		img {
 			display: block;
 		}
@@ -473,6 +476,9 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				color: #fff;
 				text-decoration: none;
 			}
+			span {
+				float: left;
+			}
 			.icon {
 				width: 40px;
 				text-align: center;
@@ -480,8 +486,7 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				margin-right: 10px;
 			}
 			.edit-icon {
-				float: right;
-				margin-top: 8px;
+				margin-top: 6px;
 				margin-left: 10px;
 				font-size: 12px;
 				.border-radius(100%);
@@ -495,7 +500,7 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				.transition(opacity .2s linear);
 			}
 			.title {
-				width: calc(~"100% - 40px - 10px - 40px - 10px");
+				max-width: calc(~"100% - 40px - 10px - 40px - 10px");
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: '...';
@@ -555,6 +560,7 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				}
 				input[type=text],
 				input[type=password],
+				select,
 				textarea {
 					.box-sizing(border-box);
 					border: 1px solid #333;
@@ -563,6 +569,14 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 				}
 				textarea {
 					min-height: 300px;
+				}
+				&.checkbox-input {
+					input[type=checkbox] {
+						margin-right: 10px;
+					}
+					label {
+						display: inline;
+					}
 				}
 			}
 		}

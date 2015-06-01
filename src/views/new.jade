@@ -23,8 +23,18 @@ form#new-item(ng-submit="save(item)")
 				label(for="description_field") Descrição
 				textarea(id="description_field" ng-model="item.description")
 
-		.has-garden-field(ng-show="hasField('has-garden')")
+		.website-field(ng-show="hasField('website')")
 			p
+				label(for="website_field") Website
+				input(id="website_field" type="text" ng-model="item.website")
+
+		.facebook-field(ng-show="hasField('facebook')")
+			p
+				label(for="facebook_field") Facebook
+				input(id="facebook_field" type="text" ng-model="item.facebook")
+
+		.has-garden-field(ng-show="hasField('has-garden')")
+			p.checkbox-input
 				input(id="has_garden_field" type="checkbox" ng-model="item.hasGarden")
 				label(for="has_garden_field") Este terreno já possui uma horta
 

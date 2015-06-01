@@ -91,15 +91,6 @@ angular.module('cc')
 					url: apiUrl + '/users/:id/contributions'
 				}
 			}),
-			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {
-				query: {
-					method: 'GET',
-					isArray: false
-				},
-				update: {
-					method: 'PUT'
-				}
-			}),
 			area: $resource(apiUrl + '/areas/:id', { id: '@_id' }, {
 				query: {
 					method: 'GET',
@@ -109,7 +100,16 @@ angular.module('cc')
 					method: 'PUT'
 				}
 			}),
-			initiative: $resource(apiUrl + '/initiatives/:id', { id: '@id' }, {
+			initiative: $resource(apiUrl + '/initiatives/:id', { id: '@_id' }, {
+				query: {
+					method: 'GET',
+					isArray: false
+				},
+				update: {
+					method: 'PUT'
+				}
+			}),
+			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {
 				query: {
 					method: 'GET',
 					isArray: false
@@ -218,7 +218,8 @@ angular.module('cc')
 						{
 							name: 'Iniciativa',
 							label: 'iniciativa',
-							fields: []
+							api: 'initiative',
+							fields: ['name', 'description', 'website', 'facebook']
 						}
 					];
 

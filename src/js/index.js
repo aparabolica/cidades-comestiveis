@@ -42,6 +42,22 @@ app.config([
 					}
 				}
 			})
+			.state('home.area', {
+				url: 'area/:id/',
+				controller: 'SingleCtrl',
+				resolve: {
+					Data: [
+						'$stateParams',
+						'CCService',
+						function($stateParams, CC) {
+							return CC.area.get({id: $stateParams.id}).$promise;
+						}
+					],
+					Type: function() {
+						return 'area';
+					}
+				}
+			})
 			.state('home.newItem', {
 				url: 'new/',
 				controller: 'ItemCtrl'
@@ -186,10 +202,43 @@ app.controller('MapCtrl', [
 
 			$scope.$on('leafletDirectiveMarker.click', function(event, args) {
 				// console.log(args);
-				$state.go('home.editItem', { type: args.model.object.dataType, id:  args.model.object._id });
+				$state.go('home.' + args.model.object.dataType, { type: args.model.object.dataType, id:  args.model.object._id });
 			});
 		});
 
+	}
+]);
+
+app.controller('SingleCtrl', [
+	'Data',
+	'Type',
+	'CCAuth',
+	'ngDialog',
+	'$scope',
+	'$state',
+	function(Data, Type, Auth, ngDialog, $scope, $state) {
+
+		$scope.item = Data;
+		$scope.type = Type;
+
+		var user = Auth.getToken();
+
+		$scope.canEdit = false;
+		if(user) {
+			if(user._id == Data.creator._id || user.role == 'admin') {
+				$scope.canEdit = true;
+			}
+		}
+
+		console.log(Type);
+
+		var dialog = ngDialog.open({
+			template: '/views/' + Type + '.html',
+			scope: $scope,
+			preCloseCallback: function() {
+				$state.go('home');
+			}
+		});
 	}
 ]);
 

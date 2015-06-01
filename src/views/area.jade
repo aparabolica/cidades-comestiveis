@@ -1,0 +1,4 @@
+p {{item.description}}
+
+p(ng-show="canEdit")
+	a(ui-sref="home.editItem({id: item._id, type: type})") Editar
