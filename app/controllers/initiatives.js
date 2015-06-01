@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Initiative = mongoose.model('Initiative');
 var User = mongoose.model('User');
 var Initiative = mongoose.model('Initiative');
+var Area = mongoose.model('Area');
 var messaging = require('../../lib/messaging');
 var validator = require('validator');
 var _ = require('underscore');
@@ -45,6 +46,52 @@ exports.update = function(req, res, next) {
     }
   });
 }
+
+exports.addArea = function(req, res, next) {
+  var initiative = req.object;
+
+  // Find area
+  Area.findById(req.params['area_id'], function(err, area){
+    if (err) return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+
+    if (!area) return res.status(404).json(messaging.error('errors.areas.not_found'));
+
+    // Set areas
+    initiative.areas.addToSet(area);
+
+    // Save
+    initiative.save(function(err) {
+      if(err)
+        res.status(400).json(messaging.mongooseErrors(err, 'initiatives'));
+      else {
+        initiative
+          .populate('creator', '_id name').populate('areas', function(err){
+            res.status(200).json(initiative);
+          })
+      }
+    });
+  });
+}
+
+exports.removeArea = function(req, res, next) {
+  var initiative = req.object;
+  var area_id = mongoose.Types.ObjectId(req.params['area_id']);
+
+  // Set areas
+  initiative.areas.pull(area_id);
+
+  Initiative.update({_id: initiative._id}, { $pull: { areas: area_id } }, function(err) {
+    if(err)
+      res.status(400).json(messaging.mongooseErrors(err, 'initiatives'));
+    else {
+      initiative
+        .populate('creator', '_id name').populate('areas', function(err){
+          res.status(200).json(initiative);
+        })
+    }
+  });
+}
+
 
 /* Show initiative. */
 exports.show = function(req, res, next) {
