@@ -48,6 +48,7 @@ h5,
 h6 {
 	font-family: 'PressFeeling';
 	font-weight: 300;
+	letter-spacing: 0;
 }
 
 h1 {
@@ -223,6 +224,52 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 		height: 400px;
 		overflow: auto;
 		float: left;
+		.results-header {
+			padding: 20px;
+			h2 {
+				font-size: 32px;
+				text-transform: uppercase;
+				margin: 0;
+			}
+			.description {
+				color: #999;
+				margin: 0;
+			}
+		}
+		.results-nav {
+			width: 100%;
+			display: table;
+			border-top: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+			a {
+				display: table-cell;
+				padding: 5px;
+				color: #666;
+				text-align: center;
+				border-right: 1px solid #ddd;
+				text-decoration: none;
+				&:last-child {
+					border-right: 0;
+				}
+				.count {
+					font-size: 90%;
+					background: #f0f0f0;
+					color: @orange;
+					padding: 2px 5px;
+					margin-left: 5px;
+				}
+			}
+		}
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			li {
+				padding: 20px;
+				margin: 0;
+				border-bottom: 1px solid #999;
+			}
+		}
 	}
 	#map-actions {
 		position: absolute;
@@ -335,6 +382,7 @@ pre, blockquote, dl, figure, table, p, ul, ol, form {
 		}
 		#map-list-results {
 			width: 33.3333%;
+			height: 600px;
 		}
 		#map-actions,
 		#map-filters {

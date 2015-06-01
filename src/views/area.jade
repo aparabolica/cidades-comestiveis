@@ -1,4 +1,7 @@
-p {{item.description}}
-
-p(ng-show="canEdit")
-	a(ui-sref="home.editItem({id: item._id, type: type})") Editar
+article#area.single-item
+	p.main {{item.description}}
+	p
+		span.label Endereço: 
+		| {{item.address}}
+	p(ng-show="canEdit")
+		a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar

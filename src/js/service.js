@@ -217,7 +217,7 @@ angular.module('cc')
 						},
 						{
 							name: 'Iniciativa',
-							label: 'iniciativa',
+							label: 'initiative',
 							api: 'initiative',
 							fields: ['name', 'description', 'website', 'facebook']
 						}

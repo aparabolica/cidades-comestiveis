@@ -65,6 +65,10 @@ app.config([
 			.state('home.editItem', {
 				url: 'edit/:type/:id/',
 				controller: 'EditItemCtrl'
+			})
+			.state('projeto', {
+				url: '/projeto/',
+				controller: 'PageCtrl'
 			});
 
 		/*
@@ -372,6 +376,15 @@ app.controller('UserCtrl', [
 				}]
 			});
 		}
+
+	}
+]);
+
+app.controller('PageCtrl', [
+	'$scope',
+	function($scope) {
+
+		
 
 	}
 ]);

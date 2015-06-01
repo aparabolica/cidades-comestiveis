@@ -16,7 +16,32 @@
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	.clearfix
 		leaflet#map(defaults="defaults" center="center" markers="markers = (areas | areaToMarker)")
-		#map-list-results
+		section#map-list-results
+			header.results-header
+				h2 Recursos no mapa
+				p.description Navegue pelo mapa e encontre recursos disponibilizados pela comunidade
+			nav.results-nav
+				a(href="#") Insumo 
+					span.count 0
+				a(href="#") Conhecimento 
+					span.count 2
+				a(href="#") Trabalho 
+					span.count 3
+				a(href="#") Ferramenta 
+					span.count 5
+			ul
+				li
+					article
+						h3 Descrição/nome
+				li
+					article
+						h3 Descrição/nome
+				li
+					article
+						h3 Descrição/nome
+				li
+					article
+						h3 Descrição/nome
 
 	#map-actions
 		.add-new.primary(ng-controller="ItemCtrl")
