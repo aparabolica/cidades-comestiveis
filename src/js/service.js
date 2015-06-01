@@ -107,6 +107,18 @@ angular.module('cc')
 				},
 				update: {
 					method: 'PUT'
+				},
+				addArea: {
+					method: 'PUT',
+					url: apiUrl + '/initiatives/:id/addArea/:area_id',
+					params: {
+						id: '@id',
+						area_id: '@area_id'
+					}
+				},
+				removeArea: {
+					method: 'PUT',
+					url: apiUrl + '/initiatives/:id/removeArea/:area_id'
 				}
 			}),
 			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {

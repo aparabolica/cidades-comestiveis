@@ -26,6 +26,7 @@
 .c-icon-conhecimento:before {
 	content: "\e601";
 }
+.c-icon-carrot:before,
 .c-icon-iniciativa:before,
 .c-icon-initiative:before {
 	content: "\e605";
