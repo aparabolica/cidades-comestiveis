@@ -68,7 +68,8 @@ app.config([
 			})
 			.state('projeto', {
 				url: '/projeto/',
-				controller: 'PageCtrl'
+				controller: 'PageCtrl',
+				templateUrl: '/views/projeto.html'
 			});
 
 		/*
@@ -233,8 +234,6 @@ app.controller('SingleCtrl', [
 				$scope.canEdit = true;
 			}
 		}
-
-		console.log(Type);
 
 		var dialog = ngDialog.open({
 			template: '/views/' + Type + '.html',
