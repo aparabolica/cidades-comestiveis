@@ -247,7 +247,7 @@ UserSchema.methods = {
 					if (err) return doneGetInitiatives(err);
 
 					initiatives = _.map(initiatives, function(i){
-						i.type = 'initiatives';
+						i.type = 'initiative';
 						return i;
 					})
 
