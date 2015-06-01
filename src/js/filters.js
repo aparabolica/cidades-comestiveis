@@ -1,8 +1,33 @@
 angular.module('cc')
 
+.factory('MarkerIcons', [
+	function() {
+
+		return {
+			'area-garden': {
+				iconUrl: '/img/icons/carrot.png',
+				shadowUrl: false,
+				shadowSize: [0,0],
+				iconSize: [30,42],
+				iconAnchor: [15,42],
+				popupAnchor: [0,-42]
+			},
+			'area-empty': {
+				iconUrl: '/img/icons/pin.png',
+				shadowUrl: false,
+				shadowSize: [0,0],
+				iconSize: [30,42],
+				iconAnchor: [15,42],
+				popupAnchor: [0,-42]
+			}
+		}
+
+	}
+])
+
 .filter('areaToMarker', [
-	'leafletData',
-	function(leafletData) {
+	'MarkerIcons',
+	function(Icons) {
 		return _.memoize(function(input) {
 
 			if(input && input.length) {
@@ -13,7 +38,7 @@ angular.module('cc')
 						object: area,
 						lat: area.geometry.coordinates[0],
 						lng: area.geometry.coordinates[1],
-						// icon: icon,
+						icon: area.hasGarden ? Icons['area-garden'] : Icons['area-empty'],
 						message: '<p>' + area.description + '</p>'
 					};
 				});

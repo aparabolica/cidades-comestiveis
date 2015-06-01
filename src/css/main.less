@@ -13,6 +13,16 @@
 	src: local('PressFeeling'), url('../fonts/PressFeeling.woff') format('woff'), url('../fonts/PressFeeling.ttf') format('truetype');
 }
 
+body,
+html,
+input,
+textarea,
+select,
+select option {
+	font-family: 'PressFeeling';
+	font-size: 22px;
+}
+
 .row {
 	margin-bottom: 40px;
 }
@@ -29,6 +39,7 @@
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
 
 @orange: #ff6600;
+@green: #339900;
 
 h1,
 h2,
@@ -36,8 +47,29 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: "PressFeeling";
-	font-weight: normal;
+	font-family: 'PressFeeling';
+	font-weight: 300;
+	letter-spacing: 0;
+}
+
+h1 {
+	font-size: 60px;
+}
+
+h2 {
+	font-size: 54px;
+}
+
+h3 {
+	font-size: 48px;
+}
+
+h4 {
+	font-size: 42px;
+}
+
+pre, blockquote, dl, figure, table, p, ul, ol, form {
+	margin-bottom: 20px;
 }
 
 #masthead {
@@ -46,6 +78,9 @@ h6 {
 		line-height: 0;
 		text-indent: -9999px;
 		margin: 0;
+		a {
+			outline: none;
+		}
 		img {
 			display: block;
 		}
@@ -94,14 +129,14 @@ h6 {
 		position: relative;
 		.user-settings {
 			position: absolute;
-			top: 22px;
+			top: 28px;
 			left: -20px;
 			right: -20px;
 			padding: 5px 20px;
 			display: none;
 			background: @orange;
 			.border-radius(0 0 10px 10px);
-			font-size: 14px;
+			font-size: 18px;
 			a {
 				display: block;
 				border-top: 1px dotted #fff;
@@ -190,6 +225,52 @@ h6 {
 		height: 400px;
 		overflow: auto;
 		float: left;
+		.results-header {
+			padding: 20px;
+			h2 {
+				font-size: 32px;
+				text-transform: uppercase;
+				margin: 0;
+			}
+			.description {
+				color: #999;
+				margin: 0;
+			}
+		}
+		.results-nav {
+			width: 100%;
+			display: table;
+			border-top: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+			a {
+				display: table-cell;
+				padding: 5px;
+				color: #666;
+				text-align: center;
+				border-right: 1px solid #ddd;
+				text-decoration: none;
+				&:last-child {
+					border-right: 0;
+				}
+				.count {
+					font-size: 90%;
+					background: #f0f0f0;
+					color: @orange;
+					padding: 2px 5px;
+					margin-left: 5px;
+				}
+			}
+		}
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			li {
+				padding: 20px;
+				margin: 0;
+				border-bottom: 1px solid #999;
+			}
+		}
 	}
 	#map-actions {
 		position: absolute;
@@ -302,6 +383,7 @@ h6 {
 		}
 		#map-list-results {
 			width: 33.3333%;
+			height: 600px;
 		}
 		#map-actions,
 		#map-filters {
@@ -320,9 +402,11 @@ h6 {
 	font-family: "PressFeeling";
 	.border-radius(10px);
 	.transition(all .2s linear);
+	max-height: 600px;
 	&.hidden {
 		opacity: 0;
 		pointer-events: none;
+		max-height: 0;
 	}
 	.button {
 		border: 0;
@@ -339,11 +423,74 @@ h6 {
 }
 
 #site-intro {
-	padding: 20px;
+	padding-top: 20px;
 	p {
-		padding: 40px 0;
 		font-size: 28px;
-		font-family: "PressFeeling";
+		color: #666;
+	}
+	.intro-details {
+		border-top: 1px solid @orange;
+		border-bottom: 1px solid @orange;
+		padding: 20px 0;
+		.mobile {
+			border-right: 1px solid @orange;
+			padding-right: 40px;
+			line-height: 150%;
+			p {
+				padding-top: 10px;
+				margin: 0;
+			}
+			.icon {
+				text-align: center;
+				padding: 10px 0;
+				display: block;
+				float: left;
+				width: 115px;
+				font-size: 92px;
+				color: @orange;
+				.border-radius(5px);
+				border: 1px solid @orange;
+				margin-right: 20px;
+			}
+		}
+		.ten-steps {
+			p {
+				color: @orange;
+				line-height: 100%;
+				margin: 0;
+			}
+			span {
+				display: block;
+			}
+			.number {
+				font-size: 135px;
+				line-height: 100%;
+				float: left;
+				margin-right: 10px;
+			}
+			.first-line {
+				font-size: 70px;
+				padding-top: 20px;
+			}
+			.second-line {
+				font-size: 54px;
+				padding-top: 20px;
+			}
+		}
+	}
+	.mudasp {
+		border-bottom: 1px solid @orange;
+		padding: 20px 0;
+		img {
+			float: left;
+			margin: 40px 80px 40px 40px;
+		}
+		p {
+			padding-top: 10px;
+			margin: 0;
+			font-size: 42px;
+			line-height: 120%;
+		}
 	}
 }
 
@@ -374,6 +521,13 @@ h6 {
 			font-family: "PressFeeling";
 			font-size: 32px;
 			cursor: pointer;
+			a {
+				color: #fff;
+				text-decoration: none;
+			}
+			span {
+				float: left;
+			}
 			.icon {
 				width: 40px;
 				text-align: center;
@@ -381,16 +535,26 @@ h6 {
 				margin-right: 10px;
 			}
 			.edit-icon {
+				margin-top: 6px;
 				margin-left: 10px;
 				font-size: 12px;
 				.border-radius(100%);
 				background: #fff;
 				color: @orange;
-				padding: 5px;
-				line-height: 32px;
+				padding: 0 5px;
+				line-height: 24px;
+				height: 24px;
 				opacity: 0;
 				pointer-events: none;
 				.transition(opacity .2s linear);
+			}
+			.title {
+				max-width: calc(~"100% - 40px - 10px - 40px - 10px");
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: '...';
+				display: inline-block;
+				line-height: 32px;
 			}
 			&:nth-of-type(3n) {
 				margin-right: 0;
@@ -431,7 +595,7 @@ h6 {
 			p {
 				label {
 					font-family: "PressFeeling";
-					font-size: 3.4rem;
+					font-size: 32px;
 					font-weight: normal;
 					display: block;
 					margin-bottom: 10px;
@@ -445,6 +609,7 @@ h6 {
 				}
 				input[type=text],
 				input[type=password],
+				select,
 				textarea {
 					.box-sizing(border-box);
 					border: 1px solid #333;
@@ -453,6 +618,14 @@ h6 {
 				}
 				textarea {
 					min-height: 300px;
+				}
+				&.checkbox-input {
+					input[type=checkbox] {
+						margin-right: 10px;
+					}
+					label {
+						display: inline;
+					}
 				}
 			}
 		}
@@ -554,5 +727,86 @@ h6 {
 		background: #f0f0f0;
 		margin: -20px 0 0 -20px;
 		padding: 20px;
+	}
+}
+
+.single-page {
+	.flag-container {
+		width: 150px;
+		margin: 40px auto;
+		display: block;
+		text-align: center;		
+	}
+	.flag {
+		width: 150px;
+		height: 150px;
+		.border-radius(100%);
+		border: 1px solid @orange;
+		display: table-cell;
+		vertical-align: middle;
+		text-align: center;
+	}
+	h2 {
+		color: @orange;
+		margin: 0;
+	}
+	p {
+		font-size: 28px;
+		color: #666;
+	}
+	#ten-steps {
+		h2 {
+			font-size: 80px;
+			.number {
+				font-size: 130%;
+			}
+		}
+		ol {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			li {
+				margin: 0;
+				padding: 20px 0;
+				h3,
+				.count {
+					color: @orange;
+				}
+				p {
+					color: #666;
+				}
+				h3,
+				p {
+					margin: 0;
+				}
+				.count {
+					float: left;
+					font-size: 170px;
+					line-height: 100%;
+					margin: 0 20px 0 0;
+				}
+			}
+			li:nth-child(even) {
+				background: @orange;
+				color: #fff;
+				.count,
+				h3,
+				p {
+					color: #fff;
+				}
+			}
+		}
+	}
+	#prefeitura {
+		h2 {
+			text-align: center;
+			color: @green;
+			text-transform: uppercase;
+			font-size: 80px;
+		}
+		h3 {
+			color: @green;
+			margin: 0;
+		}
 	}
 }

@@ -23,6 +23,29 @@ form#new-item(ng-submit="save(item)")
 				label(for="description_field") Descrição
 				textarea(id="description_field" ng-model="item.description")
 
+		.website-field(ng-show="hasField('website')")
+			p
+				label(for="website_field") Website
+				input(id="website_field" type="text" ng-model="item.website")
+
+		.facebook-field(ng-show="hasField('facebook')")
+			p
+				label(for="facebook_field") Facebook
+				input(id="facebook_field" type="text" ng-model="item.facebook")
+
+		.has-garden-field(ng-show="hasField('has-garden')")
+			p.checkbox-input
+				input(id="has_garden_field" type="checkbox" ng-model="item.hasGarden")
+				label(for="has_garden_field") Este terreno já possui uma horta
+
+		.access-field(ng-show="hasField('access')")
+			p
+				label(for="access_field") Acesso
+				select(id="access_field" ng-model="item.access")
+					option(value="public") Permitido
+					option(value="permissive") Permissivo
+					option(value="restricted") Restrito
+
 		.address-field(ng-show="hasField('address')")
 			p
 				label(for="address_field") Endereço
@@ -33,7 +56,7 @@ form#new-item(ng-submit="save(item)")
 				label Localização 
 					a.button(href="javascript:void(0);" ng-click="locate()") 
 						span.icon-hair-cross 
-						| Geolocalizar
+						| Minha localização
 			.center-location-map
 				leaflet#item-geometry(defaults="map.defaults" center="map.center")
 
