@@ -3,6 +3,8 @@
  * Module dependencies
  */
 
+var _ = require('underscore');
+var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
@@ -215,6 +217,50 @@ UserSchema.methods = {
 		}
 	},
 
+	contributions: function(doneGetContributions) {
+
+		var self = this;
+
+		function getAreas(doneGetAreas) {
+			mongoose.model('Area')
+				.find({creator: self})
+				.sort({'createdAt': -1})
+				.lean()
+				.exec(function(err, areas){
+					if (err) return doneGetAreas(err);
+
+					areas = _.map(areas, function(a){
+						a.type = 'area';
+						return a;
+					})
+
+					doneGetAreas(null, areas);
+				});
+		}
+
+		function getInitiatives(doneGetInitiatives) {
+			mongoose.model('Initiative')
+				.find({creator: self})
+				.sort({'createdAt': -1})
+				.lean()
+				.exec(function(err, initiatives){
+					if (err) return doneGetInitiatives(err);
+
+					initiatives = _.map(initiatives, function(i){
+						i.type = 'initiatives';
+						return i;
+					})
+
+					doneGetInitiatives(null, initiatives);
+				});
+		}
+
+		async.series([getAreas,getInitiatives], function(err, results){
+			doneGetContributions(err, _.flatten(results));
+		})
+
+	}
+
 }
 
 
@@ -233,7 +279,7 @@ UserSchema.static({
       .limit(options.perPage)
       .skip(options.perPage * options.page)
       .exec(cb);
-  }
+  },
 
 })
 
