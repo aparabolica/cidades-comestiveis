@@ -36,6 +36,7 @@ var user1Initiative1;
 var user2;
 var user2AccessToken;
 var user2Area1;
+var user2Area2;
 
 /* Pagination */
 var initiativeCount = 71;
@@ -115,6 +116,12 @@ describe('API: Initiatives', function(){
         factory.createArea(user2._id, function(err,area){
           should.not.exist(err);
           user2Area1 = area;
+          doneCreateArea();
+        });
+      }, function(doneCreateArea){
+        factory.createArea(user2._id, function(err,area){
+          should.not.exist(err);
+          user2Area2 = area;
           doneCreateArea();
         });
       }], doneCreateAreas);
@@ -429,7 +436,7 @@ describe('API: Initiatives', function(){
           name: 'initiative new name',
           description: 'changed description',
           facebook: 'a link to facebook',
-          areas: [user1Area2._id]
+          areas: [user1Area1._id]
         }
 
         request(app)
@@ -449,7 +456,7 @@ describe('API: Initiatives', function(){
             body.creator.should.have.property('_id', user1._id.toHexString());
             body.creator.should.have.property('name', user1.name);
             body.should.have.property('areas');
-            body.areas.should.containDeepOrdered([user1Area2._id]);
+            body.areas.should.containDeepOrdered([user1Area1._id]);
 
             /* Keep area for later usage */
             user1Initiative1 = res.body;
@@ -507,6 +514,156 @@ describe('API: Initiatives', function(){
           .put(apiPrefix + '/initiatives/'+user1Initiative1._id)
           .set('Authorization', user2AccessToken)
           .send(initiativeChanges)
+          .expect(401)
+          .end(function(err,res){
+            should.not.exist(err);
+            res.body.messages.should.have.lengthOf(1);
+            messaging.hasValidMessages(res.body).should.be.true;
+            res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+            doneIt();
+          });
+      });
+    })
+  });
+
+  /*
+    PUT /api/v1/initiatives/:id/addArea/:area_id
+  */
+  describe('PUT /api/v1/initiatives/:id/addArea/', function(){
+    context('not logged in', function(){
+      it('should return 401 (Unauthorized)', function(doneIt){
+        Initiative.findOne(function(err, initiative){
+          should.not.exist(err);
+          should.exist(initiative);
+          request(app)
+            .put(apiPrefix + '/initiatives/'+user1Initiative1._id+'/addArea/'+user1Area1._id)
+            .expect(401)
+            .end(function(err,res){
+              should.not.exist(err);
+              res.body.messages.should.have.lengthOf(1);
+              messaging.hasValidMessages(res.body).should.be.true;
+              res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+              doneIt();
+            });
+        });
+      });
+    });
+
+    context('when logged as user1', function(){
+      it('return 200 (Success) for valid data', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/initiatives/'+ user1Initiative1._id+'/addArea/'+user2Area1._id)
+          .set('Authorization', user1AccessToken)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+            body.should.have.property('areas');
+            body.areas.should.have.length(3);
+            doneIt();
+          });
+      });
+
+      it('return 400 (Bad request) for invalid parameters');
+      it('return 404 (Not found) for id not found');
+    });
+
+    context('when editor is not the creator', function(){
+      it('return 200 (Success) for admins', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/initiatives/'+ user1Initiative1._id+'/addArea/'+user2Area2._id)
+          .set('Authorization', admin1AccessToken)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+            body.should.have.property('areas');
+            body.areas.should.have.length(4);
+            doneIt();
+          });
+      });
+
+      it('return 401 (Unauthorized) for other users', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/initiatives/'+user1Initiative1._id+'/addArea/'+user1Area1._id)
+          .set('Authorization', user2AccessToken)
+          .expect(401)
+          .end(function(err,res){
+            should.not.exist(err);
+            res.body.messages.should.have.lengthOf(1);
+            messaging.hasValidMessages(res.body).should.be.true;
+            res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+            doneIt();
+          });
+      });
+    })
+  });
+
+  /*
+    PUT /api/v1/initiatives/:id/removeArea/:area_id
+  */
+  describe('PUT /api/v1/initiatives/:id/removeArea/', function(){
+    context('not logged in', function(){
+      it('should return 401 (Unauthorized)', function(doneIt){
+        Initiative.findOne(function(err, initiative){
+          should.not.exist(err);
+          should.exist(initiative);
+          request(app)
+            .put(apiPrefix + '/initiatives/'+user1Initiative1._id+'/removeArea/'+user1Area1._id)
+            .expect(401)
+            .end(function(err,res){
+              should.not.exist(err);
+              res.body.messages.should.have.lengthOf(1);
+              messaging.hasValidMessages(res.body).should.be.true;
+              res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+              doneIt();
+            });
+        });
+      });
+    });
+
+    context('when logged as user1', function(){
+      it('return 200 (Success) for valid data', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/initiatives/'+ user1Initiative1._id+'/removeArea/'+user2Area1._id)
+          .set('Authorization', user1AccessToken)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+            body.should.have.property('areas');
+            body.areas.should.have.length(3);
+            doneIt();
+          });
+      });
+
+      it('return 400 (Bad request) for invalid parameters');
+      it('return 404 (Not found) for id not found');
+    });
+
+    context('when editor is not the creator', function(){
+      it('return 200 (Success) for admins', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/initiatives/'+ user1Initiative1._id+'/removeArea/'+user2Area2._id)
+          .set('Authorization', admin1AccessToken)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+            body.should.have.property('areas');
+            body.areas.should.have.length(2);
+            doneIt();
+          });
+      });
+
+      it('return 401 (Unauthorized) for other users', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/initiatives/'+user1Initiative1._id+'/removeArea/'+user1Area1._id)
+          .set('Authorization', user2AccessToken)
           .expect(401)
           .end(function(err,res){
             should.not.exist(err);

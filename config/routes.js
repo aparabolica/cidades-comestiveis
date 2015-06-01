@@ -43,6 +43,8 @@ module.exports = function (app, config) {
   initiativeRoutes.post('/initiatives', [auth.isLogged, initiatives.create]);
   initiativeRoutes.get('/initiatives/:id', initiatives.show);
   initiativeRoutes.put('/initiatives/:id', [auth.isLogged, auth.canUpdate, initiatives.update]);
+  initiativeRoutes.put('/initiatives/:id/addArea/:area_id', [auth.isLogged, auth.canUpdate, initiatives.addArea]);
+  initiativeRoutes.put('/initiatives/:id/removeArea/:area_id', [auth.isLogged, auth.canUpdate, initiatives.removeArea]);
   initiativeRoutes.get('/initiatives', initiatives.list);
   app.use(config.apiPrefix, initiativeRoutes);
 
