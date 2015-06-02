@@ -346,6 +346,9 @@ input[type=submit] {
 				border-right: 1px solid #ddd;
 				text-decoration: none;
 				outline: none;
+				&:hover {
+					color: #333;
+				}
 				&:last-child {
 					border-right: 0;
 				}
@@ -366,6 +369,12 @@ input[type=submit] {
 				padding: 20px;
 				margin: 0;
 				border-bottom: 1px solid #999;
+				a {
+					color: inherit;
+					&:hover {
+						color: inherit;
+					}
+				}
 				.creator {
 					width: 25%;
 					float: left;

@@ -140,6 +140,13 @@ angular.module('cc')
 				getContributions: {
 					method: 'GET',
 					url: apiUrl + '/users/:id/contributions'
+				},
+				message: {
+					method: 'POST',
+					url: apiUrl + '/users/:id/message',
+					params: {
+						id: '@id'
+					}
 				}
 			}),
 			area: $resource(apiUrl + '/areas/:id', { id: '@_id' }, {

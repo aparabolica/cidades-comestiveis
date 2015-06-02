@@ -50,7 +50,7 @@ app.config([
 				}
 			})
 			.state('home.area', {
-				url: 'area/:id/',
+				url: 'terreno/:id/',
 				controller: 'SingleCtrl',
 				templateUrl: function() {
 					if(isMobile) {
@@ -69,6 +69,29 @@ app.config([
 					],
 					Type: function() {
 						return 'area';
+					}
+				}
+			})
+			.state('home.resource', {
+				url: 'recurso/:id/',
+				controller: 'SingleCtrl',
+				templateUrl: function() {
+					if(isMobile) {
+						return '/views/resource.html';
+					} else {
+						return null;
+					}
+				},
+				resolve: {
+					Data: [
+						'$stateParams',
+						'CCService',
+						function($stateParams, CC) {
+							return CC.resource.get({id: $stateParams.id}).$promise;
+						}
+					],
+					Type: function() {
+						return 'resource';
 					}
 				}
 			})
@@ -570,6 +593,23 @@ app.controller('PageCtrl', [
 
 		
 
+	}
+]);
+
+app.controller('ContactCreatorCtrl', [
+	'CCAuth',
+	'CCService',
+	'$scope',
+	function(Auth, CC, $scope) {
+		$scope.text = '';
+		$scope.contact = function(item, text) {
+			if(Auth.getToken()) {
+				var mail = 'Olá ' + item.creator.name + '! \n\n' + Auth.getToken().name + ' gostaria de conversar com você sobre um recurso que você publicou no Cidades Comestíveis. Segue sua mensagem: \n\n' + text;
+				CC.user.message({id: item.creator._id, message: mail}, function(data) {
+					console.log(data);
+				});
+			}
+		};
 	}
 ]);
 

@@ -33,13 +33,18 @@
 				li.resource-item(ng-repeat="resource in resources | filter:{category:catFilter}")
 					article
 						.creator
-							img(ng-src="{{resource.creator.picture}}")
-							h4 {{resource.creator.name}}
+							a(ui-sref="home.resource({id: resource._id})")
+								img(ng-src="{{resource.creator.picture}}")
+							h4
+								a(ui-sref="home.resource({id: resource._id})") {{resource.creator.name}}
 						.content
 							h3
-								span(class="c-icon-{{resource.icon}}") 
-								| {{getResourceCategory(resource)}}
-							p {{resource.description}}
+								a(ui-sref="home.resource({id: resource._id})")
+									span(class="c-icon-{{resource.icon}}") 
+									| {{getResourceCategory(resource)}}
+							p
+								a(ui-sref="home.resource({id: resource._id})")
+									{{resource.description}}
 
 	#map-actions
 		.add-new.primary

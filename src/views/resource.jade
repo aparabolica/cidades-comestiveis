@@ -1,0 +1,16 @@
+article#resource.single-item(ng-controller="ResourceCtrl")
+	.creator
+		img(ng-src="{{item.creator.picture}}")
+		h4 {{item.creator.name}}
+	.content
+		h3
+			span(class="c-icon-{{item.icon}}") 
+			| {{getResourceCategory(item)}}
+		p {{item.description}}
+	p(ng-show="canEdit")
+		a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar
+
+	form#contact(ng-controller="ContactCreatorCtrl" ng-show="user" ng-submit="contact(item, text)")
+		p
+			textarea(ng-model="text")
+		input(type="submit" value="Enviar mensagem")
