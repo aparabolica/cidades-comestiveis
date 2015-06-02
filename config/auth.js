@@ -22,9 +22,11 @@ var generateAccessToken = function(user, res) {
 		if (err)
 			return res.json(401, messaging.mongooseErrors(req.i18n.t, err, 'accessToken'));
 
+		user = user.toObject ? user.toObject() : user;
+
 		var response = _.extend({
 			accessToken: token._id
-		}, user.toObject());
+		}, user);
 
 		res.json(response);
 	});
