@@ -1,9 +1,17 @@
+var _ = require('underscore');
+var validator = require('validator');
+var messaging = require('../../lib/messaging');
+var formidable = require('formidable');
 var mongoose = require('mongoose');
 var Area = mongoose.model('Area');
 var User = mongoose.model('User');
-var messaging = require('../../lib/messaging');
-var validator = require('validator');
-var _ = require('underscore');
+
+var cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+});
 
 exports.load = function(req,res,next,id){
   Area.findById(id, function(err, area){
@@ -39,6 +47,30 @@ exports.update = function(req, res, next) {
       res.status(400).json(messaging.mongooseErrors(err, 'areas'));
     else
       res.status(200).json(area);
+  });
+}
+
+/* Update area. */
+exports.updateImage = function(req, res, next) {
+  var area = req.object;
+
+  // parse a file upload
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files) {
+    cloudinary.uploader.upload(files.image.path, function(result) {
+      if (result.error)
+        return res.status(400).json(messaging.error('errors.areas.image.upload_error'));
+      else {
+        area.image = result;
+        area.save(function(err) {
+          if(err)
+            res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+          else
+            res.status(200).json(area);
+        });
+      }
+    });
   });
 }
 

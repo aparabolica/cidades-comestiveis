@@ -34,6 +34,7 @@ module.exports = function (app, config) {
   var areaRoutes = require('express').Router();
   areaRoutes.param('id', areas.load);
   areaRoutes.post('/areas', [auth.isLogged, areas.create]);
+  areaRoutes.post('/areas/:id/image', [auth.isLogged, auth.canUpdate, areas.updateImage]);
   areaRoutes.get('/areas/:id', areas.show);
   areaRoutes.put('/areas/:id', [auth.isLogged, auth.canUpdate, areas.update]);
   areaRoutes.get('/areas', areas.list);

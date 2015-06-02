@@ -25,6 +25,7 @@ var messaging = require('../../lib/messaging')
 
 var config = require('../../config/config')['test'];
 var apiPrefix = config.apiPrefix;
+var imagePath = __dirname + '/../../public/img/logo.png';
 
 /* Some users */
 var admin1;
@@ -545,6 +546,74 @@ describe('API: Areas', function(){
       });
     })
   });
+
+  /*
+    PUT /api/version/areas/:id/image
+  */
+
+  describe('PUT /api/version/areas/:id/image', function(){
+    context('not logged in', function(){
+      it('should return 401 (Unauthorized)', function(doneIt){
+        Area.findOne(function(err, area){
+          should.not.exist(err);
+          should.exist(area);
+          request(app)
+            .post(apiPrefix + '/areas/'+area.id+'/image')
+            .expect(401)
+            .end(function(err,res){
+              should.not.exist(err);
+              res.body.messages.should.have.lengthOf(1);
+              messaging.hasValidMessages(res.body).should.be.true;
+              res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+              doneIt();
+            });
+        });
+      });
+    });
+
+    context('when logged as user1', function(){
+      it('return 200 (Success) for valid payload', function(doneIt){
+        request(app)
+          .post(apiPrefix + '/areas/'+ user1Area1._id + '/image')
+          .set('Authorization', user1AccessToken)
+          .attach('image', imagePath)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            should.not.exist(err);
+            var body = res.body;
+
+            body.should.have.property('image');
+            body.image.should.have.property('url');
+
+            /* User basic info */
+            body.should.have.property('address', user1Area1.address);
+            body.should.have.property('creator', user1._id.toHexString());
+
+            /* Location geojson */
+            var geometryGeojson = body.geometry;
+            geometryGeojson.should.have.property('type', user1Area1.geometry.type);
+            geometryGeojson.should.have.property('coordinates');
+            geometryGeojson.coordinates.should.be.an.Array;
+
+            /* Coordinates */
+            var coordinates = geometryGeojson.coordinates
+            coordinates[0].should.be.equal(user1Area1.geometry.coordinates[0]);
+            coordinates[1].should.be.equal(user1Area1.geometry.coordinates[1]);
+
+            /* Keep area for later usage */
+            user1Area1 = res.body;
+
+            doneIt();
+          });
+      });
+
+      it('return 400 (Bad request) for invalid area data');
+      it('return 404 (Not found) for id not found');
+    });
+
+  });
+
 
   /*
    * After tests, clear database

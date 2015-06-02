@@ -9,6 +9,7 @@ var AreaSchema = new Schema({
 	creator: { type: Schema.ObjectId, ref: 'User', required: 'missing_creator'},
 	address: { type: String, required: 'missing_address'},
 	description: { type: String },
+	image: {},
 	geometry: { type: {type: String}, coordinates: []},
 	createdAt: {type: Date, default: Date.now},
 	updatedAt: {type: Date},
