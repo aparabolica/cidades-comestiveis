@@ -3,18 +3,22 @@ window._ = require('underscore');
 
 window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
+// window.isMobile = true;
+
 require('angular-ui-router');
 require('angular-resource');
 require('angular-cookies');
 require('angular-leaflet-directive');
 require('ng-dialog');
+require('angular-bootstrap-datetimepicker');
 
 var app = angular.module('cc', [
 	'ngDialog',
 	'ngCookies',
 	'ui.router', 
 	'ngResource',
-	'leaflet-directive'
+	'leaflet-directive',
+	'ui.bootstrap.datetimepicker'
 ]);
 
 app.config([
@@ -45,6 +49,13 @@ app.config([
 			.state('home.area', {
 				url: 'area/:id/',
 				controller: 'SingleCtrl',
+				templateUrl: function() {
+					if(isMobile) {
+						return '/views/area.html';
+					} else {
+						return null;
+					}
+				},
 				resolve: {
 					Data: [
 						'$stateParams',
@@ -60,7 +71,7 @@ app.config([
 			})
 			.state('home.newItem', {
 				url: 'new/',
-				controller: 'ItemCtrl'
+				controller: 'NewItemCtrl'
 			})
 			.state('home.editItem', {
 				url: 'edit/:type/:id/',
@@ -70,6 +81,11 @@ app.config([
 				url: '/projeto/',
 				controller: 'PageCtrl',
 				templateUrl: '/views/projeto.html'
+			})
+			.state('manifesto', {
+				url: '/manifesto/',
+				controller: 'PageCtrl',
+				templateUrl: '/views/manifesto.html'
 			});
 
 		/*
@@ -104,15 +120,18 @@ app.config([
 	'$rootScope',
 	'$location',
 	'$window',
-	function($rootScope, $location, $window) {
+	'ngDialog',
+	function($rootScope, $location, $window, ngDialog) {
 		/*
 		 * Analytics
 		 */
 		$rootScope.$on('$stateChangeSuccess', function(ev, toState, toParams, fromState, fromParams) {
+
 			if($window._gaq && fromState.name) {
 				$window._gaq.push(['_trackPageview', $location.path()]);
 			}
 			if(fromState.name) {
+				ngDialog.closeAll();
 				document.body.scrollTop = document.documentElement.scrollTop = 0;
 			}
 		});
@@ -126,11 +145,24 @@ require('./filters');
 app.controller('MainCtrl', [
 	'CCAuth',
 	'CCLoginDialog',
+	'HelloService',
 	'ngDialog',
 	'$rootScope',
 	'$scope',
 	'$timeout',
-	function(Auth, CCLoginDialog, ngDialog, $rootScope, $scope, $timeout) {
+	function(Auth, CCLoginDialog, HelloService, ngDialog, $rootScope, $scope, $timeout) {
+
+		$scope.fb = HelloService.facebook;
+
+		$scope.isMobile = isMobile;
+
+		$scope.headerUrl = '/views/includes/header.html';
+		$scope.footerUrl = '/views/includes/footer.html';
+
+		if(isMobile) {
+			$scope.headerUrl = '/views/mobile/includes/header.html';
+			$scope.footerUrl = '/views/mobile/includes/footer.html';
+		}
 
 		$scope.$watch(function() {
 			return Auth.getToken();
@@ -170,13 +202,16 @@ app.controller('HomeCtrl', [
 app.controller('MapCtrl', [
 	'$scope',
 	'$state',
+	'$timeout',
 	'leafletData',
-	function($scope, $state, leaflet) {
+	function($scope, $state, $timeout, leaflet) {
 
 		angular.extend($scope, {
 			defaults: {
 				// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-				tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
+				// tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
+				// tileLayer: "http://{s}.sm.mapstack.stamen.com/((toner-lite,$ff6600[hsl-color]),(parks,$339900[hsl-color]),mapbox-water)/{z}/{x}/{y}.png",
+				tileLayer: "http://{s}.sm.mapstack.stamen.com/($ffffff[@p],(parks,$339900[hsl-color]),mapbox-water,(toner-lite,$ff6600[hsl-color])[multiply])/{z}/{x}/{y}.png",
 				maxZoom: 18,
 				scrollWheelZoom: false
 			},
@@ -209,6 +244,18 @@ app.controller('MapCtrl', [
 				// console.log(args);
 				$state.go('home.' + args.model.object.dataType, { type: args.model.object.dataType, id:  args.model.object._id });
 			});
+
+			if(isMobile) {
+				if(navigator.geolocation) {
+					$timeout(function() {
+						navigator.geolocation.getCurrentPosition(function(pos) {
+							map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+						}, function(err) {
+							alert('Ative a geolocalização do seu dispositivo e atualize a página.');
+						});
+					}, 500);
+				}
+			}
 		});
 
 	}
@@ -235,13 +282,15 @@ app.controller('SingleCtrl', [
 			}
 		}
 
-		var dialog = ngDialog.open({
-			template: '/views/' + Type + '.html',
-			scope: $scope,
-			preCloseCallback: function() {
-				$state.go('home');
-			}
-		});
+		if(!isMobile) {
+			var dialog = ngDialog.open({
+				template: '/views/' + Type + '.html',
+				scope: $scope,
+				preCloseCallback: function() {
+					$state.go('home');
+				}
+			});
+		}
 	}
 ]);
 
@@ -275,6 +324,30 @@ app.controller('EditItemCtrl', [
 	}
 ]);
 
+app.controller('NewItemCtrl', [
+	'$scope',
+	'$state',
+	'$stateParams',
+	'CCService',
+	'CCAuth',
+	'CCLoginDialog',
+	'CCItemEdit',
+	function($scope, $state, $stateParams, CC, Auth, LoginDialog, ItemEdit) {
+
+		$scope.editDialog = ItemEdit;
+
+		$scope.$watch($state.current.name, function() {
+			if($state.current.name == 'home.newItem') {
+				if(Auth.getToken()) {
+					ItemEdit();
+				} else {
+					LoginDialog(ItemEdit);
+				}
+			}
+		});
+	}
+]);
+
 app.controller('ItemCtrl', [
 	'$scope',
 	'CCItemEdit',
@@ -302,8 +375,32 @@ app.controller('DashboardCtrl', [
 			});
 		});
 
+		$scope.getItems = function(type) {
+			if($scope.items && $scope.items.length) {
+				return _.filter($scope.items, function(item) { return item.type == type; });
+			} else {
+				return [];
+			}
+		};
+
 	}
 ]);
+
+app.controller('InitiativeCtrl', [
+	'CCService',
+	'$scope',
+	function(CC, $scope) {
+
+		$scope.addArea = function(id, areaId) {
+			CC.initiative.addArea({id: id, area_id: areaId});
+		};
+
+		$scope.removeArea = function(id, areaId) {
+			CC.initiative.removeArea({id: id, area_id: areaId});
+		};
+
+	}
+])
 
 app.controller('UserCtrl', [
 	'$scope',

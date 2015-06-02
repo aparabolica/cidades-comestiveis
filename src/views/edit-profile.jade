@@ -1,22 +1,23 @@
 header
 	h2 Editar perfil
 form#edit-profile(ng-submit="save(user)")
-	p
-		label(for="name_input") Nome
-		input(id="name_input" type="text" ng-model="user.name")
-	//- p
-	//- 	label(for="email_input") Email
-	//- 	input(id="email_input" type="text" ng-model="user.email")
-	p
-		label(for="bio_input") Biografia
-		textarea(id="bio_input" ng-model="user.bio")
+	.row
+		p
+			label(for="name_input") Nome
+			input(id="name_input" type="text" ng-model="user.name")
+		//- p
+		//- 	label(for="email_input") Email
+		//- 	input(id="email_input" type="text" ng-model="user.email")
+		p
+			label(for="bio_input") Biografia
+			textarea(id="bio_input" ng-model="user.bio")
 
-	p
-		label Localização 
-			a.button(href="javascript:void(0);" ng-click="locate()") 
-				span.icon-hair-cross 
-				| Encontrar minha localização
-	.center-location-map
-		leaflet#user-location(defaults="map.defaults" center="map.center")
+		p
+			label Localização 
+				a.button(href="javascript:void(0);" ng-click="locate()") 
+					span.icon-hair-cross 
+					| Encontrar minha localização
+		.center-location-map
+			leaflet#user-location(defaults="map.defaults" center="map.center")
 
 	input(type="submit" value="Atualizar")

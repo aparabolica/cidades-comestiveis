@@ -28,6 +28,11 @@ angular.module('cc')
 					});
 				});
 			},
+			facebook: function(credentials) {
+				$http.post(apiUrl + '/login/facebook', credentials).success(function(data) {
+					console.log(data);
+				});
+			},
 			login: function(credentials) {
 				var self = this;
 				var deferred = $q.defer();
@@ -107,6 +112,18 @@ angular.module('cc')
 				},
 				update: {
 					method: 'PUT'
+				},
+				addArea: {
+					method: 'PUT',
+					url: apiUrl + '/initiatives/:id/addArea/:area_id',
+					params: {
+						id: '@id',
+						area_id: '@area_id'
+					}
+				},
+				removeArea: {
+					method: 'PUT',
+					url: apiUrl + '/initiatives/:id/removeArea/:area_id'
 				}
 			}),
 			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {
@@ -180,7 +197,7 @@ angular.module('cc')
 			dialog = ngDialog.open({
 				template: '/views/new.html',
 				preCloseCallback: function() {
-					if($state.current.name == 'home.editItem') {
+					if($state.current.name == 'home.editItem' || $state.current.name == 'home.newItem') {
 						$state.go('home');
 					}
 				},
@@ -192,22 +209,29 @@ angular.module('cc')
 						{
 							name: 'Insumo',
 							label: 'insumo',
-							fields: []
+							api: 'resource',
+							defaultValues: [
+								{}
+							],
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Conhecimento',
 							label: 'conhecimento',
-							fields: []
+							api: 'resource',
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Trabalho',
 							label: 'trabalho',
-							fields: []
+							api: 'resource',
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Ferramentas',
 							label: 'ferramentas',
-							fields: []
+							api: 'resource',
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Terreno',
@@ -287,6 +311,7 @@ angular.module('cc')
 							if(!item._id) {
 								CC[$scope.selectedCategory.api].save(item, function(data) {
 									dialog.close();
+									$state.go('home');
 								});
 							// Update item
 							} else {
@@ -295,6 +320,7 @@ angular.module('cc')
 									$state.go('home');
 								});
 							}
+
 						}
 					};
 

@@ -40,7 +40,7 @@ module.exports = function(grunt) {
 				files: [{
 					expand: true,
 					cwd: 'src',
-					src: ['**/*.jade', '!views/includes/**/*'],
+					src: ['**/*.jade'],
 					dest: 'public',
 					ext: '.html'
 				}]
@@ -56,6 +56,14 @@ module.exports = function(grunt) {
 						expand: true
 					}
 				]
+			},
+			datetimepicker: {
+				files: [
+					{
+						src: 'node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css',
+						dest: 'src/css/datetimepicker.css'
+					}
+				]
 			}
 		},
 		watch: {
@@ -63,7 +71,7 @@ module.exports = function(grunt) {
 				livereload: true
 			},
 			css: {
-				files: 'src/css/**/*.less',
+				files: 'src/css/**/*',
 				tasks: ['less']
 			},
 			jade: {
@@ -75,7 +83,7 @@ module.exports = function(grunt) {
 				tasks: ['browserify']
 			},
 			copy: {
-				files: ['src/**', '!src/**/*.less', '!src/**/*.jade', '!src/**/*.js'],
+				files: ['src/**', '!src/css/**/*', '!src/**/*.jade', '!src/**/*.js'],
 				tasks: ['copy']
 			}
 		}

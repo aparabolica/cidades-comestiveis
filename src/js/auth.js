@@ -1,4 +1,39 @@
+var hello = require('hellojs');
+
 angular.module('cc')
+.run([
+	'CCAuth',
+	function(Auth) {
+
+		hello.init({
+			'facebook': '1671515763079566'
+		});
+
+		// hello('facebook').logout();
+
+		hello.on('auth.login', function(auth) {
+			Auth.facebook(auth);
+		});
+	}
+])
+.factory('HelloService', [
+	function() {
+		return {
+			facebook: {
+				test: function() {
+					alert('porra');
+				},
+				login: function() {
+					alert('yo');
+					hello('facebook').login();
+				},
+				logout: function() {
+					hello('facebook').logout();
+				}
+			}
+		}
+	}
+])
 .factory('authInterceptor', [
 	'$rootScope',
 	'$window',

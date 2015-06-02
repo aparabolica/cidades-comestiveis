@@ -1,0 +1,10 @@
+header#masthead
+	div.landing(ng-show="!user")
+		h1
+			a(ui-sref="home") Cidades Comestíveis
+				img(src="/img/logo.png" alt="Logo do Cidades Comestíveis")
+	div.logged-in(ng-show="user")
+		h1
+			a(ui-sref="home") Cidades Comestíveis
+				span.logo
+					span.c-icon-carrot.icon

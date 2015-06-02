@@ -7,10 +7,13 @@ header#masthead
 		.six.columns
 			nav#authnav
 				a(href="javascript:void(0);" ng-click="loginDialog()" ng-show="!user") Entrar
+				a(ng-click="fb.login()" ng-show="!user") Facebook
 				#user-dashboard(ng-controller="UserCtrl" ng-show="user") Olá {{user.name}} 
 					span.icon-chevron-down
 					.user-settings
 						a(href="javascript:void(0);" ng-click="editUserDialog()") Editar perfil
+						a(ng-click="fb.login()") Conectar facebook
+						a(ng-click="fb.logout()") Desconectar facebook
 						a(href="javascript:void(0);" ng-click="logout()") Sair
 			nav#mastnav.clearfix
 				ul
@@ -18,5 +21,13 @@ header#masthead
 						a(ui-sref="home") Página inicial
 					li
 						a(ui-sref="projeto") O projeto
+						ul.submenu
+							li
+								a(ui-sref="projeto") O que é?
+							li
+								a(ui-sref="projeto({'#': 'ten-steps'})") 10 passos para construir uma horta comunitária
+							li
+								a(ui-sref="projeto({'#': 'prefeitura'})") E a prefeitura nisso?
+								a(ui-sref="projeto({'#': 'terreno-privado'})") E se o terreno for privado?
 					li
-						a(href="#") Manifesto
+						a(ui-sref="manifesto") Manifesto

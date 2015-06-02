@@ -1,0 +1,108 @@
+html body.mobile {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	#masthead {
+		width: 100%;
+		display: block;
+		padding: 0;
+		margin: 0;
+		position: relative;
+		z-index: 99999;
+		.landing {
+			h1 {
+				display: block;
+				margin: 20px 0 60px;
+				float: none;
+				img {
+					margin: 0 auto;
+				}
+			}
+		}
+		.logged-in {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			width: 60px;
+			height: 60px;
+		}
+		.logo {
+			margin: 0;
+			padding: 0;
+			display: block;
+			width: 40px;
+			height: 40px;
+			font-size: 40px;
+			padding: 10px;
+			.border-radius(100%);
+			background: @orange;
+			color: #fff;
+			text-indent: 0;
+			text-align: center;
+		}
+	}
+	#auth-section {
+		.button {
+			display: block;
+		}
+	}
+	.map {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		z-index: 2;
+		#map {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.share-button {
+		width: 60px;
+		height: 60px;
+		padding: 10px;
+		.border-radius(100%);
+		position: absolute;
+		bottom: 5px;
+		left: 50%;
+		margin-left: -30px;
+		background: @orange;
+		color: #000;
+		z-index: 3;
+		text-align: center;
+		border: 2px solid #fff;
+		.icon-plus {
+			display: inline-block;
+			font-size: 60px;
+		}
+	}
+	.logout-button {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		z-index: 4;
+	}
+	#mobile-home {
+		.ui-view {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			z-index: 3;
+			background: #fff;
+			padding: 20px;
+		}
+	}
+	.ngdialog.ngdialog-theme-default {
+		padding: 0;
+		.ngdialog-content {
+			width: 100%;
+			max-width: none;
+			.border-radius(0);
+			header {
+				.border-radius(0);
+			}
+		}
+	}
+}
