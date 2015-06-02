@@ -330,9 +330,9 @@ app.controller('NewItemCtrl', [
 	'$stateParams',
 	'CCService',
 	'CCAuth',
-	'CCLoginDialog',
+	'HelloService',
 	'CCItemEdit',
-	function($scope, $state, $stateParams, CC, Auth, LoginDialog, ItemEdit) {
+	function($scope, $state, $stateParams, CC, Auth, Hello, ItemEdit) {
 
 		$scope.editDialog = ItemEdit;
 
@@ -341,7 +341,7 @@ app.controller('NewItemCtrl', [
 				if(Auth.getToken()) {
 					ItemEdit();
 				} else {
-					LoginDialog(ItemEdit);
+					Hello.facebook.login(ItemEdit);
 				}
 			}
 		});
@@ -370,9 +370,11 @@ app.controller('DashboardCtrl', [
 		}, function(user) {
 			$scope.items = false;
 			$scope.user = user;
-			CC.user.getContributions({id: $scope.user._id}, function(data) {
-				$scope.items = data.contributions;
-			});
+			if(user) {
+				CC.user.getContributions({id: $scope.user._id}, function(data) {
+					$scope.items = data.contributions;
+				});
+			}
 		});
 
 		$scope.getItems = function(type) {

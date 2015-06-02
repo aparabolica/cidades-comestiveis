@@ -2,28 +2,39 @@ var hello = require('hellojs');
 
 angular.module('cc')
 .run([
-	'CCAuth',
-	function(Auth) {
+	function() {
 
 		hello.init({
 			'facebook': '1671515763079566'
 		});
 
-		hello.on('auth.login', function(auth) {
-			if(!Auth.getToken())
-				Auth.facebook(auth);
-		});
-
 	}
 ])
 .factory('HelloService', [
-	function() {
+	'CCAuth',
+	'$timeout',
+	function(Auth, $timeout) {
+
+		var callback;
+
+		hello.on('auth.login', function(auth) {
+			if(!Auth.getToken()) {
+				Auth.facebook(auth).then(function() {
+					if(typeof callback == 'function') {
+						$timeout(function() {
+							callback();
+						}, 100);
+					}
+				});
+			}
+		});
+
 		return {
 			facebook: {
-				login: function() {
-					hello('facebook').login({scope: 'email,photos'});
-				},
-				logout: function() {
+				login: function(cb) {
+					callback = cb;
+					if(!Auth.getToken())
+						hello('facebook').login({scope: 'email,photos'});
 				}
 			}
 		}
@@ -58,7 +69,6 @@ angular.module('cc')
 				});
 			},
 			facebook: function(credentials) {
-				console.log('loggedin');
 				var self = this;
 				var deferred = $q.defer();
 				$http.post(apiUrl + '/login/facebook', credentials).success(function(data) {
