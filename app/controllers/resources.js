@@ -132,8 +132,10 @@ exports.list = function(req, res, next) {
   }
 
   Resource.list(options, function (err, resources) {
-    if (err)
+    if (err) {
+      console.log(err);
       return res.status(500).json(messaging.error('errors.internal_error'));
+    }
 
     /* Send response */
     Resource.count().exec(function (err, count) {

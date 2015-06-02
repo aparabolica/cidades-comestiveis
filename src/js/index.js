@@ -208,6 +208,30 @@ app.controller('HomeCtrl', [
 			});
 		});
 
+		$scope.$on('cc.map.dragged', function(ev, bounds) {
+			var southWest = bounds.getSouthWest();
+			var northEast = bounds.getNorthEast();
+			var bbox = {
+				type: 'Polygon',
+				coordinates: [
+					[
+						[southWest.lng, southWest.lat],
+						[southWest.lng, northEast.lat],
+						[northEast.lng, northEast.lat],
+						[northEast.lng, southWest.lat],
+						[northEast.lng, northEast.lat],
+					]
+				]
+			};
+			CC.resource.query({bbox: bbox}, function(data) {
+				$scope.resources = data.resources;
+				_.each($scope.resources, function(item) {
+					var icon = item.category.toLowerCase();
+					item.icon = icon;
+				});
+			});
+		});
+
 	}
 ]);
 
@@ -249,11 +273,12 @@ app.controller('ResourceCtrl', [
 ]);
 
 app.controller('MapCtrl', [
+	'$rootScope',
 	'$scope',
 	'$state',
 	'$timeout',
 	'leafletData',
-	function($scope, $state, $timeout, leaflet) {
+	function($rootScope, $scope, $state, $timeout, leaflet) {
 
 		angular.extend($scope, {
 			defaults: {
@@ -292,6 +317,10 @@ app.controller('MapCtrl', [
 			$scope.$on('leafletDirectiveMarker.click', function(event, args) {
 				$state.go('home.' + args.model.object.dataType, { type: args.model.object.dataType, id:  args.model.object._id });
 			});
+
+			$scope.$on('leafletDirectiveMap.dragend', _.debounce(function(event, args) {
+				$rootScope.$broadcast('cc.map.dragged', map.getBounds());
+			}, 500));
 
 			if(isMobile) {
 				if(navigator.geolocation) {
