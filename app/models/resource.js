@@ -8,7 +8,8 @@ var ResourceSchema = new Schema({
   creator: { type: Schema.ObjectId, ref: 'User', required: 'missing_creator'},
   availableAt: Date,
   availableUntil: Date,
-  type: { type: Schema.ObjectId, ref: 'ResourceType', required: 'missing_resource_type'},
+  category: {type: String, enum: ['Supply', 'Tool', 'Knowledge', 'Work'], required: 'missing_category'},
+  name: { type: String },
   description: {type: String },
   geometry: { type: {type: String}, coordinates: []},
 });

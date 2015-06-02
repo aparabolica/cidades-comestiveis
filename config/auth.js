@@ -20,7 +20,7 @@ var generateAccessToken = function(user, res) {
 
 	token.save(function(err) {
 		if (err)
-			return res.json(401, messaging.mongooseErrors(req.i18n.t, err, 'accessToken'));
+			return res.json(401, messaging.mongooseErrors('access_token.error'));
 
 		user = user.toObject ? user.toObject() : user;
 
