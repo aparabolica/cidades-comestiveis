@@ -257,7 +257,7 @@ angular.module('cc')
 							label: 'insumo',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Supply'
+								category: 'Supply'
 							},
 							fields: ['description', 'availability', 'geometry']
 						},
@@ -266,7 +266,7 @@ angular.module('cc')
 							label: 'conhecimento',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Knowledge'
+								category: 'Knowledge'
 							},
 							fields: ['description', 'availability', 'geometry']
 						},
@@ -275,7 +275,7 @@ angular.module('cc')
 							label: 'trabalho',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Work'
+								category: 'Work'
 							},
 							fields: ['description', 'availability', 'geometry']
 						},
@@ -284,7 +284,7 @@ angular.module('cc')
 							label: 'ferramentas',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Tool'
+								category: 'Tool'
 							},
 							fields: ['description', 'availability', 'geometry']
 						},

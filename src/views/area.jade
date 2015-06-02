@@ -3,7 +3,7 @@ article#area.single-item
 	p
 		span.label Endereço: 
 		| {{item.address}}
-	.manage-initiatives(ng-controller="DashboardCtrl" ng-show="user")
+	.manage-initiatives(ng-controller="DashboardCtrl" ng-show="user && getItems('initiative').length")
 		form(ng-controller="InitiativeCtrl" ng-submit="addArea(initiative, item._id)")
 			p
 				label(for="add_initiative_input") Associar iniciativa

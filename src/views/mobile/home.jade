@@ -9,7 +9,7 @@
 	.map(ng-controller="MapCtrl" ng-show="user")
 		leaflet#map(defaults="defaults" center="center" markers="markers = (areas | areaToMarker)")
 
-	a.share-button(ui-sref="home.newItem")
+	a.share-button(ui-sref="home.newItem" ng-show="user")
 		.icon-plus
 
 	.ui-view
