@@ -67,34 +67,35 @@ exports.facebook = function(req, res, next) {
 			return res.status(401).json(messaging.error("access_token.local.unauthorized"));
 		else {
 
-			// Facebook data
-			var picture = fbData.picture.data.url;
-			var email = fbData.email;
-			var name = fbData.name;
+			fbgraph.get(fbData.id + "/picture?height=150&width=150", function(err, picture) {
+				// Facebook data
+				var email = fbData.email;
+				var name = fbData.name;
 
-			User.findOne({email: email}, function(err, user){
-				// Mongoose error
-				if (err) return res.status(500);
+				User.findOne({email: email}, function(err, user){
+					// Mongoose error
+					if (err) return res.status(500);
 
-				// Create user if not already registered
-				else if (!user) {
+					// Create user if not already registered
+					else if (!user) {
 
-					var seed = crypto.randomBytes(20);
+						var seed = crypto.randomBytes(20);
 
-					var user = new User({
-						name: name,
-						email: email,
-						picture: picture,
-						password: crypto.createHash('sha1').update(seed).digest('hex')
-					});
+						var user = new User({
+							name: name,
+							email: email,
+							picture: picture.location,
+							password: crypto.createHash('sha1').update(seed).digest('hex')
+						});
 
-					user.save(function(err){
-						if (err) return res.status(500);
-						generateAccessToken(user, res);
-					})
+						user.save(function(err){
+							if (err) return res.status(500);
+							generateAccessToken(user, res);
+						})
 
-				// User is registered, generate token
-				} else generateAccessToken(user, res);
+					// User is registered, generate token
+					} else generateAccessToken(user, res);
+			})
 			})
 		}
 	});
