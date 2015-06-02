@@ -7,7 +7,6 @@ var auth = require('./auth');
 var users = require('../app/controllers/users');
 var areas = require('../app/controllers/areas');
 var initiatives = require('../app/controllers/initiatives');
-var resourceTypes = require('../app/controllers/resourceTypes');
 var resources = require('../app/controllers/resources');
 
 module.exports = function (app, config) {
