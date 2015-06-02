@@ -6,12 +6,14 @@ var Schema = mongoose.Schema;
 
 var ResourceSchema = new Schema({
   creator: { type: Schema.ObjectId, ref: 'User', required: 'missing_creator'},
+  image: {},
   availableAt: Date,
   availableUntil: Date,
   category: {type: String, enum: ['Supply', 'Tool', 'Knowledge', 'Work'], required: 'missing_category'},
   name: { type: String },
   description: {type: String },
   geometry: { type: {type: String}, coordinates: []},
+  createdAt: {type: Date, default: Date.now},
 });
 
 /** Statics */

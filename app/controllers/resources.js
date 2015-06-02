@@ -5,6 +5,15 @@ var messaging = require('../../lib/messaging');
 var validator = require('validator');
 var _ = require('underscore');
 
+var formidable = require('formidable');
+var cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+});
+
+
 exports.load = function(req,res,next,id){
   Resource.findById(id, function(err, rt){
     if (err)
@@ -39,6 +48,30 @@ exports.update = function(req, res, next) {
       res.status(400).json(messaging.mongooseErrors(err, 'resources'));
     else
       res.status(200).json(rs);
+  });
+}
+
+/* Upload image */
+exports.updateImage = function(req, res, next) {
+  var resource = req.object;
+
+  // parse a file upload
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files) {
+    cloudinary.uploader.upload(files.image.path, function(result) {
+      if (result.error)
+        return res.status(400).json(messaging.error('errors.resources.image.upload_error'));
+      else {
+        resource.image = result;
+        resource.save(function(err) {
+          if(err)
+            res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+          else
+            res.status(200).json(area);
+        });
+      }
+    });
   });
 }
 

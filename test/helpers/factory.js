@@ -9,7 +9,6 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Area = mongoose.model('Area');
 var Initiative = mongoose.model('Initiative');
-var ResourceType = mongoose.model('ResourceType');
 var Resource = mongoose.model('Resource');
 
 /**

@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 var InitiativeSchema = new Schema({
   name: {type: String, required: 'missing_name'},
 	description: { type: String },
+  image: {},  
   creator: { type: Schema.ObjectId, ref: 'User', required: 'missing_creator'},
   areas: [{ type: Schema.ObjectId, ref: 'Area'}],
   website: String,

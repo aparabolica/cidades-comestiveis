@@ -461,7 +461,7 @@ Posible responses:
   count: 232,
   page: 3,
   perPage: 30
-  resourceTypes: [ (resource types objects) ]
+  resource: [ (resource types objects) ]
 }
 ```
 
