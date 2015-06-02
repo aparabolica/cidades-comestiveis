@@ -1,6 +1,5 @@
 
 var crypto = require('crypto');
-var seed = crypto.randomBytes(20);
 var _ = require('underscore');
 var fbgraph = require('fbgraph');
 var passport = require('passport');
@@ -16,6 +15,7 @@ var generateAccessToken = function(user, res) {
 
 	var token = new AccessToken({user: user._id});
 
+	var seed = crypto.randomBytes(20);
 	token._id = crypto.createHash('sha1').update(seed).digest('hex');
 
 	token.save(function(err) {
@@ -76,6 +76,9 @@ exports.facebook = function(req, res, next) {
 
 				// Create user if not already registered
 				else if (!user) {
+
+					var seed = crypto.randomBytes(20);
+
 					var user = new User({
 						name: name,
 						email: email,
