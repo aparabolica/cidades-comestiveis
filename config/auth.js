@@ -84,6 +84,7 @@ exports.facebook = function(req, res, next) {
 					var user = new User({
 						name: name,
 						email: email,
+						picture: picture,
 						password: crypto.createHash('sha1').update(seed).digest('hex')
 					});
 
@@ -163,16 +164,8 @@ exports.isAdmin = function(req,res,next) {
 
 exports.canUpdate = function(req,res,next) {
 
-	if ((req.object.creator == req.user._id.toHexString()) || (req.user.role == 'admin'))
-		next();
-	else
-		return res.status(401).send(messaging.error('access_token.unauthorized'));
-
-}
-
-exports.canUpdate = function(req,res,next) {
-
-	if ((req.object.creator == req.user._id.toHexString()) || (req.user.role == 'admin'))
+	if ((req.object.creator._id && (req.object.creator._id.toHexString() == req.user._id.toHexString()))
+			|| (req.object.creator == req.user._id.toHexString()) || (req.user.role == 'admin'))
 		next();
 	else
 		return res.status(401).send(messaging.error('access_token.unauthorized'));

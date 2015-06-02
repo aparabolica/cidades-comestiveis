@@ -6,11 +6,11 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Area = mongoose.model('Area');
 var validator = require('validator');
-
+var postmark = require('postmark');
+var client = new postmark.Client(process.env.POSTMARK_KEY);
 
 /* Load user object */
 exports.load = function (req, res, next, id){
-
   /* Try to load user */
   User.findById(id, function (err, user) {
     if (err)
@@ -88,6 +88,26 @@ exports.contributions = function(req, res) {
     else
       return res.status(200).json({contributions: contribs});
   });
+
+};
+
+/* Get user contributions. */
+exports.message = function(req, res) {
+  var user = req.object;
+
+  client.sendEmail({
+    "From": 'notificacoes@mapascoletivos.com.br',
+    "Reply-to": req.user.email,
+    "To": user.email,
+    "Subject": 'Contato sobre recurso publicado',
+    "TextBody": req.body.message
+  }, function(err, success){
+    if (err)
+      return res.status(400).json(messaging.error('error sending message'));
+    else
+      return res.status(200);
+  })
+
 
 };
 

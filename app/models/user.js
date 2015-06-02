@@ -20,6 +20,7 @@ var UserSchema = new Schema({
 	role: { type: String, enum: ['admin', 'moderator', 'user'], default: 'user'},
 	name: { type: String, required: 'missing_name'},
 	email: { type: String, required: 'missing_email', validate: [validator.isEmail, 'invalid_email'] },
+	picture: String,
 	token: { type: String },
 	hashed_password: {type: String, required: 'missing_password'},
 	salt: { type: String, default: '' },
@@ -132,6 +133,7 @@ UserSchema.methods = {
 		var info = {
 			_id: this._id,
 			name: this.name,
+			picture: this.picture,
 			email: this.email,
 			role: this.role,
 			bio: this.bio,
@@ -147,6 +149,7 @@ UserSchema.methods = {
 		return {
 			_id: this._id,
 			name: this.name,
+			picture: this.picture,
 			bio: this.bio,
 			registeredAt: this.registeredAt
 		};
