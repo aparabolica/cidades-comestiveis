@@ -223,7 +223,7 @@ UserSchema.methods = {
 
 		function getAreas(doneGetAreas) {
 			mongoose.model('Area')
-				.find({creator: self})
+				.find({creator: self._id})
 				.sort({'createdAt': -1})
 				.lean()
 				.exec(function(err, areas){

@@ -23,7 +23,7 @@ module.exports = function (app, config) {
   var usersRoutes = require('express').Router();
   usersRoutes.param('id', users.load);
   usersRoutes.post('/users', users.new);
-  usersRoutes.put('/users/:id', users.update);
+  usersRoutes.put('/users/:id', [auth.isLogged, auth.canUpdateUser, users.update]);
   usersRoutes.get('/users/:id', users.get);
   usersRoutes.get('/users/:id/contributions', users.contributions);
   usersRoutes.get('/users', users.list);
