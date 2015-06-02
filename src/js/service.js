@@ -424,10 +424,6 @@ angular.module('cc')
 
 					$scope.uploadImage = false;
 
-					$scope.$watch('uploadImage', function(i) {
-						console.log(i);
-					});
-
 					$scope.save = function(item) {
 						if($scope.selectedCategory) {
 							// Apply category default values
@@ -439,7 +435,6 @@ angular.module('cc')
 								CC[$scope.selectedCategory.api].save(item, function(data) {
 									if($scope.uploadImage) {
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
-											console.log(data);
 											dialog.close();
 											$state.go('home');
 										});
@@ -453,7 +448,6 @@ angular.module('cc')
 								CC[$scope.selectedCategory.api].update(item, function(data) {
 									if($scope.uploadImage) {
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
-											console.log(data);
 											dialog.close();
 											$state.go('home');
 										});
