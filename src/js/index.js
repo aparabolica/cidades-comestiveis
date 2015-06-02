@@ -217,7 +217,6 @@ app.controller('ResourceCtrl', [
 
 		$scope.getResourceCategory = function(resource) {
 			var name = '';
-			console.log(resource);
 			switch(resource.category) {
 				case 'Supply':
 					name = 'Insumo';

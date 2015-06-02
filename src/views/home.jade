@@ -33,6 +33,7 @@
 				li.resource-item(ng-repeat="resource in resources | filter:{category:catFilter}")
 					article
 						.creator
+							img(ng-src="{{resource.creator.picture}}")
 							h4 {{resource.creator.name}}
 						.content
 							h3
