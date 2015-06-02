@@ -6,8 +6,10 @@ header#masthead
 					img(src="/img/logo.png" alt="Logo do Cidades Comestíveis")
 		.six.columns
 			nav#authnav
-				a(href="javascript:void(0);" ng-click="loginDialog()" ng-show="!user") Entrar
-				a(ng-click="fb.login()" ng-show="!user") Facebook
+				a(ng-click="loginDialog()" ng-show="!user") Entrar
+				a(href="javascript:void(0);" ng-click="fb.login()" ng-show="!user")
+					.icon-facebook
+					| Entrar
 				#user-dashboard(ng-controller="UserCtrl" ng-show="user") Olá {{user.name}} 
 					span.icon-chevron-down
 					.user-settings

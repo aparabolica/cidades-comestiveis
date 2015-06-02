@@ -29,9 +29,13 @@ angular.module('cc')
 				});
 			},
 			facebook: function(credentials) {
+				var self = this;
+				var deferred = $q.defer();
 				$http.post(apiUrl + '/login/facebook', credentials).success(function(data) {
-					console.log(data);
+					self.setToken(data);
+					deferred.resolve(data);
 				});
+				return deferred.promise;
 			},
 			login: function(credentials) {
 				var self = this;
