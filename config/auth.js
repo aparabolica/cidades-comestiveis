@@ -22,10 +22,9 @@ var generateAccessToken = function(user, res) {
 
 		var response = _.extend({
 			accessToken: token._id
-		}, user);
-
+		}, user.toObject());
+		
 		res.json(response);
-
 	});
 
 }
@@ -69,7 +68,7 @@ exports.facebook = function(req, res, next) {
 			var email = fbData.email;
 			var name = fbData.name;
 
-			User.find({email: email}, function(err, user){
+			User.findOne({email: email}, function(err, user){
 				// Mongoose error
 				if (err) return res.status(500);
 
