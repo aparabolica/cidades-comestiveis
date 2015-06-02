@@ -149,6 +149,37 @@ angular.module('cc')
 				},
 				update: {
 					method: 'PUT'
+				},
+				addImage: {
+					method: 'POST',
+					url: apiUrl + '/areas/:id/image',
+					params: {
+						id: '@id'
+					},
+					transformRequest: function(data) {
+						if (data === undefined)
+							return data;
+
+						var fd = new FormData();
+						angular.forEach(data, function(value, key) {
+							if (value instanceof FileList) {
+								if (value.length == 1) {
+									fd.append(key, value[0]);
+								} else {
+									angular.forEach(value, function(file, index) {
+										fd.append(key + '_' + index, file);
+									});
+								}
+							} else {
+								fd.append(key, value);
+							}
+						});
+
+						return fd;
+					},
+					headers: {
+						'Content-Type': undefined
+					}
 				}
 			}),
 			initiative: $resource(apiUrl + '/initiatives/:id', { id: '@_id' }, {
@@ -172,13 +203,44 @@ angular.module('cc')
 					url: apiUrl + '/initiatives/:id/removeArea/:area_id'
 				}
 			}),
-			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {
+			resource: $resource(apiUrl + '/resources/:id', { id: '@_id' }, {
 				query: {
 					method: 'GET',
 					isArray: false
 				},
 				update: {
 					method: 'PUT'
+				},
+				addImage: {
+					method: 'POST',
+					url: apiUrl + '/resources/:id/image',
+					params: {
+						id: '@id'
+					},
+					transformRequest: function(data) {
+						if (data === undefined)
+							return data;
+
+						var fd = new FormData();
+						angular.forEach(data, function(value, key) {
+							if (value instanceof FileList) {
+								if (value.length == 1) {
+									fd.append(key, value[0]);
+								} else {
+									angular.forEach(value, function(file, index) {
+										fd.append(key + '_' + index, file);
+									});
+								}
+							} else {
+								fd.append(key, value);
+							}
+						});
+
+						return fd;
+					},
+					headers: {
+						'Content-Type': undefined
+					}
 				}
 			})
 		}
@@ -259,7 +321,7 @@ angular.module('cc')
 							defaultValues: {
 								category: 'Supply'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Conhecimento',
@@ -268,7 +330,7 @@ angular.module('cc')
 							defaultValues: {
 								category: 'Knowledge'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Trabalho',
@@ -277,7 +339,7 @@ angular.module('cc')
 							defaultValues: {
 								category: 'Work'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Ferramentas',
@@ -286,13 +348,13 @@ angular.module('cc')
 							defaultValues: {
 								category: 'Tool'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Terreno',
 							label: 'area',
 							api: 'area',
-							fields: ['address','description', 'has-garden', 'access', 'geometry']
+							fields: ['address','description', 'has-garden', 'access', 'geometry', 'image']
 						},
 						{
 							name: 'Iniciativa',
@@ -360,6 +422,12 @@ angular.module('cc')
 						});
 					});
 
+					$scope.uploadImage = false;
+
+					$scope.$watch('uploadImage', function(i) {
+						console.log(i);
+					});
+
 					$scope.save = function(item) {
 						if($scope.selectedCategory) {
 							// Apply category default values
@@ -369,14 +437,30 @@ angular.module('cc')
 							// New item
 							if(!item._id) {
 								CC[$scope.selectedCategory.api].save(item, function(data) {
-									dialog.close();
-									$state.go('home');
+									if($scope.uploadImage) {
+										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
+											console.log(data);
+											dialog.close();
+											$state.go('home');
+										});
+									} else {
+										dialog.close();
+										$state.go('home');
+									}
 								});
 							// Update item
 							} else {
 								CC[$scope.selectedCategory.api].update(item, function(data) {
-									dialog.close();
-									$state.go('home');
+									if($scope.uploadImage) {
+										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
+											console.log(data);
+											dialog.close();
+											$state.go('home');
+										});
+									} else {
+										dialog.close();
+										$state.go('home');
+									}
 								});
 							}
 

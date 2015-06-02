@@ -143,6 +143,7 @@ app.config([
 
 require('./service');
 require('./auth');
+require('./directives');
 require('./filters');
 
 app.controller('MainCtrl', [
@@ -376,7 +377,6 @@ app.controller('DashboardCtrl', [
 			if(user) {
 				CC.user.getContributions({id: $scope.user._id}, function(data) {
 					$scope.items = data.contributions;
-					console.log($scope.items);
 					_.each($scope.items, function(item) {
 						var icon;
 						if(item.type == 'area' || item.type == 'initiative') {

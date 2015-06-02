@@ -59,16 +59,16 @@ exports.updateImage = function(req, res, next) {
   var form = new formidable.IncomingForm();
 
   form.parse(req, function(err, fields, files) {
-    cloudinary.uploader.upload(files.image.path, function(result) {
+    cloudinary.uploader.upload(files.file.path, function(result) {
       if (result.error)
         return res.status(400).json(messaging.error('errors.resources.image.upload_error'));
       else {
         resource.image = result;
         resource.save(function(err) {
           if(err)
-            res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+            res.status(400).json(messaging.mongooseErrors(err, 'resources'));
           else
-            res.status(200).json(area);
+            res.status(200).json(resource);
         });
       }
     });
