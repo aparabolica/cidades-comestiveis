@@ -16,6 +16,7 @@ module.exports = function (app, config) {
   /* Authentication routes */
   var authRoutes = require('express').Router();
   authRoutes.post('/login', auth.login);
+  authRoutes.post('/login/facebook', auth.facebook);
   authRoutes.get('/logout', auth.logout);
   app.use(config.apiPrefix, authRoutes);
 

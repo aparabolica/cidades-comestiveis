@@ -2,6 +2,7 @@
  * Module dependencies
  */
 
+var dotenv = require('dotenv').load();
 var express = require('express')
 var passport = require('passport')
 var env = process.env.NODE_ENV || 'development'
