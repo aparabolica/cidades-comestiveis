@@ -376,6 +376,16 @@ app.controller('DashboardCtrl', [
 			if(user) {
 				CC.user.getContributions({id: $scope.user._id}, function(data) {
 					$scope.items = data.contributions;
+					console.log($scope.items);
+					_.each($scope.items, function(item) {
+						var icon;
+						if(item.type == 'area' || item.type == 'initiative') {
+							icon = item.type;
+						} else {
+							icon = item.category.toLowerCase();
+						}
+						item.icon = icon;
+					});
 				});
 			}
 		});

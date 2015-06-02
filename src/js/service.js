@@ -302,7 +302,7 @@ angular.module('cc')
 						}
 					];
 
-					$scope.selectedCategory = _.find($scope.categories, function(c) { return c.label == type; }) || null;
+					$scope.selectedCategory = _.find($scope.categories, function(c) { return c.api == type; }) || null;
 
 					$scope.selectCategory = function(cat) {
 						$scope.selectedCategory = cat;
