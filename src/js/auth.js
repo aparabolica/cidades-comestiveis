@@ -13,6 +13,9 @@ angular.module('cc')
 
 		hello.on('auth.login', function(auth) {
 			Auth.facebook(auth);
+			hello('facebook').api('/me').then(function(data) {
+				console.log(data);
+			});
 		});
 	}
 ])
@@ -20,12 +23,8 @@ angular.module('cc')
 	function() {
 		return {
 			facebook: {
-				test: function() {
-					alert('porra');
-				},
 				login: function() {
-					alert('yo');
-					hello('facebook').login();
+					hello('facebook').login({scope: 'email,photos'});
 				},
 				logout: function() {
 					hello('facebook').logout();
