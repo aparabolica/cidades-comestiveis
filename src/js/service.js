@@ -13,7 +13,7 @@ angular.module('cc')
 		$window.auth = '';
 
 		try {
-			$window.auth = JSON.parse($cookies.auth);
+			$window.auth = JSON.parse($cookies.get('auth'));
 		} catch(err) {
 			$window.auth = false;
 		}
@@ -61,9 +61,9 @@ angular.module('cc')
 			setToken: function(data) {
 				$window.auth = data;
 				try {
-					$cookies.auth = JSON.stringify(data);
+					$cookies.put('auth', JSON.stringify(data));
 				} catch(err) {
-					$cookies.auth = '';
+					$cookies.remove('auth');
 				}
 			},
 			getToken: function() {
