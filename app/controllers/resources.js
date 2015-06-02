@@ -121,6 +121,16 @@ exports.list = function(req, res, next) {
     page: page
   };
 
+  if (req.query['bbox']) {
+    options.criteria = {
+      geometry: {
+        $geoWithin: {
+          $geometry: req.query['bbox']
+        }
+      }
+    }
+  }
+
   Resource.list(options, function (err, resources) {
     if (err)
       return res.status(500).json(messaging.error('errors.internal_error'));
