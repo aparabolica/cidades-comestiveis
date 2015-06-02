@@ -200,6 +200,52 @@ app.controller('HomeCtrl', [
 			});
 		});
 
+		CC.resource.query(function(data) {
+			$scope.resources = data.resources;
+			_.each($scope.resources, function(item) {
+				var icon = item.category.toLowerCase();
+				item.icon = icon;
+			});
+		});
+
+	}
+]);
+
+app.controller('ResourceCtrl', [
+	'$scope',
+	function($scope) {
+
+		$scope.getResourceCategory = function(resource) {
+			var name = '';
+			console.log(resource);
+			switch(resource.category) {
+				case 'Supply':
+					name = 'Insumo';
+					break;
+				case 'Work':
+					name = 'Trabalho';
+					break;
+				case 'Knowledge':
+					name = 'Conhecimento';
+					break;
+				case 'Tool':
+					name = 'Ferramenta';
+					break;
+			}
+			return name;
+		};
+
+		$scope.countResources = function(category, collection) {
+			return _.filter(collection, function(resource) { return resource.category == category; }).length;
+		};
+
+		$scope.catFilter = '';
+		$scope.toggleFilter = function(category) {
+			if($scope.catFilter == category)
+				$scope.catFilter = '';
+			else
+				$scope.catFilter = category;
+		};
 	}
 ]);
 
@@ -215,7 +261,7 @@ app.controller('MapCtrl', [
 				// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 				// tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
 				// tileLayer: "http://{s}.sm.mapstack.stamen.com/((toner-lite,$ff6600[hsl-color]),(parks,$339900[hsl-color]),mapbox-water)/{z}/{x}/{y}.png",
-				tileLayer: "http://{s}.sm.mapstack.stamen.com/($ffffff[@p],(parks,$339900[hsl-color]),mapbox-water,(toner-lite,$ff6600[hsl-color])[multiply])/{z}/{x}/{y}.png",
+				tileLayer: "http://{s}.sm.mapstack.stamen.com/($eeeeee[@p],(parks,$339900[hsl-color]),mapbox-water,(toner-lite,$ff6600[hsl-color])[multiply])/{z}/{x}/{y}.png",
 				maxZoom: 18,
 				scrollWheelZoom: false
 			},

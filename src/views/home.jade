@@ -16,32 +16,29 @@
 .map(ng-controller="MapCtrl" ng-class="{active:mapActive}")
 	.clearfix
 		leaflet#map(defaults="defaults" center="center" markers="markers = (areas | areaToMarker)")
-		section#map-list-results
+		section#map-list-results(ng-controller="ResourceCtrl")
 			header.results-header
 				h2 Recursos no mapa
 				p.description Navegue pelo mapa e encontre recursos disponibilizados pela comunidade
-			nav.results-nav
-				a(href="#") Insumo 
-					span.count 0
-				a(href="#") Conhecimento 
-					span.count 2
-				a(href="#") Trabalho 
-					span.count 3
-				a(href="#") Ferramenta 
-					span.count 5
-			ul
-				li
+			nav.results-nav(ng-class="{filtering: catFilter}")
+				a(href="javascript:void(0);" ng-click="toggleFilter('Supply')" ng-class="{active:catFilter=='Supply'}") Insumo 
+					span.count {{countResources('Supply', resources)}}
+				a(href="javascript:void(0);" ng-click="toggleFilter('Knowledge')" ng-class="{active:catFilter=='Knowledge'}") Conhecimento 
+					span.count {{countResources('Knowledge', resources)}}
+				a(href="javascript:void(0);" ng-click="toggleFilter('Work')" ng-class="{active:catFilter=='Work'}") Trabalho 
+					span.count {{countResources('Work', resources)}}
+				a(href="javascript:void(0);" ng-click="toggleFilter('Tool')" ng-class="{active:catFilter=='Tool'}") Ferramenta 
+					span.count {{countResources('Tool', resources)}}
+			ul.resource-list
+				li.resource-item(ng-repeat="resource in resources | filter:{category:catFilter}")
 					article
-						h3 Descrição/nome
-				li
-					article
-						h3 Descrição/nome
-				li
-					article
-						h3 Descrição/nome
-				li
-					article
-						h3 Descrição/nome
+						.creator
+							h4 {{resource.creator.name}}
+						.content
+							h3
+								span(class="c-icon-{{resource.icon}}") 
+								| {{getResourceCategory(resource)}}
+							p {{resource.description}}
 
 	#map-actions
 		.add-new.primary
@@ -53,22 +50,22 @@
 			.hover-content
 				input(type="text")
 	nav#map-filters
-		a(href="javascript:void(0);")
+		p
 			span.icon.c-icon-insumo
 			| Insumos
-		a(href="javascript:void(0);")
+		p
 			span.icon.c-icon-conhecimento
 			| Conhecimentos
-		a(href="javascript:void(0);")
+		p
 			span.icon.c-icon-trabalho
 			| Trabalho
-		a(href="javascript:void(0);")
+		p
 			span.icon.c-icon-ferramentas
 			| Ferramentas
-		a(href="javascript:void(0);")
+		p
 			span.icon.c-icon-area
 			| Terrenos
-		a(href="javascript:void(0);")
+		p
 			span.icon.c-icon-iniciativa
 			| Iniciativas
 .row

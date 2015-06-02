@@ -322,6 +322,22 @@ input[type=submit] {
 			display: table;
 			border-top: 1px solid #ddd;
 			border-bottom: 1px solid #ddd;
+			&.filtering {
+				a {
+					color: #999;
+					&.active {
+						color: #333;
+						&:after {
+							content: ' x';
+							font-family: sans-serif;
+							font-size: 14px;
+							line-height: 1;
+							float: right;
+							margin-top: 5px;
+						}
+					}
+				}
+			}
 			a {
 				display: table-cell;
 				padding: 5px;
@@ -329,6 +345,7 @@ input[type=submit] {
 				text-align: center;
 				border-right: 1px solid #ddd;
 				text-decoration: none;
+				outline: none;
 				&:last-child {
 					border-right: 0;
 				}
@@ -341,14 +358,31 @@ input[type=submit] {
 				}
 			}
 		}
-		ul {
+		.resource-list {
 			margin: 0;
 			padding: 0;
 			list-style: none;
-			li {
+			.resource-item {
 				padding: 20px;
 				margin: 0;
 				border-bottom: 1px solid #999;
+				.creator {
+					width: 25%;
+					float: left;
+					margin-right: 20px;
+					h4 {
+						font-size: 22px;
+						color: #999;
+					}
+				}
+				.content {
+					h3 {
+						font-size: 18px;
+						text-transform: uppercase;
+						margin: 0;
+						color: @orange;
+					}
+				}
 			}
 		}
 	}
@@ -435,7 +469,8 @@ input[type=submit] {
 		.transition(all .2s linear);
 		display: table;
 		width: 100%;
-		a {
+		p {
+			cursor: default;
 			font-family: "PressFeeling";
 			display: table-cell;
 			color: #fff;
@@ -443,6 +478,7 @@ input[type=submit] {
 			line-height: 50px;
 			text-decoration: none;
 			margin: 20px 0;
+			padding: 0;
 			text-align: center;
 			.icon {
 				display: inline-block;
