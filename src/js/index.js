@@ -1,5 +1,8 @@
 window.angular = require('angular');
 window._ = require('underscore');
+window.moment = require('moment');
+require('moment/locale/pt-br.js');
+moment.locale('pt-br');
 
 window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 

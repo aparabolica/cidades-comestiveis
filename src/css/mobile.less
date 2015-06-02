@@ -2,6 +2,15 @@ html body.mobile {
 	width: 100%;
 	height: 100%;
 	padding: 0;
+	h1 {
+		font-size: 32px;
+	}
+	h2 {
+		font-size: 26px;
+	}
+	h3 {
+		font-size: 22px;
+	}
 	#masthead {
 		width: 100%;
 		display: block;
@@ -102,6 +111,27 @@ html body.mobile {
 			.border-radius(0);
 			header {
 				.border-radius(0);
+			}
+		}
+	}
+	#new-item {
+		margin: 0;
+		#new-item-category {
+			.categories {
+				.category-item {
+					margin: 5px;
+					font-size: 18px;
+					a {
+						padding: 5px 10px;
+						line-height: 20px;
+						.border-radius(5px);
+						.icon {
+							margin-right: 10px;
+							font-size: 20px;
+							line-height: 20px;
+						}
+					}
+				}
 			}
 		}
 	}

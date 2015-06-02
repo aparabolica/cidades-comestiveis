@@ -25,16 +25,21 @@ form#new-item(ng-submit="save(item)")
 					label(for="description_field") Descrição
 					textarea(id="description_field" ng-model="item.description")
 
-			.availability-field(ng-show="hasField('availability')")
-				.half-group
-					.half
-						p
-							label(for="available_at_field") Disponível de
-							datetimepicker#available_at_field(data-ng-model="item.availableAt")
-					.half
-						p
-							label(for="available_until_field") até
-							datetimepicker#available_until_field(data-ng-model="item.availableUntil")
+			.availability-field(ng-show="hasField('availability')" ng-init="displayAvAtCal = false; displayAvUnCal = false;")
+				p
+					label(for="available_at_field" ng-click="item.availableAt = null; displayAvAtCal = true;") Disponível de 
+						span.value {{formatDate(item.availableAt) || 'indefinido'}} 
+						span.icon-calendar 
+					label(for="available_until_field" ng-click="item.availableUntil = null; displayAvUnCal = true;") até 
+						span.value {{formatDate(item.availableUntil) || 'indefinido'}} 
+						span.icon-calendar
+				.calendar
+					.at(ng-show="!item.availableAt && displayAvAtCal")
+						span.icon-cross(ng-click="displayAvAtCal = false;")
+						datetimepicker#available_at_field(ng-model="item.availableAt" datetimepicker-config="{ startView:'day', minView:'day' }" on-set-time="displayAvAtCal = false;")
+					.until(ng-show="item.availableAt && !item.availableUntil && displayAvUnCal")
+						span.icon-cross(ng-click="displayAvUnCal = false;")
+						datetimepicker#available_until_field(ng-model="item.availableUntil" datetimepicker-config="{ startView:'day', minView:'day' }" on-set-time="displayAvUnCal = false;")
 
 			.website-field(ng-show="hasField('website')")
 				p
