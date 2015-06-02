@@ -28,8 +28,12 @@ var User = mongoose.model('User');
 var Area = mongoose.model('Area');
 
 /* Expose object instances */
+var admin1;
+var admin1AccessToken;
 var user1;
+var user1AccessToken;
 var user2;
+var user2AccessToken;
 
 /* The tests */
 
@@ -43,28 +47,32 @@ describe('API: Users', function(){
         should.not.exist(err);
 
         async.series([function(doneEach){
-          factory.createUser(function(err, admin){
+          factory.createUser(function(err, admin1){
             should.not.exist(err);
 
-            admin.should.have.property('role', 'admin');
-            doneEach();
+            admin1.should.have.property('role', 'admin');
+            expressHelper.login(admin1.email, admin1.password, function(token){
+              admin1AccessToken = token;
+              doneEach();
+            });
           });
         }, function (doneEach){
+          factory.createUser(function(err,usr){
+            should.not.exist(err);
+            user1 = usr;
+            expressHelper.login(user1.email, user1.password, function(token){
+              user1AccessToken = token;
+              factory.createAreas(9, user1, doneEach);
+            });
+          });
+        }, function(doneEach){
           /* Create 25 users */
           factory.createUsers(24, doneEach);
 
         }, function(doneEach){
-          User.findOne({role: 'user'}, function(err, user){
-            should.not.exist(err);
-
-            user2 = user;
-            factory.createAreas(9, user, doneEach);
-          });
-        }, function(doneEach){
           Area.findOne({}, function(err, area){
             should.not.exist(err);
-
-            factory.createInitiatives(12, user2._id, area._id, doneEach);
+            factory.createInitiatives(12, user1._id, area._id, doneEach);
           });
         }], doneBefore);
       });
@@ -77,7 +85,7 @@ describe('API: Users', function(){
     context('when parameters are valid', function(){
       it('return 201 (Created successfully) and the user info', function(doneIt){
         /* User info */
-        user1 = {
+        var payload = {
           name: 'First user',
           email: 'theveryfirstuser@email.com',
           password: '+8characthers',
@@ -88,7 +96,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .post(apiPrefix + '/users')
-          .send(user1)
+          .send(payload)
           .expect(201)
           .expect('Content-Type', /json/)
           .end(onResponse);
@@ -100,8 +108,8 @@ describe('API: Users', function(){
 
           /* User basic info */
           body.should.have.property('_id');
-          body.should.have.property('name', user1.name);
-          body.should.have.property('email', user1.email);
+          body.should.have.property('name', payload.name);
+          body.should.have.property('email', payload.email);
           body.should.have.property('role');
           body.should.have.property('registeredAt');
           body.should.not.have.property('password');
@@ -115,13 +123,15 @@ describe('API: Users', function(){
 
           /* Coordinates */
           var coordinates = locationGeojson.coordinates
-          coordinates[0].should.be.equal(user1.longitude);
-          coordinates[1].should.be.equal(user1.latitude);
+          coordinates[0].should.be.equal(payload.longitude);
+          coordinates[1].should.be.equal(payload.latitude);
 
-          /* Keep user id for later use */
-          user1.id = body._id;
+          user2 = body;
 
-          doneIt();
+          expressHelper.login(payload.email, payload.password, function(token){
+            user2AccessToken = token;
+            doneIt();
+          });
         }
       });
 
@@ -295,12 +305,28 @@ describe('API: Users', function(){
   });
 
   describe('PUT /api/v#/users', function(){
+    context('not logged in', function(){
+      it('should return 401 (Unauthorized)', function(doneIt){
+        request(app)
+          .put(apiPrefix + '/users/'+ user1.id)
+          .expect(401)
+          .end(function(err,res){
+            should.not.exist(err);
+            res.body.messages.should.have.lengthOf(1);
+            messaging.hasValidMessages(res.body).should.be.true;
+            res.body.messages[0].should.have.property('text', 'access_token.unauthorized');
+            doneIt();
+          });
+      });
+    });
+
     context('when parameters are missing', function() {
       it('should return 400 (Bad request)', function(doneIt){
 
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .expect(400)
           .expect('Content-Type', /json/)
           .end(onResponse);
@@ -323,6 +349,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .send({email: 'new@email.com'})
           .expect(400)
           .expect('Content-Type', /json/)
@@ -345,6 +372,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .send({password: 'mynewpassword'})
           .expect(400)
           .expect('Content-Type', /json/)
@@ -365,6 +393,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .send({currentPassword: 'awrongpassword', password: 'mynewpassword'})
           .expect(400)
           .expect('Content-Type', /json/)
@@ -386,6 +415,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .send({currentPassword: user1.password, password: 'short'})
           .expect(400)
           .expect('Content-Type', /json/)
@@ -412,6 +442,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .send({currentPassword: user1.password, password: 'aperfectpassword'})
           .expect(200)
           .expect('Content-Type', /json/)
@@ -432,17 +463,6 @@ describe('API: Users', function(){
           body.should.have.property('bio');
           body.should.have.property('registeredAt');
           body.should.have.property('location');
-
-          /* Location geojson */
-          var locationGeojson = body.location;
-          locationGeojson.should.have.property('type', 'Point');
-          locationGeojson.should.have.property('coordinates');
-          locationGeojson.coordinates.should.be.an.Array;
-
-          /* Coordinates */
-          var coordinates = locationGeojson.coordinates
-          coordinates[0].should.be.equal(user1.longitude);
-          coordinates[1].should.be.equal(user1.latitude);
 
           User.findById(user1.id, function(err, user){
             if (err) return doneIt(err);
@@ -469,6 +489,7 @@ describe('API: Users', function(){
         /* The request */
         request(app)
           .put(apiPrefix + '/users/'+ user1.id)
+          .set('Authorization', user1AccessToken)
           .send(payload)
           .expect(200)
           .expect('Content-Type', /json/)
@@ -562,7 +583,7 @@ describe('API: Users', function(){
     it('should return a list of areas and initiatives', function(doneIt){
       /* The request */
       request(app)
-        .get(apiPrefix + '/users/'  + user2.id + '/contributions')
+        .get(apiPrefix + '/users/'  + user1._id + '/contributions')
         .expect('Content-Type', /json/)
         .expect(200)
         .end(onResponse);
@@ -631,7 +652,7 @@ describe('API: Users', function(){
 
           /* Check pagination */
           var body = res.body;
-          body.should.have.property('count', 26);
+          body.should.have.property('count', 27);
           body.should.have.property('perPage', 10);
           body.should.have.property('page', 1);
           body.should.have.property('users');
@@ -673,7 +694,7 @@ describe('API: Users', function(){
 
           /* Check pagination */
           var body = res.body;
-          body.should.have.property('count', 26);
+          body.should.have.property('count', 27);
           body.should.have.property('perPage', 10);
           body.should.have.property('page', 2);
           body.should.have.property('users');
@@ -715,7 +736,7 @@ describe('API: Users', function(){
 
           /* Check pagination */
           var body = res.body;
-          body.should.have.property('count', 26);
+          body.should.have.property('count', 27);
           body.should.have.property('perPage', params.perPage);
           body.should.have.property('page', params.page);
           body.should.have.property('users');

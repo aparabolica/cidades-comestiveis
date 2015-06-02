@@ -18,7 +18,7 @@ exports.load = function (req, res, next, id){
     else if (!user)
       return res.status(404).json(messaging.error('errors.users.not_found'));
     else {
-      req.user = user;
+      req.object = user;
       next();
     }
   });
@@ -39,7 +39,7 @@ exports.new = function(req, res) {
 exports.update = function(req, res) {
 
   var params = req.body;
-  var user = req.user;
+  var user = req.object;
 
   /* No parameters informed */
   if (Object.keys(params).length == 0)
@@ -74,12 +74,13 @@ exports.update = function(req, res) {
 
 /* Get public info about a user. */
 exports.get = function(req, res) {
-  res.status(200).json(req.user.publicInfo());
+  var user = req.object;
+  res.status(200).json(user.publicInfo());
 };
 
 /* Get user contributions. */
 exports.contributions = function(req, res) {
-  var user = req.user;
+  var user = req.object;
 
   user.contributions(function(err, contribs){
     if (err)
