@@ -10,13 +10,15 @@ require('angular-resource');
 require('angular-cookies');
 require('angular-leaflet-directive');
 require('ng-dialog');
+require('angular-bootstrap-datetimepicker');
 
 var app = angular.module('cc', [
 	'ngDialog',
 	'ngCookies',
 	'ui.router', 
 	'ngResource',
-	'leaflet-directive'
+	'leaflet-directive',
+	'ui.bootstrap.datetimepicker'
 ]);
 
 app.config([
@@ -143,11 +145,14 @@ require('./filters');
 app.controller('MainCtrl', [
 	'CCAuth',
 	'CCLoginDialog',
+	'HelloService',
 	'ngDialog',
 	'$rootScope',
 	'$scope',
 	'$timeout',
-	function(Auth, CCLoginDialog, ngDialog, $rootScope, $scope, $timeout) {
+	function(Auth, CCLoginDialog, HelloService, ngDialog, $rootScope, $scope, $timeout) {
+
+		$scope.fb = HelloService.facebook;
 
 		$scope.isMobile = isMobile;
 

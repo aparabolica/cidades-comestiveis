@@ -56,6 +56,14 @@ module.exports = function(grunt) {
 						expand: true
 					}
 				]
+			},
+			datetimepicker: {
+				files: [
+					{
+						src: 'node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css',
+						dest: 'src/css/datetimepicker.css'
+					}
+				]
 			}
 		},
 		watch: {

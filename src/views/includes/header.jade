@@ -7,10 +7,13 @@ header#masthead
 		.six.columns
 			nav#authnav
 				a(href="javascript:void(0);" ng-click="loginDialog()" ng-show="!user") Entrar
+				a(ng-click="fb.login()" ng-show="!user") Facebook
 				#user-dashboard(ng-controller="UserCtrl" ng-show="user") Olá {{user.name}} 
 					span.icon-chevron-down
 					.user-settings
 						a(href="javascript:void(0);" ng-click="editUserDialog()") Editar perfil
+						a(ng-click="fb.login()") Conectar facebook
+						a(ng-click="fb.logout()") Desconectar facebook
 						a(href="javascript:void(0);" ng-click="logout()") Sair
 			nav#mastnav.clearfix
 				ul

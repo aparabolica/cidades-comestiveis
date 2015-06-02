@@ -25,6 +25,17 @@ form#new-item(ng-submit="save(item)")
 					label(for="description_field") Descrição
 					textarea(id="description_field" ng-model="item.description")
 
+			.availability-field(ng-show="hasField('availability')")
+				.half-group
+					.half
+						p
+							label(for="available_at_field") Disponível de
+							datetimepicker#available_at_field(data-ng-model="item.availableAt")
+					.half
+						p
+							label(for="available_until_field") até
+							datetimepicker#available_until_field(data-ng-model="item.availableUntil")
+
 			.website-field(ng-show="hasField('website')")
 				p
 					label(for="website_field") Website

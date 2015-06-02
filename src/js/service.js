@@ -28,6 +28,11 @@ angular.module('cc')
 					});
 				});
 			},
+			facebook: function(credentials) {
+				$http.post(apiUrl + '/login/facebook', credentials).success(function(data) {
+					console.log(data);
+				});
+			},
 			login: function(credentials) {
 				var self = this;
 				var deferred = $q.defer();
@@ -204,22 +209,29 @@ angular.module('cc')
 						{
 							name: 'Insumo',
 							label: 'insumo',
-							fields: []
+							api: 'resource',
+							defaultValues: [
+								{}
+							],
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Conhecimento',
 							label: 'conhecimento',
-							fields: []
+							api: 'resource',
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Trabalho',
 							label: 'trabalho',
-							fields: []
+							api: 'resource',
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Ferramentas',
 							label: 'ferramentas',
-							fields: []
+							api: 'resource',
+							fields: ['description', 'availability']
 						},
 						{
 							name: 'Terreno',
