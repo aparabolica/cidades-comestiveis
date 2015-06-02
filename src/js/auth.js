@@ -1,36 +1,4 @@
-var hello = require('hellojs');
-
 angular.module('cc')
-.run([
-	'CCAuth',
-	function(Auth) {
-
-		hello.init({
-			'facebook': '1671515763079566'
-		});
-
-		hello.on('auth.login', function(auth) {
-			Auth.facebook(auth);
-			hello('facebook').api('/me').then(function(data) {
-				console.log(data);
-			});
-		});
-	}
-])
-.factory('HelloService', [
-	function() {
-		return {
-			facebook: {
-				login: function() {
-					hello('facebook').login({scope: 'email,photos'});
-				},
-				logout: function() {
-					hello('facebook').logout();
-				}
-			}
-		}
-	}
-])
 .factory('authInterceptor', [
 	'$rootScope',
 	'$window',

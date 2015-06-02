@@ -1,5 +1,34 @@
-angular.module('cc')
+var hello = require('hellojs');
 
+angular.module('cc')
+.run([
+	'CCAuth',
+	function(Auth) {
+
+		hello.init({
+			'facebook': '1671515763079566'
+		});
+
+		hello.on('auth.login', function(auth) {
+			if(!Auth.getToken())
+				Auth.facebook(auth);
+		});
+
+	}
+])
+.factory('HelloService', [
+	function() {
+		return {
+			facebook: {
+				login: function() {
+					hello('facebook').login({scope: 'email,photos'});
+				},
+				logout: function() {
+				}
+			}
+		}
+	}
+])
 .factory('CCAuth', [
 	'CCService',
 	'$http',
@@ -29,6 +58,7 @@ angular.module('cc')
 				});
 			},
 			facebook: function(credentials) {
+				console.log('loggedin');
 				var self = this;
 				var deferred = $q.defer();
 				$http.post(apiUrl + '/login/facebook', credentials).success(function(data) {
@@ -50,12 +80,14 @@ angular.module('cc')
 				var self = this;
 				if(auth) {
 					var deferred = $q.defer();
-					$http.get(apiUrl + '/logout').success(function(data) {
-						self.setToken('');
-						deferred.resolve(true);
-					}).error(function() {
-						self.setToken('');
-						deferred.resolve(true);
+					hello('facebook').logout(function() {
+						$http.get(apiUrl + '/logout').success(function(data) {
+							self.setToken('');
+							deferred.resolve(true);
+						}).error(function() {
+							self.setToken('');
+							deferred.resolve(true);
+						});
 					});
 					return deferred.promise;
 				} else {
