@@ -80,6 +80,21 @@ exports.show = function(req, res, next) {
   res.status(200).json(req.object);
 }
 
+/* Bounding box */
+exports.bbox = function(req, res, next) {
+  Resource
+    .find({
+      geometry: {
+        $geoWithin: {
+          $geometry: req.query['bbox']
+        }
+      }
+    }, function(err, resouces){
+      if (err) return res.status(400).json(messaging.error('errors.resources.bbox'));
+      else res.status(200).json(resources);
+    });
+}
+
 /* List */
 exports.list = function(req, res, next) {
   var page = req.query['page'];
