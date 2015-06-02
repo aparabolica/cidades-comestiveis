@@ -1,6 +1,7 @@
 
 var crypto = require('crypto');
 var _ = require('underscore');
+var fbgraph = require('fbgraph');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
@@ -43,7 +44,7 @@ exports.login = function(req, res, next) {
 
 		// User not found.
 		} else if (!user) {
-			return res.status(403).json(messaging.error("access_token.local.unauthorized"));
+			return res.status(401).json(messaging.error("access_token.local.unauthorized"));
 
 		// Login successful, proceed with token
 		} else if (user) {
@@ -53,6 +54,42 @@ exports.login = function(req, res, next) {
 	})(req, res, next);
 
 };
+
+exports.facebook = function(req, res, next) {
+
+	var fbAccessToken = req.body.authResponse.access_token;
+	fbgraph.setAccessToken(fbAccessToken);
+	fbgraph.get("me?fields=id,name,picture,email", function(err, fbData) {
+		if (err)
+			return res.status(401).json(messaging.error("access_token.local.unauthorized"));
+		else {
+
+			// Facebook data
+			var picture = fbData.picture.data.url;
+			var email = fbData.email;
+			var name = fbData.name;
+
+			User.find({email: email}, function(err, user){
+				// Mongoose error
+				if (err) return res.status(500);
+
+				// Create user if not already registered
+				else if (!user) {
+					var user = new User({name: name,email: email});
+					user.save(function(err){
+						if (err) return res.status(500);
+						generateAccessToken(user, res);
+					})
+
+				// User is registered, generate token
+				} else generateAccessToken(user, res);
+			})
+		}
+	});
+
+};
+
+
 
 exports.logout = function(req, res, next) {
 
