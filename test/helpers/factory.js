@@ -105,49 +105,25 @@ exports.createInitiatives = function(n, creator_id, area_id, doneCreateInitiativ
 }
 
 /**
- * Resource Types
- **/
-
-rosie.define('ResourceType')
-	.sequence('name', function(i) { return 'name ' + i })
-	.sequence('category', function(i) { return 'Tool' })
-	.sequence('description', function(i) { return 'some description for initiative ' + i })
-
-
-exports.createResourceType = function(done){
-	var rt = new ResourceType(rosie.build('ResourceType'));
-	rt.save(function(err){
-		done(err, rt);
-	})
-}
-
-exports.createResourceTypes = function(n, doneCreateResourceTypes){
-	var self = this;
-
-	async.timesSeries(n, function(n,doneEach){
-		self.createResourceType(doneEach)
-	}, doneCreateResourceTypes);
-}
-
-/**
  * Initiatives
  **/
 
 rosie.define('Resource')
 	.sequence('description', function(i) { return 'some description for item ' + i })
+	.sequence('name', function(i) { return 'name for item ' + i })
 
-exports.createResource = function(creatorId, resourceTypeId, done){
+exports.createResource = function(creatorId, done){
 	var initiative = new Resource(rosie.build('Resource'));
 	initiative.creator = creatorId;
-	initiative.type = resourceTypeId;
+	initiative.category = 'Tool';
 	initiative.save(function(err){
 		done(err, initiative);
 	})
 }
 
-exports.createResources = function(n, creatorId, resourceTypeId, doneCreateResources){
+exports.createResources = function(n, creatorId, doneCreateResources){
 	var self = this;
 	async.timesSeries(n, function(i,doneEach){
-		self.createResource(creatorId, resourceTypeId, doneEach)
+		self.createResource(creatorId, doneEach)
 	}, doneCreateResources);
 }

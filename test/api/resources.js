@@ -32,10 +32,6 @@ var user1Resource2;
 var user2;
 var user2AccessToken;
 
-var resourceType1;
-var resourceType2;
-var resourceType3;
-
 /* Pagination */
 var resourceCount = 60;
 var defaultPerPage = 30;
@@ -55,7 +51,7 @@ describe('API: Resources', function(){
     expressHelper.whenReady(function(){
       clearDb.all(function(err){
         should.not.exist(err);
-        async.series([createUsers, createResourceTypes, createResources], doneBefore)
+        async.series([createUsers, createResources], doneBefore)
       });
     });
 
@@ -95,29 +91,10 @@ describe('API: Resources', function(){
     }
 
     /*
-     * Create resource type
-     */
-    function createResourceTypes(doneCreateResourceTypes) {
-      async.parallel([function(doneCreateResourceType){
-        factory.createResourceType(function(err, rt){
-          should.not.exist(err);
-          resourceType1 = rt;
-          doneCreateResourceType();
-        });
-      }, function(doneCreateResourceType){
-        factory.createResourceType(function(err, rt){
-          should.not.exist(err);
-          resourceType2 = rt;
-          doneCreateResourceType();
-        });
-      }], doneCreateResourceTypes);
-    }
-
-    /*
      * Create resources
      */
     function createResources(doneCreateResources) {
-      factory.createResources(resourceCount, user1, resourceType1, doneCreateResources);
+      factory.createResources(resourceCount, user1, doneCreateResources);
     }
 
 
@@ -150,7 +127,7 @@ describe('API: Resources', function(){
         var payload = {
           availableAt: new Date('2015-10-01'),
           availableUntil: new Date('2015-11-02'),
-          type: resourceType1,
+          category: 'Supply',
           description: 'Sharing a resource'
         }
 
@@ -167,7 +144,7 @@ describe('API: Resources', function(){
             body.should.have.property('availableAt');
             body.should.have.property('availableUntil');
             body.should.have.property('creator', user1._id.toHexString());
-            body.should.have.property('type', resourceType1._id.toHexString());
+            body.should.have.property('category', payload.category);
             body.should.have.property('geometry');
 
             user1Resource1 = res.body;
@@ -193,7 +170,7 @@ describe('API: Resources', function(){
 
             res.body.messages.should.have.lengthOf(1);
   					messaging.hasValidMessages(res.body).should.be.true;
-  					res.body.messages[0].should.have.property('text', 'mongoose.errors.resources.missing_resource_type');
+  					res.body.messages[0].should.have.property('text', 'mongoose.errors.resources.missing_category');
 
             doneIt();
           });
@@ -218,7 +195,7 @@ describe('API: Resources', function(){
           body.should.have.property('availableAt', user1Resource1.availableAt);
           body.should.have.property('availableUntil', user1Resource1.availableUntil);
           body.should.have.property('creator', user1._id.toHexString());
-          body.should.have.property('type', resourceType1._id.toHexString());
+          body.should.have.property('category', user1Resource1.category);
           body.should.have.property('geometry');
 
           doneIt();

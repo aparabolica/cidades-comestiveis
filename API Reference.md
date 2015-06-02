@@ -376,12 +376,12 @@ Posible responses:
 
 ---
 
-# Resource Type routes
+# Resource routes
 
-## New resource type
+## New resource
 
 ```
-POST /api/v1/resource_types/
+POST /api/v1/resource/
 ```
 
 ### Parameters
@@ -402,12 +402,12 @@ POST /api/v1/resource_types/
 ## Show resource type
 
 ```
-GET /api/v1/resource_types/:resource_types
+GET /api/v1/resources/:id
 ```
 
 Parameters:
 
-* `resource_types` (*integer,* ***required***)
+* `:id` (*integer,* ***required***)
 
 ### Responses
 
@@ -418,12 +418,10 @@ Parameters:
 
 ---
 
-## Udpate resource type
-
-An initiative can updated by its creator or admins.
+## Udpate resource
 
 ```
-PUT /api/v1/resource_types/:resource_types
+PUT /api/v1/resource_types/:id
 ```
 
 ### Parameters
@@ -442,10 +440,10 @@ PUT /api/v1/resource_types/:resource_types
 
 ---
 
-## List resource type
+## List resource
 
 ```
-GET /api/v1/resource_types
+GET /api/v1/resource
 ```
 
 Parameters:
