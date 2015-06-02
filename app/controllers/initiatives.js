@@ -7,6 +7,15 @@ var messaging = require('../../lib/messaging');
 var validator = require('validator');
 var _ = require('underscore');
 
+var formidable = require('formidable');
+var cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+});
+
+
 exports.load = function(req,res,next,id){
   Initiative.findById(id, function(err, initiative){
     if (err)
@@ -44,6 +53,30 @@ exports.update = function(req, res, next) {
         res.status(200).json(initiative);
       })
     }
+  });
+}
+
+/* Upload image */
+exports.updateImage = function(req, res, next) {
+  var initiative = req.object;
+
+  // parse a file upload
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files) {
+    cloudinary.uploader.upload(files.image.path, function(result) {
+      if (result.error)
+        return res.status(400).json(messaging.error('errors.initiatives.image.upload_error'));
+      else {
+        initiative.image = result;
+        initiative.save(function(err) {
+          if(err)
+            res.status(400).json(messaging.mongooseErrors(err, 'areas'));
+          else
+            res.status(200).json(area);
+        });
+      }
+    });
   });
 }
 

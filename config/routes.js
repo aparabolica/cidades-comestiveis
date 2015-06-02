@@ -46,19 +46,11 @@ module.exports = function (app, config) {
   initiativeRoutes.post('/initiatives', [auth.isLogged, initiatives.create]);
   initiativeRoutes.get('/initiatives/:id', initiatives.show);
   initiativeRoutes.put('/initiatives/:id', [auth.isLogged, auth.canUpdate, initiatives.update]);
+  initiativeRoutes.post('/initiatives/:id/image', [auth.isLogged, auth.canUpdate, initiatives.updateImage]);
   initiativeRoutes.put('/initiatives/:id/addArea/:area_id', [auth.isLogged, auth.canUpdate, initiatives.addArea]);
   initiativeRoutes.put('/initiatives/:id/removeArea/:area_id', [auth.isLogged, auth.canUpdate, initiatives.removeArea]);
   initiativeRoutes.get('/initiatives', initiatives.list);
   app.use(config.apiPrefix, initiativeRoutes);
-
-  /* Resource type routes */
-  var resourceTypesRoutes = require('express').Router();
-  resourceTypesRoutes.param('id', resourceTypes.load);
-  resourceTypesRoutes.post('/resource_types', [auth.isLogged, auth.isAdmin, resourceTypes.create]);
-  resourceTypesRoutes.get('/resource_types/:id', resourceTypes.show);
-  resourceTypesRoutes.put('/resource_types/:id', [auth.isLogged, auth.isAdmin, resourceTypes.update]);
-  resourceTypesRoutes.get('/resource_types', resourceTypes.list);
-  app.use(config.apiPrefix, resourceTypesRoutes);
 
   /* Resource routes */
   var resourcesRoutes = require('express').Router();
@@ -66,6 +58,7 @@ module.exports = function (app, config) {
   resourcesRoutes.post('/resources', [auth.isLogged, resources.create]);
   resourcesRoutes.get('/resources/:id', resources.show);
   resourcesRoutes.put('/resources/:id', [auth.isLogged, auth.canUpdate, resources.update]);
+  resourcesRoutes.put('/resources/:id/image', [auth.isLogged, auth.canUpdate, resources.updateImage]);
   resourcesRoutes.get('/resources', resources.list);
   app.use(config.apiPrefix, resourcesRoutes);
 

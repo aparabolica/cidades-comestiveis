@@ -50,7 +50,7 @@ exports.update = function(req, res, next) {
   });
 }
 
-/* Update area. */
+/* Upload image */
 exports.updateImage = function(req, res, next) {
   var area = req.object;
 

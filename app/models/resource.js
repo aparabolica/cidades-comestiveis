@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 
 var ResourceSchema = new Schema({
   creator: { type: Schema.ObjectId, ref: 'User', required: 'missing_creator'},
+  image: {},
   availableAt: Date,
   availableUntil: Date,
   category: {type: String, enum: ['Supply', 'Tool', 'Knowledge', 'Work'], required: 'missing_category'},
