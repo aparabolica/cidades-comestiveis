@@ -9,8 +9,6 @@ angular.module('cc')
 			'facebook': '1671515763079566'
 		});
 
-		// hello('facebook').logout();
-
 		hello.on('auth.login', function(auth) {
 			Auth.facebook(auth);
 			hello('facebook').api('/me').then(function(data) {

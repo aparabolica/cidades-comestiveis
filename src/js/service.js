@@ -210,34 +210,43 @@ angular.module('cc')
 							name: 'Insumo',
 							label: 'insumo',
 							api: 'resource',
-							defaultValues: [
-								{}
-							],
-							fields: ['description', 'availability']
+							defaultValues: {
+								resourceType: 'Supply'
+							},
+							fields: ['description', 'availability', 'geometry']
 						},
 						{
 							name: 'Conhecimento',
 							label: 'conhecimento',
 							api: 'resource',
-							fields: ['description', 'availability']
+							defaultValues: {
+								resourceType: 'Knowledge'
+							},
+							fields: ['description', 'availability', 'geometry']
 						},
 						{
 							name: 'Trabalho',
 							label: 'trabalho',
 							api: 'resource',
-							fields: ['description', 'availability']
+							defaultValues: {
+								resourceType: 'Work'
+							},
+							fields: ['description', 'availability', 'geometry']
 						},
 						{
 							name: 'Ferramentas',
 							label: 'ferramentas',
 							api: 'resource',
-							fields: ['description', 'availability']
+							defaultValues: {
+								resourceType: 'Tool'
+							},
+							fields: ['description', 'availability', 'geometry']
 						},
 						{
 							name: 'Terreno',
 							label: 'area',
 							api: 'area',
-							fields: ['address','description', 'has-garden', 'access','geometry']
+							fields: ['address','description', 'has-garden', 'access', 'geometry']
 						},
 						{
 							name: 'Iniciativa',
@@ -307,6 +316,10 @@ angular.module('cc')
 
 					$scope.save = function(item) {
 						if($scope.selectedCategory) {
+							// Apply category default values
+							var defaultValues = $scope.selectedCategory.defaultValues;
+							if(defaultValues)
+								angular.extend(item, defaultValues);
 							// New item
 							if(!item._id) {
 								CC[$scope.selectedCategory.api].save(item, function(data) {
