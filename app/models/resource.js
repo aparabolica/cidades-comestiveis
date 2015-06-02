@@ -25,7 +25,7 @@ ResourceSchema.static({
 
     this.find(criteria)
       .sort('availableUntil')
-      .populate('creator', '_id name')
+      .populate('creator', '_id name picture')
       .limit(options.perPage)
       .skip(options.perPage * options.page)
       .exec(cb);
