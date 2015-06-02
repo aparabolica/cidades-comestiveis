@@ -238,6 +238,23 @@ UserSchema.methods = {
 				});
 		}
 
+		function getResources(doneGetResources) {
+			mongoose.model('Resource')
+				.find({creator: self})
+				.sort({'createdAt': -1})
+				.lean()
+				.exec(function(err, resources){
+					if (err) return doneGetResources(err);
+
+					resources = _.map(resources, function(r){
+						r.type = 'resource';
+						return r;
+					})
+
+					doneGetResources(null, resources);
+				});
+		}
+
 		function getInitiatives(doneGetInitiatives) {
 			mongoose.model('Initiative')
 				.find({creator: self})
@@ -255,7 +272,7 @@ UserSchema.methods = {
 				});
 		}
 
-		async.series([getAreas,getInitiatives], function(err, results){
+		async.series([getAreas,getResources,getInitiatives], function(err, results){
 			doneGetContributions(err, _.flatten(results));
 		})
 

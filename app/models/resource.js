@@ -13,6 +13,7 @@ var ResourceSchema = new Schema({
   name: { type: String },
   description: {type: String },
   geometry: { type: {type: String}, coordinates: []},
+  createdAt: {type: Date, default: Date.now},
 });
 
 /** Statics */
