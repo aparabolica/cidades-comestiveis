@@ -42,7 +42,7 @@ module.exports = function (app, config, passport) {
   if (env !== 'test') app.use(morgan(log));
 
   // bodyParser should be above methodOverride
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(methodOverride(function (req, res) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {

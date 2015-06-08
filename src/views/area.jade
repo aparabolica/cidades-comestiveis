@@ -1,9 +1,11 @@
 article#area.single-item
+	.image-container.row(ng-show="item.image")
+		img(ng-show="item.image" ng-src="{{item.image.url}}")
 	p.main {{item.description}}
 	p
 		span.label Endereço: 
 		| {{item.address}}
-	.manage-initiatives(ng-controller="DashboardCtrl" ng-show="user")
+	.manage-initiatives(ng-controller="DashboardCtrl" ng-show="user && getItems('initiative').length")
 		form(ng-controller="InitiativeCtrl" ng-submit="addArea(initiative, item._id)")
 			p
 				label(for="add_initiative_input") Associar iniciativa

@@ -58,7 +58,7 @@ module.exports = function (app, config) {
   resourcesRoutes.post('/resources', [auth.isLogged, resources.create]);
   resourcesRoutes.get('/resources/:id', resources.show);
   resourcesRoutes.put('/resources/:id', [auth.isLogged, auth.canUpdate, resources.update]);
-  resourcesRoutes.put('/resources/:id/image', [auth.isLogged, auth.canUpdate, resources.updateImage]);
+  resourcesRoutes.post('/resources/:id/image', [auth.isLogged, auth.canUpdate, resources.updateImage]);
   resourcesRoutes.get('/resources', resources.list);
   app.use(config.apiPrefix, resourcesRoutes);
 

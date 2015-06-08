@@ -2,6 +2,16 @@ html body.mobile {
 	width: 100%;
 	height: 100%;
 	padding: 0;
+	overflow: hidden;
+	h1 {
+		font-size: 32px;
+	}
+	h2 {
+		font-size: 26px;
+	}
+	h3 {
+		font-size: 22px;
+	}
 	#masthead {
 		width: 100%;
 		display: block;
@@ -65,16 +75,105 @@ html body.mobile {
 		.border-radius(100%);
 		position: absolute;
 		bottom: 5px;
-		left: 50%;
-		margin-left: -30px;
+		left: 10px;
+		margin-left: 0;
 		background: @orange;
 		color: #000;
 		z-index: 3;
 		text-align: center;
 		border: 2px solid #fff;
+		.transition(all .2s linear);
 		.icon-plus {
 			display: inline-block;
 			font-size: 60px;
+		}
+		&.shrink {
+			width: 25px;
+			height: 25px;
+			padding: 5px;
+			left: 5px;
+			.icon-plus {
+				font-size: 25px;
+			}
+		}
+	}
+	#map-list-results {
+		.box-sizing(border-box);
+		width: 100%;
+		height: auto;
+		position: absolute;
+		bottom: 0;
+		top: calc(~"100% - 38px");
+		z-index: 2;
+		background: #fff;
+		margin: 0;
+		padding: 0;
+		overflow: visible;
+		padding-left: 90px;
+		.transition(top .2s linear);
+		&.active {
+			top: 80px;
+			padding-left: 0;
+			.results-header {
+				display: none;
+			}
+		}
+		.shrink-button {
+			position: absolute;
+			bottom: 10px;
+			right: 5px;
+			font-size: 30px;
+		}
+		.icon-map {
+			display: inline-block;
+			margin-right: 10px;
+		}
+		.results-header {
+			position: absolute;
+			left: 0;
+			text-align: right;
+			padding: 0;
+			right: 0;
+			bottom: 100%;
+			pointer-events: none;
+			margin: 0;
+			background: rgba(255,255,255,0.6);
+			h2 {
+				padding: 5px;
+				font-size: 22px;
+				margin: 0;
+				line-height: 100%;
+			}
+		}
+		nav.results-nav {
+			display: table;
+			width: 100%;
+			border-bottom: 1px solid #ddd;
+			a {
+				width: 1%;
+				display: table-cell;
+				padding: 5px;
+				text-align: center;
+				border-right: 1px solid #ddd;
+				.count {
+					font-size: 90%;
+					background: transparent;
+					color: @orange;
+					padding: 2px 5px;
+					margin-left: 5px;
+				}
+			}
+		}
+		.resource-list {
+			margin: 0;
+			padding: 5px 5px 5px 5px;
+			list-style: none;
+			overflow: auto;
+			height: calc(~"100% - 100px");
+			.resource-item {
+				margin: 0;
+				padding: 5px 0;
+			}
 		}
 	}
 	.logout-button {
@@ -102,6 +201,27 @@ html body.mobile {
 			.border-radius(0);
 			header {
 				.border-radius(0);
+			}
+		}
+	}
+	#new-item {
+		margin: 0;
+		#new-item-category {
+			.categories {
+				.category-item {
+					margin: 5px;
+					font-size: 18px;
+					a {
+						padding: 5px 10px;
+						line-height: 20px;
+						.border-radius(5px);
+						.icon {
+							margin-right: 10px;
+							font-size: 20px;
+							line-height: 20px;
+						}
+					}
+				}
 			}
 		}
 	}

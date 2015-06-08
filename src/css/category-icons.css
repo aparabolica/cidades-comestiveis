@@ -23,7 +23,8 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.c-icon-conhecimento:before {
+.c-icon-conhecimento:before,
+.c-icon-knowledge:before {
 	content: "\e601";
 }
 .c-icon-carrot:before,
@@ -31,13 +32,16 @@
 .c-icon-initiative:before {
 	content: "\e605";
 }
-.c-icon-insumo:before {
+.c-icon-insumo:before,
+.c-icon-supply:before {
 	content: "\e604";
 }
-.c-icon-ferramentas:before {
+.c-icon-ferramentas:before,
+.c-icon-tool:before {
 	content: "\e600";
 }
-.c-icon-trabalho:before {
+.c-icon-trabalho:before,
+.c-icon-work:before {
 	content: "\e602";
 }
 .c-icon-area:before {

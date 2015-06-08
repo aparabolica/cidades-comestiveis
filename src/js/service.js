@@ -2,28 +2,39 @@ var hello = require('hellojs');
 
 angular.module('cc')
 .run([
-	'CCAuth',
-	function(Auth) {
+	function() {
 
 		hello.init({
 			'facebook': '1671515763079566'
 		});
 
-		hello.on('auth.login', function(auth) {
-			if(!Auth.getToken())
-				Auth.facebook(auth);
-		});
-
 	}
 ])
 .factory('HelloService', [
-	function() {
+	'CCAuth',
+	'$timeout',
+	function(Auth, $timeout) {
+
+		var callback;
+
+		hello.on('auth.login', function(auth) {
+			if(!Auth.getToken()) {
+				Auth.facebook(auth).then(function() {
+					if(typeof callback == 'function') {
+						$timeout(function() {
+							callback();
+						}, 100);
+					}
+				});
+			}
+		});
+
 		return {
 			facebook: {
-				login: function() {
-					hello('facebook').login({scope: 'email,photos'});
-				},
-				logout: function() {
+				login: function(cb) {
+					callback = cb;
+					if(!Auth.getToken())
+						hello('facebook').login({scope: 'email,photos'});
 				}
 			}
 		}
@@ -58,7 +69,6 @@ angular.module('cc')
 				});
 			},
 			facebook: function(credentials) {
-				console.log('loggedin');
 				var self = this;
 				var deferred = $q.defer();
 				$http.post(apiUrl + '/login/facebook', credentials).success(function(data) {
@@ -130,6 +140,13 @@ angular.module('cc')
 				getContributions: {
 					method: 'GET',
 					url: apiUrl + '/users/:id/contributions'
+				},
+				message: {
+					method: 'POST',
+					url: apiUrl + '/users/:id/message',
+					params: {
+						id: '@id'
+					}
 				}
 			}),
 			area: $resource(apiUrl + '/areas/:id', { id: '@_id' }, {
@@ -139,6 +156,37 @@ angular.module('cc')
 				},
 				update: {
 					method: 'PUT'
+				},
+				addImage: {
+					method: 'POST',
+					url: apiUrl + '/areas/:id/image',
+					params: {
+						id: '@id'
+					},
+					transformRequest: function(data) {
+						if (data === undefined)
+							return data;
+
+						var fd = new FormData();
+						angular.forEach(data, function(value, key) {
+							if (value instanceof FileList) {
+								if (value.length == 1) {
+									fd.append(key, value[0]);
+								} else {
+									angular.forEach(value, function(file, index) {
+										fd.append(key + '_' + index, file);
+									});
+								}
+							} else {
+								fd.append(key, value);
+							}
+						});
+
+						return fd;
+					},
+					headers: {
+						'Content-Type': undefined
+					}
 				}
 			}),
 			initiative: $resource(apiUrl + '/initiatives/:id', { id: '@_id' }, {
@@ -162,13 +210,44 @@ angular.module('cc')
 					url: apiUrl + '/initiatives/:id/removeArea/:area_id'
 				}
 			}),
-			resource: $resource(apiUrl + '/resources/:id', { id: '@id' }, {
+			resource: $resource(apiUrl + '/resources/:id', { id: '@_id' }, {
 				query: {
 					method: 'GET',
 					isArray: false
 				},
 				update: {
 					method: 'PUT'
+				},
+				addImage: {
+					method: 'POST',
+					url: apiUrl + '/resources/:id/image',
+					params: {
+						id: '@id'
+					},
+					transformRequest: function(data) {
+						if (data === undefined)
+							return data;
+
+						var fd = new FormData();
+						angular.forEach(data, function(value, key) {
+							if (value instanceof FileList) {
+								if (value.length == 1) {
+									fd.append(key, value[0]);
+								} else {
+									angular.forEach(value, function(file, index) {
+										fd.append(key + '_' + index, file);
+									});
+								}
+							} else {
+								fd.append(key, value);
+							}
+						});
+
+						return fd;
+					},
+					headers: {
+						'Content-Type': undefined
+					}
 				}
 			})
 		}
@@ -247,42 +326,42 @@ angular.module('cc')
 							label: 'insumo',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Supply'
+								category: 'Supply'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Conhecimento',
 							label: 'conhecimento',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Knowledge'
+								category: 'Knowledge'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Trabalho',
 							label: 'trabalho',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Work'
+								category: 'Work'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Ferramentas',
 							label: 'ferramentas',
 							api: 'resource',
 							defaultValues: {
-								resourceType: 'Tool'
+								category: 'Tool'
 							},
-							fields: ['description', 'availability', 'geometry']
+							fields: ['description', 'availability', 'geometry', 'image']
 						},
 						{
 							name: 'Terreno',
 							label: 'area',
 							api: 'area',
-							fields: ['address','description', 'has-garden', 'access', 'geometry']
+							fields: ['address','description', 'has-garden', 'access', 'geometry', 'image']
 						},
 						{
 							name: 'Iniciativa',
@@ -292,7 +371,7 @@ angular.module('cc')
 						}
 					];
 
-					$scope.selectedCategory = _.find($scope.categories, function(c) { return c.label == type; }) || null;
+					$scope.selectedCategory = _.find($scope.categories, function(c) { return c.api == type; }) || null;
 
 					$scope.selectCategory = function(cat) {
 						$scope.selectedCategory = cat;
@@ -350,6 +429,8 @@ angular.module('cc')
 						});
 					});
 
+					$scope.uploadImage = false;
+
 					$scope.save = function(item) {
 						if($scope.selectedCategory) {
 							// Apply category default values
@@ -359,18 +440,38 @@ angular.module('cc')
 							// New item
 							if(!item._id) {
 								CC[$scope.selectedCategory.api].save(item, function(data) {
-									dialog.close();
-									$state.go('home');
+									if($scope.uploadImage) {
+										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
+											dialog.close();
+											$state.go('home');
+										});
+									} else {
+										dialog.close();
+										$state.go('home');
+									}
 								});
 							// Update item
 							} else {
 								CC[$scope.selectedCategory.api].update(item, function(data) {
-									dialog.close();
-									$state.go('home');
+									if($scope.uploadImage) {
+										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
+											dialog.close();
+											$state.go('home');
+										});
+									} else {
+										dialog.close();
+										$state.go('home');
+									}
 								});
 							}
 
 						}
+					};
+
+					$scope.formatDate = function(date) {
+						if(date)
+							return moment(date).format('LL');
+						return '';
 					};
 
 				}]

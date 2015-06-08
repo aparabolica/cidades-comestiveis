@@ -1,5 +1,8 @@
 window.angular = require('angular');
 window._ = require('underscore');
+window.moment = require('moment');
+require('moment/locale/pt-br.js');
+moment.locale('pt-br');
 
 window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
@@ -47,7 +50,7 @@ app.config([
 				}
 			})
 			.state('home.area', {
-				url: 'area/:id/',
+				url: 'terreno/:id/',
 				controller: 'SingleCtrl',
 				templateUrl: function() {
 					if(isMobile) {
@@ -66,6 +69,29 @@ app.config([
 					],
 					Type: function() {
 						return 'area';
+					}
+				}
+			})
+			.state('home.resource', {
+				url: 'recurso/:id/',
+				controller: 'SingleCtrl',
+				templateUrl: function() {
+					if(isMobile) {
+						return '/views/resource.html';
+					} else {
+						return null;
+					}
+				},
+				resolve: {
+					Data: [
+						'$stateParams',
+						'CCService',
+						function($stateParams, CC) {
+							return CC.resource.get({id: $stateParams.id}).$promise;
+						}
+					],
+					Type: function() {
+						return 'resource';
 					}
 				}
 			})
@@ -140,6 +166,7 @@ app.config([
 
 require('./service');
 require('./auth');
+require('./directives');
 require('./filters');
 
 app.controller('MainCtrl', [
@@ -162,6 +189,18 @@ app.controller('MainCtrl', [
 		if(isMobile) {
 			$scope.headerUrl = '/views/mobile/includes/header.html';
 			$scope.footerUrl = '/views/mobile/includes/footer.html';
+
+			$scope.listResultsActive = false;
+			$scope.toggleList = function(activateOnly) {
+				if(activateOnly) {
+					$scope.listResultsActive = true;
+				} else {
+					if($scope.listResultsActive)
+						$scope.listResultsActive = false;
+					else
+						$scope.listResultsActive = true;
+				}
+			}
 		}
 
 		$scope.$watch(function() {
@@ -196,22 +235,92 @@ app.controller('HomeCtrl', [
 			});
 		});
 
+		CC.resource.query(function(data) {
+			$scope.resources = data.resources;
+			_.each($scope.resources, function(item) {
+				var icon = item.category.toLowerCase();
+				item.icon = icon;
+			});
+		});
+
+		$scope.$on('cc.map.dragged', function(ev, bounds) {
+			var southWest = bounds.getSouthWest();
+			var northEast = bounds.getNorthEast();
+			var bbox = {
+				"type": "Polygon",
+				"coordinates": [
+					[
+						[southWest.lng, southWest.lat],
+						[southWest.lng, northEast.lat],
+						[northEast.lng, northEast.lat],
+						[northEast.lng, southWest.lat],
+						[southWest.lng, southWest.lat],
+					]
+				]
+			};
+			CC.resource.query({bbox: bbox}, function(data) {
+				$scope.resources = data.resources;
+				_.each($scope.resources, function(item) {
+					var icon = item.category.toLowerCase();
+					item.icon = icon;
+				});
+			});
+		});
+
+	}
+]);
+
+app.controller('ResourceCtrl', [
+	'$scope',
+	function($scope) {
+
+		$scope.getResourceCategory = function(resource) {
+			var name = '';
+			switch(resource.category) {
+				case 'Supply':
+					name = 'Insumo';
+					break;
+				case 'Work':
+					name = 'Trabalho';
+					break;
+				case 'Knowledge':
+					name = 'Conhecimento';
+					break;
+				case 'Tool':
+					name = 'Ferramenta';
+					break;
+			}
+			return name;
+		};
+
+		$scope.countResources = function(category, collection) {
+			return _.filter(collection, function(resource) { return resource.category == category; }).length;
+		};
+
+		$scope.catFilter = '';
+		$scope.toggleFilter = function(category) {
+			if($scope.catFilter == category)
+				$scope.catFilter = '';
+			else
+				$scope.catFilter = category;
+		};
 	}
 ]);
 
 app.controller('MapCtrl', [
+	'$rootScope',
 	'$scope',
 	'$state',
 	'$timeout',
 	'leafletData',
-	function($scope, $state, $timeout, leaflet) {
+	function($rootScope, $scope, $state, $timeout, leaflet) {
 
 		angular.extend($scope, {
 			defaults: {
 				// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 				// tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
 				// tileLayer: "http://{s}.sm.mapstack.stamen.com/((toner-lite,$ff6600[hsl-color]),(parks,$339900[hsl-color]),mapbox-water)/{z}/{x}/{y}.png",
-				tileLayer: "http://{s}.sm.mapstack.stamen.com/($ffffff[@p],(parks,$339900[hsl-color]),mapbox-water,(toner-lite,$ff6600[hsl-color])[multiply])/{z}/{x}/{y}.png",
+				tileLayer: "http://{s}.sm.mapstack.stamen.com/($eeeeee[@p],(parks,$339900[hsl-color]),mapbox-water,(toner-lite,$ff6600[hsl-color])[multiply])/{z}/{x}/{y}.png",
 				maxZoom: 18,
 				scrollWheelZoom: false
 			},
@@ -241,9 +350,12 @@ app.controller('MapCtrl', [
 			});
 
 			$scope.$on('leafletDirectiveMarker.click', function(event, args) {
-				// console.log(args);
 				$state.go('home.' + args.model.object.dataType, { type: args.model.object.dataType, id:  args.model.object._id });
 			});
+
+			$scope.$on('leafletDirectiveMap.dragend', _.debounce(function(event, args) {
+				$rootScope.$broadcast('cc.map.dragged', map.getBounds());
+			}, 500));
 
 			if(isMobile) {
 				if(navigator.geolocation) {
@@ -272,6 +384,8 @@ app.controller('SingleCtrl', [
 
 		$scope.item = Data;
 		$scope.type = Type;
+
+		console.log($scope.item);
 
 		var user = Auth.getToken();
 
@@ -330,9 +444,9 @@ app.controller('NewItemCtrl', [
 	'$stateParams',
 	'CCService',
 	'CCAuth',
-	'CCLoginDialog',
+	'HelloService',
 	'CCItemEdit',
-	function($scope, $state, $stateParams, CC, Auth, LoginDialog, ItemEdit) {
+	function($scope, $state, $stateParams, CC, Auth, Hello, ItemEdit) {
 
 		$scope.editDialog = ItemEdit;
 
@@ -341,7 +455,7 @@ app.controller('NewItemCtrl', [
 				if(Auth.getToken()) {
 					ItemEdit();
 				} else {
-					LoginDialog(ItemEdit);
+					Hello.facebook.login(ItemEdit);
 				}
 			}
 		});
@@ -370,9 +484,20 @@ app.controller('DashboardCtrl', [
 		}, function(user) {
 			$scope.items = false;
 			$scope.user = user;
-			CC.user.getContributions({id: $scope.user._id}, function(data) {
-				$scope.items = data.contributions;
-			});
+			if(user) {
+				CC.user.getContributions({id: $scope.user._id}, function(data) {
+					$scope.items = data.contributions;
+					_.each($scope.items, function(item) {
+						var icon;
+						if(item.type == 'area' || item.type == 'initiative') {
+							icon = item.type;
+						} else {
+							icon = item.category.toLowerCase();
+						}
+						item.icon = icon;
+					});
+				});
+			}
 		});
 
 		$scope.getItems = function(type) {
@@ -482,6 +607,23 @@ app.controller('PageCtrl', [
 
 		
 
+	}
+]);
+
+app.controller('ContactCreatorCtrl', [
+	'CCAuth',
+	'CCService',
+	'$scope',
+	function(Auth, CC, $scope) {
+		$scope.text = '';
+		$scope.contact = function(item, text) {
+			if(Auth.getToken()) {
+				var mail = 'Olá ' + item.creator.name + '! \n\n' + Auth.getToken().name + ' gostaria de conversar com você sobre um recurso que você publicou no Cidades Comestíveis. Segue sua mensagem: \n\n' + text;
+				CC.user.message({id: item.creator._id, message: mail}, function(data) {
+					console.log(data);
+				});
+			}
+		};
 	}
 ]);
 
