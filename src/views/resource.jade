@@ -1,4 +1,6 @@
 article#resource.single-item(ng-controller="ResourceCtrl")
+	.image-container.row(ng-show="item.image")
+		img(ng-src="{{item.image.url}}")
 	.creator
 		img(ng-src="{{item.creator.picture}}")
 		h4 {{item.creator.name}}
@@ -10,7 +12,31 @@ article#resource.single-item(ng-controller="ResourceCtrl")
 	p(ng-show="canEdit")
 		a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar
 
-	form#contact(ng-controller="ContactCreatorCtrl" ng-show="user" ng-submit="contact(item, text)")
-		p
-			textarea(ng-model="text")
+	form#contact.clearfix(ng-controller="ContactCreatorCtrl" ng-show="user" ng-submit="contact(item, text)")
+		p.message-label
+			label(for="message_input") Envie uma mensagem para {{item.creator.name}}
+		.message-tips
+			ul(ng-show="item.category == 'Supply'")
+				li Conte à pessoa um pouco sobre você e o que pretende fazer com os insumos doados.
+				li Quanto você precisa para realizar sua horta? Se forem mudas ou sementes, conte que espécies você gostaria. Se for outra coisa, não deixe de dizer o que quer e a quantidade que precisa.
+				li Você consegue oferecer algo em troca? Compartilhe o que você tem com a pessoa também!
+				li Se puder, compartilhe por email algumas fotos do que você fizer!
+			ul(ng-show="item.category == 'Knowledge'")
+				li Conte à pessoa um pouco sobre você e o que está buscando.
+				li Quer chamar a pessoa para dar uma oficina? Se sim, explique certinho o que está pretendendo fazer e por que precisa do apoio da pessoa.
+				li Que tipo de conhecimento está buscando? Deixe claro se você só quer sanar uma dúvida ou se está buscando uma ajuda mais aprofundada.
+				li Não deixe de contar o que você aprendeu e falar um pouco sobre o que você conhece também!
+			ul(ng-show="item.category == 'Work'")
+				li Conte à pessoa um pouco sobre você e o que está buscando.
+				li Você está buscando voluntários para iniciar ou ajudar em uma horta específica? Conte onde é o espaço em que pretende fazer a horta e o que está querendo fazer lá.
+				li Você está precisando de alguma ajuda braçal? Deixe claro que tipo de serviço você precisa na sua horta e por que o apoio daquela pessoa é importante para você.
+				li Se puder, ofereça algo em troca! Desde um almoço gostoso ou lanche comunitário até uma conversa descontraída ou algo que colheu recentemente na horta. Não deixe de reconhecer o apoio que lhe foi dado :-)
+			ul(ng-show="item.category == 'Tool'")
+				li Conte à pessoa um pouco sobre você e o que está buscando.
+				li Informe a pessoa sobre que ferramentas você precisa e para que tipo de trabalho você está precisando delas?
+				li Deixe claro por quanto tempo você precisará da ferramenta e quando pretende devolvê-la para seu dono. Quando devolver, lembre-se de devolver a ferramenta limpa e com um bilhete especial de agradecimento!
+				li Não deixe de convidar a pessoa para participar da ação com você. Mais do que emprestar, ela pode estar querendo participar da ação também!
+
+		p.message-input
+			textarea#message_input(ng-model="text")
 		input(type="submit" value="Enviar mensagem")

@@ -300,101 +300,6 @@ input[type=submit] {
 			.transition(opacity .2s linear);
 		}
 	}
-	#map-list-results {
-		width: 0%;
-		height: 400px;
-		overflow: auto;
-		float: left;
-		.results-header {
-			padding: 20px;
-			h2 {
-				font-size: 32px;
-				text-transform: uppercase;
-				margin: 0;
-			}
-			.description {
-				color: #999;
-				margin: 0;
-			}
-		}
-		.results-nav {
-			width: 100%;
-			display: table;
-			border-top: 1px solid #ddd;
-			border-bottom: 1px solid #ddd;
-			&.filtering {
-				a {
-					color: #999;
-					&.active {
-						color: #333;
-						&:after {
-							content: ' x';
-							font-family: sans-serif;
-							font-size: 14px;
-							line-height: 1;
-							float: right;
-							margin-top: 5px;
-						}
-					}
-				}
-			}
-			a {
-				display: table-cell;
-				padding: 5px;
-				color: #666;
-				text-align: center;
-				border-right: 1px solid #ddd;
-				text-decoration: none;
-				outline: none;
-				&:hover {
-					color: #333;
-				}
-				&:last-child {
-					border-right: 0;
-				}
-				.count {
-					font-size: 90%;
-					background: #f0f0f0;
-					color: @orange;
-					padding: 2px 5px;
-					margin-left: 5px;
-				}
-			}
-		}
-		.resource-list {
-			margin: 0;
-			padding: 0;
-			list-style: none;
-			.resource-item {
-				padding: 20px;
-				margin: 0;
-				border-bottom: 1px solid #999;
-				a {
-					color: inherit;
-					&:hover {
-						color: inherit;
-					}
-				}
-				.creator {
-					width: 25%;
-					float: left;
-					margin-right: 20px;
-					h4 {
-						font-size: 22px;
-						color: #999;
-					}
-				}
-				.content {
-					h3 {
-						font-size: 18px;
-						text-transform: uppercase;
-						margin: 0;
-						color: @orange;
-					}
-				}
-			}
-		}
-	}
 	#map-actions {
 		position: absolute;
 		top: 20px;
@@ -514,6 +419,113 @@ input[type=submit] {
 		#map-filters {
 			opacity: 1;
 			pointer-events: all;
+		}
+	}
+}
+
+#map-list-results {
+	width: 0%;
+	height: 400px;
+	overflow: auto;
+	float: left;
+	.results-header {
+		padding: 20px;
+		h2 {
+			font-size: 32px;
+			text-transform: uppercase;
+			margin: 0;
+		}
+		.description {
+			color: #999;
+			margin: 0;
+		}
+	}
+	.results-nav {
+		width: 100%;
+		display: table;
+		border-top: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
+		&.filtering {
+			a {
+				color: #999;
+				&.active {
+					color: #333;
+					&:after {
+						content: ' x';
+						font-family: sans-serif;
+						font-size: 14px;
+						line-height: 1;
+						float: right;
+						margin-top: 5px;
+					}
+				}
+			}
+		}
+		a {
+			display: table-cell;
+			padding: 5px;
+			color: #666;
+			text-align: center;
+			border-right: 1px solid #ddd;
+			text-decoration: none;
+			outline: none;
+			&:hover {
+				color: #333;
+			}
+			&:last-child {
+				border-right: 0;
+			}
+			.count {
+				font-size: 90%;
+				background: #f0f0f0;
+				color: @orange;
+				padding: 2px 5px;
+				margin-left: 5px;
+			}
+		}
+	}
+	.resource-list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		.resource-item {
+			padding: 20px;
+			margin: 0;
+			border-bottom: 1px solid #999;
+			&:last-child {
+				border-bottom: 0;
+			}
+			a {
+				color: inherit;
+				&:hover {
+					color: inherit;
+				}
+			}
+			.creator {
+				width: 20%;
+				min-width: 100px;
+				float: left;
+				margin-right: 20px;
+				img {
+					width: 100%;
+					height: auto;
+				}
+				h4 {
+					font-size: 22px;
+					line-height: 100%;
+					color: #999;
+					margin: 0;
+					padding: 0;
+				}
+			}
+			.content {
+				h3 {
+					font-size: 18px;
+					text-transform: uppercase;
+					margin: 0;
+					color: @orange;
+				}
+			}
 		}
 	}
 }
@@ -1020,6 +1032,36 @@ input[type=submit] {
 		margin: 0 0 10px;
 		text-align: center;
 		font-size: 38px;
+	}
+}
+
+.single-item {
+	.image-container {
+		width: 100%;
+		height: 400px;
+		img {
+			max-width: 100%;
+			max-height: 100%;
+			width: auto;
+			height: auto;
+			margin: 0 auto;
+			display: block;
+		}
+	}
+	#contact {
+		.message-tips {
+			float: left;
+			width: 33.3333%;
+			.box-sizing(border-box);
+			padding-right: 20px;
+		}
+		.message-input {
+			float: left;
+			width: 66.6666%;
+			textarea {
+				height: 420px;
+			}
+		}
 	}
 }
 

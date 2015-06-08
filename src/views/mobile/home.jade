@@ -9,7 +9,41 @@
 	.map(ng-controller="MapCtrl" ng-show="user")
 		leaflet#map(defaults="defaults" center="center" markers="markers = (areas | areaToMarker)")
 
-	a.share-button(ui-sref="home.newItem" ng-show="user")
+	a.share-button(ui-sref="home.newItem" ng-show="user" ng-class="{shrink: listResultsActive}")
 		.icon-plus
 
+	section#map-list-results(ng-controller="ResourceCtrl" ng-show="user" ng-class="{active: listResultsActive}")
+		//- span.icon-map
+		a.shrink-button.icon-chevron-down(href="javascript:void(0);" ng-click="toggleList()" ng-show="listResultsActive")
+		header.results-header
+			h2 Recursos no mapa
+		nav.results-nav(ng-class="{filtering: catFilter}" ng-click="toggleList(true)")
+			a(href="javascript:void(0);" ng-click="listResultsActive ? toggleFilter('Supply') : null" ng-class="{active:catFilter=='Supply'}")
+				span.c-icon-supply 
+				span.count {{countResources('Supply', resources)}}
+			a(href="javascript:void(0);" ng-click="listResultsActive ? toggleFilter('Knowledge') : null" ng-class="{active:catFilter=='Knowledge'}") 
+				span.c-icon-knowledge 
+				span.count {{countResources('Knowledge', resources)}}
+			a(href="javascript:void(0);" ng-click="listResultsActive ? toggleFilter('Work') : null" ng-class="{active:catFilter=='Work'}") 
+				span.c-icon-work 
+				span.count {{countResources('Work', resources)}}
+			a(href="javascript:void(0);" ng-click="listResultsActive ? toggleFilter('Tool') : null" ng-class="{active:catFilter=='Tool'}") 
+				span.c-icon-tool 
+				span.count {{countResources('Tool', resources)}}
+		ul.resource-list
+			li.resource-item.clearfix(ng-repeat="resource in resources | filter:{category:catFilter}")
+				article
+					.creator
+						a(ui-sref="home.resource({id: resource._id})")
+							img(ng-src="{{resource.creator.picture}}")
+						h4
+							a(ui-sref="home.resource({id: resource._id})") {{resource.creator.name}}
+					.content
+						h3
+							a(ui-sref="home.resource({id: resource._id})")
+								span(class="c-icon-{{resource.icon}}") 
+								| {{getResourceCategory(resource)}}
+						p
+							a(ui-sref="home.resource({id: resource._id})")
+								{{resource.description}}
 	.ui-view

@@ -189,6 +189,18 @@ app.controller('MainCtrl', [
 		if(isMobile) {
 			$scope.headerUrl = '/views/mobile/includes/header.html';
 			$scope.footerUrl = '/views/mobile/includes/footer.html';
+
+			$scope.listResultsActive = false;
+			$scope.toggleList = function(activateOnly) {
+				if(activateOnly) {
+					$scope.listResultsActive = true;
+				} else {
+					if($scope.listResultsActive)
+						$scope.listResultsActive = false;
+					else
+						$scope.listResultsActive = true;
+				}
+			}
 		}
 
 		$scope.$watch(function() {
@@ -372,6 +384,8 @@ app.controller('SingleCtrl', [
 
 		$scope.item = Data;
 		$scope.type = Type;
+
+		console.log($scope.item);
 
 		var user = Auth.getToken();
 

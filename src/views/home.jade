@@ -30,7 +30,7 @@
 				a(href="javascript:void(0);" ng-click="toggleFilter('Tool')" ng-class="{active:catFilter=='Tool'}") Ferramenta 
 					span.count {{countResources('Tool', resources)}}
 			ul.resource-list
-				li.resource-item(ng-repeat="resource in resources | filter:{category:catFilter}")
+				li.resource-item.clearfix(ng-repeat="resource in resources | filter:{category:catFilter}")
 					article
 						.creator
 							a(ui-sref="home.resource({id: resource._id})")
