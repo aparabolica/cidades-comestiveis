@@ -86,7 +86,7 @@ exports.bbox = function(req, res, next) {
     .find({
       geometry: {
         $geoWithin: {
-          $geometry: req.query['bbox']
+          $geometry: JSON.parse(req.query['bbox'])
         }
       }
     }, function(err, resouces){
@@ -125,7 +125,7 @@ exports.list = function(req, res, next) {
     options.criteria = {
       geometry: {
         $geoWithin: {
-          $geometry: req.query['bbox']
+          $geometry: JSON.parse(req.query['bbox'])
         }
       }
     }

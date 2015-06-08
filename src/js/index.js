@@ -235,14 +235,14 @@ app.controller('HomeCtrl', [
 			var southWest = bounds.getSouthWest();
 			var northEast = bounds.getNorthEast();
 			var bbox = {
-				type: 'Polygon',
-				coordinates: [
+				"type": "Polygon",
+				"coordinates": [
 					[
 						[southWest.lng, southWest.lat],
 						[southWest.lng, northEast.lat],
 						[northEast.lng, northEast.lat],
 						[northEast.lng, southWest.lat],
-						[northEast.lng, northEast.lat],
+						[southWest.lng, southWest.lat],
 					]
 				]
 			};
