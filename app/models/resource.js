@@ -19,7 +19,6 @@ var ResourceSchema = new Schema({
 /** Statics */
 
 ResourceSchema.static({
-
 	list: function (options, cb) {
     var criteria = options.criteria || {}
 

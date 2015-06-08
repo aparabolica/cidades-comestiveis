@@ -60,7 +60,6 @@ module.exports = function (app, config) {
   resourcesRoutes.put('/resources/:id', [auth.isLogged, auth.canUpdate, resources.update]);
   resourcesRoutes.put('/resources/:id/image', [auth.isLogged, auth.canUpdate, resources.updateImage]);
   resourcesRoutes.get('/resources', resources.list);
-  resourcesRoutes.get('/resources/bbox', resources.bbox);
   app.use(config.apiPrefix, resourcesRoutes);
 
   /* Send 404 (Not found) to non existent API routes */

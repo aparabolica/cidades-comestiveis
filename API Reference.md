@@ -451,6 +451,7 @@ Parameters:
 
 * `page` (*integer*, default: `1`)
 * `perPage` (*integer*, default: `30`, maximum: `100`)
+* `bbox`: (`[min_lon, min_lat, max_lon, max_lat]` *array*)
 
 Posible responses:
 

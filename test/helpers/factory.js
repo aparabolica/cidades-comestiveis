@@ -108,21 +108,35 @@ exports.createInitiatives = function(n, creator_id, area_id, doneCreateInitiativ
  **/
 
 rosie.define('Resource')
-	.sequence('description', function(i) { return 'some description for item ' + i })
+	.sequence('description', function(i) {
+			return 'some description for item ' + i
+		})
 	.sequence('name', function(i) { return 'name for item ' + i })
+	.option('bbox', [-180,-90,180,90])
+	.attr('geometry', ['bbox'], function(bbox){
+		// http://geojson.org/geojson-spec.html#bounding-boxes
+		var lat = bbox[1] + Math.random() * (bbox[3]-bbox[1]);
+		var lon = bbox[0] + Math.random() * (bbox[2]-bbox[0]);
 
-exports.createResource = function(creatorId, done){
-	var initiative = new Resource(rosie.build('Resource'));
-	initiative.creator = creatorId;
-	initiative.category = 'Tool';
-	initiative.save(function(err){
-		done(err, initiative);
+		return {
+			type: 'Point',
+			coordinates: [lon,lat]
+		}
+	})
+
+
+exports.createResource = function(creatorId, bbox, done){
+	var resource = new Resource(rosie.build('Resource', {},{bbox: bbox}));
+	resource.creator = creatorId;
+	resource.category = 'Tool';
+	resource.save(function(err){
+		done(err, resource);
 	})
 }
 
-exports.createResources = function(n, creatorId, doneCreateResources){
+exports.createResources = function(n, creatorId, bbox, doneCreateResources){
 	var self = this;
 	async.timesSeries(n, function(i,doneEach){
-		self.createResource(creatorId, doneEach)
+		self.createResource(creatorId, bbox, doneEach)
 	}, doneCreateResources);
 }

@@ -10,7 +10,6 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var moment = require('moment');
 var validator = require('validator');
-var autoIncrement = require('mongoose-auto-increment');
 
 /**
  * User schema

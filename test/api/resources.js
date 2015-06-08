@@ -31,6 +31,8 @@ var user1Resource1;
 var user1Resource2;
 var user2;
 var user2AccessToken;
+var bbox1 = [-10,-10,5,10];
+var bbox2 = [10,12,25,25];
 
 /* Pagination */
 var resourceCount = 60;
@@ -94,10 +96,14 @@ describe('API: Resources', function(){
      * Create resources
      */
     function createResources(doneCreateResources) {
-      factory.createResources(resourceCount, user1, doneCreateResources);
+      async.parallel([function(done){
+        factory.createResources(20, user1, bbox1, done);
+      }, function(done){
+        factory.createResources(20, user1, bbox2, done);
+      }, function(done){
+        factory.createResources(20, user2, bbox1, done);
+      }], doneCreateResources);
     }
-
-
   });
 
 
@@ -328,6 +334,71 @@ describe('API: Resources', function(){
         }
       });
     });
+
+    context('bbox query', function(){
+      it('should return resources within the bbox', function(doneIt){
+        var options = {
+          bbox: bbox1
+        }
+
+
+        /* The request */
+        request(app)
+          .get(apiPrefix + '/resources')
+          .query(options)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(onResponse);
+
+        /* Verify response */
+        function onResponse(err, res) {
+          if (err) return doneIt(err);
+
+          /* Check pagination */
+          var body = res.body;
+          body.should.have.property('count', 61);
+          body.should.have.property('perPage', defaultPerPage);
+          body.should.have.property('page', defaultPage);
+          body.should.have.property('resources');
+
+          /* Check data */
+          var data = body.resources;
+          data.should.have.lengthOf(defaultPerPage);
+          mongoose.model('Resource')
+              .find({
+                geometry: {
+                  $geoWithin: {
+                      $box: [
+                        [ bbox1[0], bbox1[1] ],
+                        [ bbox1[2], bbox1[3] ]
+                      ]
+                  }
+                }
+               })
+              .sort('availableUntil')
+              .limit(options.perPage)
+              .skip(options.perPage*(options.page-1))
+              .populate('creator', '_id name')
+              .lean()
+              .exec(function(err, resources){
+                if (err) return doneIt(err);
+
+                for (var i = 0; i < options.perPage; i++) {
+
+                  var resource = resources[i];
+                  data[i].should.have.property('_id', resource._id.toHexString());
+                  data[i].should.have.property('description', resource.description);
+
+                  var creator = resource.creator;
+                  data[i].should.have.property('creator');
+                  data[i]['creator'].should.have.property('name');
+                  data[i]['creator'].should.have.property('_id');
+                }
+                doneIt();
+              });
+          }
+      })
+    })
 
     context('bad parameters', function(){
       it('return 400 and error messages', function(doneIt){

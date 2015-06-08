@@ -80,25 +80,11 @@ exports.show = function(req, res, next) {
   res.status(200).json(req.object);
 }
 
-/* Bounding box */
-exports.bbox = function(req, res, next) {
-  Resource
-    .find({
-      geometry: {
-        $geoWithin: {
-          $geometry: req.query['bbox']
-        }
-      }
-    }, function(err, resouces){
-      if (err) return res.status(400).json(messaging.error('errors.resources.bbox'));
-      else res.status(200).json(resources);
-    });
-}
-
 /* List */
 exports.list = function(req, res, next) {
   var page = req.query['page'];
   var perPage = req.query['perPage'];
+  var bbox = req.query['bbox'];
 
   /* Validate query parameters */
   if (page) {
@@ -121,11 +107,17 @@ exports.list = function(req, res, next) {
     page: page
   };
 
-  if (req.query['bbox']) {
+  if (bbox) {
+
+    // parse string values to float
+    var bbox = _.map(req.query['bbox'], function(i){
+      return parseFloat(i)
+    });
+
     options.criteria = {
       geometry: {
         $geoWithin: {
-          $geometry: req.query['bbox']
+          $box: [ [ bbox[0] , bbox[1] ] , [ bbox[2], bbox[3] ] ]
         }
       }
     }

@@ -769,6 +769,4 @@ describe('API: Users', function(){
       });
     });
   });
-
-
 });
