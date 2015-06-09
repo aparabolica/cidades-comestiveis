@@ -258,6 +258,12 @@ app.controller('HomeCtrl', [
 					]
 				]
 			};
+			bbox = {
+				"coordinates": [
+					[southWest.lat, southWest.lng],
+					[northEast.lat, northEast.lng]
+				]
+			};
 			CC.resource.query({bbox: bbox}, function(data) {
 				$scope.resources = data.resources;
 				_.each($scope.resources, function(item) {

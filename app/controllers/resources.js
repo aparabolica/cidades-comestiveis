@@ -109,15 +109,17 @@ exports.list = function(req, res, next) {
 
   if (bbox) {
 
+    bbox = JSON.parse(req.query['bbox']);
+
     // parse string values to float
-    var bbox = _.map(req.query['bbox'], function(i){
-      return parseFloat(i)
+    bbox = _.map(bbox.coordinates, function(i){
+      return [parseFloat(i[0]), parseFloat(i[1])];
     });
 
     options.criteria = {
       geometry: {
         $geoWithin: {
-          $box: [ [ bbox[0] , bbox[1] ] , [ bbox[2], bbox[3] ] ]
+          $box: bbox
         }
       }
     }
