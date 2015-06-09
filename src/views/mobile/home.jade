@@ -12,6 +12,9 @@
 	a.share-button(ui-sref="home.newItem" ng-show="user" ng-class="{shrink: listResultsActive}")
 		.icon-plus
 
+	nav#history(ng-hide="isHome")
+		a.icon-chevron-left(ui-sref="home")
+
 	section#map-list-results(ng-controller="ResourceCtrl" ng-show="user" ng-class="{active: listResultsActive}")
 		//- span.icon-map
 		a.shrink-button.icon-chevron-down(href="javascript:void(0);" ng-click="toggleList()" ng-show="listResultsActive")

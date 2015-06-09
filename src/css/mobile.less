@@ -1,8 +1,6 @@
 html body.mobile {
 	width: 100%;
-	height: 100%;
 	padding: 0;
-	overflow: hidden;
 	h1 {
 		font-size: 32px;
 	}
@@ -30,7 +28,7 @@ html body.mobile {
 			}
 		}
 		.logged-in {
-			position: absolute;
+			position: fixed;
 			top: 10px;
 			right: 10px;
 			width: 60px;
@@ -86,6 +84,7 @@ html body.mobile {
 		.icon-plus {
 			display: inline-block;
 			font-size: 60px;
+			.transition(all .2s linear);
 		}
 		&.shrink {
 			width: 25px;
@@ -96,6 +95,16 @@ html body.mobile {
 				font-size: 25px;
 			}
 		}
+	}
+	#history {
+		position:fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 100;
+		background: #fff;
+		padding: 10px 5px;
+		font-size: 30px;
 	}
 	#map-list-results {
 		.box-sizing(border-box);
@@ -180,7 +189,7 @@ html body.mobile {
 		position: absolute;
 		top: 10px;
 		left: 10px;
-		z-index: 4;
+		z-index: 3;
 	}
 	#mobile-home {
 		.ui-view {
@@ -221,6 +230,25 @@ html body.mobile {
 							line-height: 20px;
 						}
 					}
+				}
+			}
+		}
+	}
+	.single-item {
+		height: 100%;
+		overflow: auto;
+		#contact {
+			.message-tips {
+				float: none;
+				width: 100%;
+				padding-right: 0;
+			}
+			.message-input {
+				float: none;
+				width: 100%;
+				textarea {
+					width: 100%;
+					height: 200px;
 				}
 			}
 		}

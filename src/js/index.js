@@ -175,9 +175,10 @@ app.controller('MainCtrl', [
 	'HelloService',
 	'ngDialog',
 	'$rootScope',
+	'$state',
 	'$scope',
 	'$timeout',
-	function(Auth, CCLoginDialog, HelloService, ngDialog, $rootScope, $scope, $timeout) {
+	function(Auth, CCLoginDialog, HelloService, ngDialog, $rootScope, $state, $scope, $timeout) {
 
 		$scope.fb = HelloService.facebook;
 
@@ -201,6 +202,14 @@ app.controller('MainCtrl', [
 						$scope.listResultsActive = true;
 				}
 			}
+
+			$rootScope.$on('$stateChangeSuccess', function(ev, toState, fromState) {
+				if(toState.name == 'home')
+					$scope.isHome = true;
+				else
+					$scope.isHome = false;
+			});
+
 		}
 
 		$scope.$watch(function() {
@@ -243,7 +252,7 @@ app.controller('HomeCtrl', [
 			});
 		});
 
-		$scope.$on('cc.map.dragged', function(ev, bounds) {
+		$scope.$on('cc.map.boundsUpdate', _.debounce(function(ev, bounds) {
 			var southWest = bounds.getSouthWest();
 			var northEast = bounds.getNorthEast();
 			var bbox = {
@@ -271,7 +280,7 @@ app.controller('HomeCtrl', [
 					item.icon = icon;
 				});
 			});
-		});
+		}), 500);
 
 	}
 ]);
@@ -359,9 +368,18 @@ app.controller('MapCtrl', [
 				$state.go('home.' + args.model.object.dataType, { type: args.model.object.dataType, id:  args.model.object._id });
 			});
 
-			$scope.$on('leafletDirectiveMap.dragend', _.debounce(function(event, args) {
-				$rootScope.$broadcast('cc.map.dragged', map.getBounds());
-			}, 500));
+			$scope.$on('leafletDirectiveMap.dragend', function(event, args) {
+				if(args.leafletObject._container.id == 'map')
+					$rootScope.$broadcast('cc.map.boundsUpdate', map.getBounds());
+			});
+			$scope.$on('leafletDirectiveMap.zoomend', function(event, args) {
+				if(args.leafletObject._container.id == 'map')
+					$rootScope.$broadcast('cc.map.boundsUpdate', map.getBounds());
+			});
+			$scope.$on('leafletDirectiveMap.load', function(event, args) {
+				if(args.leafletObject._container.id == 'map')
+					$rootScope.$broadcast('cc.map.boundsUpdate', map.getBounds());
+			});
 
 			if(isMobile) {
 				if(navigator.geolocation) {
@@ -628,6 +646,95 @@ app.controller('ContactCreatorCtrl', [
 				CC.user.message({id: item.creator._id, message: mail}, function(data) {
 					console.log(data);
 				});
+			}
+		};
+	}
+]);
+
+
+/*
+ * Loading module
+ */
+
+app
+.config([
+	'$httpProvider',
+	function($httpProvider) {
+		$httpProvider.interceptors.push('loadingStatusInterceptor');
+	}
+])
+.service('LoadingService', [
+	function() {
+
+		var loads = [];
+
+		return {
+			get: function() {
+				return loads;
+			},
+			add: function(text, id) {
+				if(typeof id == 'undefined')
+					id = Math.random();
+
+				var load = {
+					_id: id,
+					msg: text
+				};
+
+				loads.push(load);
+				loads = loads; // trigger digest?
+				return load._id;
+			},
+			remove: function(id) {
+				loads = loads.filter(function(load) { return load._id !== id; });
+				loads = loads;
+				return loads;
+			}
+		}
+
+	}
+])
+.directive('loadingStatusMessage', [
+	'LoadingService',
+	function(service) {
+		return {
+			link: function($scope, $element, attrs) {
+				$scope.$watch(function() {
+					return service.get();
+				}, function(loads) {
+					$scope.loads = loads;
+				});
+			},
+			template: '<div class="loading-message"><span ng-repeat="load in loads" ng-show="load.msg">{{load.msg}}<br/></span></div>'
+		};
+	}
+])
+.factory('loadingStatusInterceptor', [
+	'$q',
+	'$rootScope',
+	'$timeout',
+	'LoadingService',
+	function($q, $rootScope, $timeout, service) {
+		return {
+			request: function(config) {
+
+				config.loadingId = service.add();
+
+				return config || $q.when(config);
+			},
+			response: function(response) {
+
+				if(response.config.loadingId)
+					service.remove(response.config.loadingId);
+
+				return response || $q.when(response);
+			},
+			responseError: function(rejection) {
+
+				if(rejection.config.loadingId)
+					service.remove(rejection.config.loadingId);
+
+				return $q.reject(rejection);
 			}
 		};
 	}
