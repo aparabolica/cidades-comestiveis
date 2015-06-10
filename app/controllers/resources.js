@@ -15,7 +15,7 @@ cloudinary.config({
 
 
 exports.load = function(req,res,next,id){
-  Resource.findById(id).populate('creator', '_id name picture').exec(function(err, rt){
+  Resource.findById(id).populate('creator', '_id name bio picture').exec(function(err, rt){
     if (err)
       return res.status(400).json(messaging.mongooseErrors(err, 'resource_type'));
     else if (!rt)

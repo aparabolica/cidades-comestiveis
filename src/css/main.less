@@ -31,6 +31,10 @@ select option {
 	font-size: 22px;
 }
 
+label {
+	font-weight: 300;
+}
+
 .row {
 	margin-bottom: 40px;
 }
@@ -1036,6 +1040,15 @@ input[type=submit] {
 }
 
 .single-item {
+	h3 {
+		margin: 0 0 10px;
+		padding: 0;
+		color: @orange;
+		font-size: 24px;
+		label {
+			display: inline;
+		}
+	}
 	.image-container {
 		width: 100%;
 		img {
@@ -1047,7 +1060,35 @@ input[type=submit] {
 			display: block;
 		}
 	}
+	.item-section {
+		margin-bottom: 20px;
+		border-bottom: 1px solid @orange;
+	}
+	.content {
+		margin-bottom: 20px;
+		border-bottom: 1px solid @orange;
+		p {
+			font-size: 28px;
+		}
+	}
+	.creator {
+		margin-bottom: 20px;
+		border-bottom: 1px solid @orange;
+		img {
+			max-width: 25%;
+			float: right;
+			margin: 0 0 20px 20px;
+		}
+		h4 {
+			margin: 0;
+			font-size: 32px;
+		}
+	}
 	#contact {
+		label {
+			display: inline;
+			font-weight: 200;
+		}
 		.message-tips {
 			float: left;
 			width: 33.3333%;
@@ -1060,6 +1101,18 @@ input[type=submit] {
 			textarea {
 				height: 420px;
 			}
+		}
+	}
+	#manage-initiatives {
+		select {
+			width: 50%;
+			float: left;
+			margin-right: 20px;
+		}
+		input[type=submit] {
+			width: auto;
+			display: inline-block;
+			font-size: 20px;
 		}
 	}
 }
@@ -1103,6 +1156,41 @@ input[type=submit] {
 			opacity: 1;
 			.transition(opacity .2s ease-in-out);
 		}
+	}
+}
+
+.message-notification {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-size: 22px;
+	color: #333;
+	z-index: 999999;
+	&#dialog-messages {
+		position: absolute;
+	}
+	a,
+	strong {
+		color:#fff;
+	}
+	.message-content {
+		background: #f0f0f0;
+		border-bottom: 1px solid @orange;
+		padding: 10px;
+	}
+	p {
+		margin: 0;
+	}
+	.close-button {
+		font-family: "Helvetica", "Arial", sans-serif;
+		color: #000;
+		font-size: 16px;
+		text-decoration: none;
+		float: right;
+		text-transform: uppercase;
+		font-weight: 600;
 	}
 }
 

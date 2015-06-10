@@ -316,7 +316,7 @@ angular.module('cc')
 						$state.go('home');
 					}
 				},
-				controller: ['$scope', 'leafletData', 'CCService', function($scope, leafletData, CC) {
+				controller: ['$scope', 'leafletData', 'CCService', 'MessageService', function($scope, leafletData, CC, Message) {
 
 					$scope.item = item || {};
 
@@ -442,10 +442,12 @@ angular.module('cc')
 								CC[$scope.selectedCategory.api].save(item, function(data) {
 									if($scope.uploadImage) {
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
+											Message.add('Item cadastrado com sucesso!');
 											dialog.close();
 											$state.go('home');
 										});
 									} else {
+										Message.add('Item cadastrado com sucesso!');
 										dialog.close();
 										$state.go('home');
 									}
@@ -454,11 +456,13 @@ angular.module('cc')
 							} else {
 								CC[$scope.selectedCategory.api].update(item, function(data) {
 									if($scope.uploadImage) {
+										Message.add('Item atualizado com sucesso!');
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
 											dialog.close();
 											$state.go('home');
 										});
 									} else {
+										Message.add('Item atualizado com sucesso!');
 										dialog.close();
 										$state.go('home');
 									}

@@ -1,14 +1,25 @@
 article#area.single-item
 	.image-container.row(ng-show="item.image")
 		img(ng-show="item.image" ng-src="{{item.image.url}}")
-	p.main {{item.description}}
-	p
-		span.label Endereço: 
-		| {{item.address}}
-	.manage-initiatives(ng-controller="DashboardCtrl" ng-show="user && getItems('initiative').length")
+	.content.item-section
+		h3
+			span(class="c-icon-{{item.icon}}") 
+			| Terreno
+		p {{item.description}}
+	.address.item-section
+		p
+			span.label Endereço: 
+			| {{item.address}}
+	.initiatives
+		ul.initiative-list
+			li.initiative-item(ng-repeat="initiative in item.initiatives")
+
+	#manage-initiatives(ng-controller="DashboardCtrl" ng-show="user && getItems('initiative').length")
 		form(ng-controller="InitiativeCtrl" ng-submit="addArea(initiative, item._id)")
+			h3
+				span.c-icon-initiative 
+				label(for="add_initiative_input") Associar sua iniciativa
 			p
-				label(for="add_initiative_input") Associar iniciativa
 				select(ng-model="initiative")
 					option(ng-repeat="item in getItems('initiative')" ng-value="item._id") {{item.name}}
 				input(type="submit" value="Associar")

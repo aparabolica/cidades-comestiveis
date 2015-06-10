@@ -157,7 +157,7 @@ app.config([
 				$window._gaq.push(['_trackPageview', $location.path()]);
 			}
 			if(fromState.name) {
-				ngDialog.closeAll();
+				// ngDialog.closeAll();
 				document.body.scrollTop = document.documentElement.scrollTop = 0;
 			}
 		});
@@ -168,6 +168,7 @@ require('./service');
 require('./auth');
 require('./directives');
 require('./filters');
+require('./message');
 
 app.controller('MainCtrl', [
 	'CCAuth',
@@ -285,28 +286,37 @@ app.controller('HomeCtrl', [
 	}
 ]);
 
+app.factory('ResourceService', [
+	function() {
+		return {
+			getCategory: function(resource) {
+				var name = '';
+				switch(resource.category) {
+					case 'Supply':
+						name = 'Insumo';
+						break;
+					case 'Work':
+						name = 'Trabalho';
+						break;
+					case 'Knowledge':
+						name = 'Conhecimento';
+						break;
+					case 'Tool':
+						name = 'Ferramenta';
+						break;
+				}
+				return name;
+			}
+		}
+	}
+]);
+
 app.controller('ResourceCtrl', [
 	'$scope',
-	function($scope) {
+	'ResourceService',
+	function($scope, Resource) {
 
-		$scope.getResourceCategory = function(resource) {
-			var name = '';
-			switch(resource.category) {
-				case 'Supply':
-					name = 'Insumo';
-					break;
-				case 'Work':
-					name = 'Trabalho';
-					break;
-				case 'Knowledge':
-					name = 'Conhecimento';
-					break;
-				case 'Tool':
-					name = 'Ferramenta';
-					break;
-			}
-			return name;
-		};
+		$scope.getResourceCategory = Resource.getCategory;
 
 		$scope.countResources = function(category, collection) {
 			return _.filter(collection, function(resource) { return resource.category == category; }).length;
@@ -410,6 +420,21 @@ app.controller('SingleCtrl', [
 		$scope.type = Type;
 
 		console.log($scope.item);
+
+		var icon = false;
+
+		if($scope.item.category) {
+			icon = $scope.item.category.toLowerCase();
+		} else if($scope.type == 'area') {
+			if($scope.item.hasGarden) {
+				icon = 'initiative';
+			} else {
+				icon = 'area';
+			}
+		}
+
+		if(icon)
+			$scope.item.icon = icon;
 
 		var user = Auth.getToken();
 
@@ -537,15 +562,20 @@ app.controller('DashboardCtrl', [
 
 app.controller('InitiativeCtrl', [
 	'CCService',
+	'MessageService',
 	'$scope',
-	function(CC, $scope) {
+	function(CC, Message, $scope) {
 
 		$scope.addArea = function(id, areaId) {
-			CC.initiative.addArea({id: id, area_id: areaId});
+			CC.initiative.addArea({id: id, area_id: areaId}, function(data) {
+				Message.add('Iniciativa associada com sucesso');
+			});
 		};
 
 		$scope.removeArea = function(id, areaId) {
-			CC.initiative.removeArea({id: id, area_id: areaId});
+			CC.initiative.removeArea({id: id, area_id: areaId}, function(data) {
+				Message.add('Iniciativa desassociada com sucesso');
+			});
 		};
 
 	}
@@ -561,7 +591,7 @@ app.controller('UserCtrl', [
 		$scope.editUserDialog = function() {
 			dialog = ngDialog.open({
 				template: '/views/edit-profile.html',
-				controller: ['$scope', 'CCAuth', 'CCService', 'leafletData', function($scope, Auth, CC, leafletData) {
+				controller: ['$scope', 'CCAuth', 'CCService', 'leafletData', 'MessageService', function($scope, Auth, CC, leafletData, Message) {
 
 					$scope.user = angular.extend({}, Auth.getToken());
 
@@ -614,6 +644,7 @@ app.controller('UserCtrl', [
 						delete user.email;
 						CC.user.update(user, function(data) {
 							Auth.setToken(angular.extend(Auth.getToken(), data));
+							Message.add('Perfil atualizado.');
 							dialog.close();
 						});
 					}
@@ -637,14 +668,17 @@ app.controller('PageCtrl', [
 app.controller('ContactCreatorCtrl', [
 	'CCAuth',
 	'CCService',
+	'ResourceService',
 	'$scope',
-	function(Auth, CC, $scope) {
+	'MessageService',
+	function(Auth, CC, Resource, $scope, Message) {
 		$scope.text = '';
 		$scope.contact = function(item, text) {
 			if(Auth.getToken()) {
-				var mail = 'Olá ' + item.creator.name + '! \n\n' + Auth.getToken().name + ' gostaria de conversar com você sobre um recurso que você publicou no Cidades Comestíveis. Segue sua mensagem: \n\n' + text;
+				var mail = 'Olá ' + item.creator.name + '! \n\n' + Auth.getToken().name + ' gostaria de conversar com você sobre um recurso que você publicou no Cidades Comestíveis. \n\nRecurso: ' + Resource.getCategory(item) + '\n\nDescrição: ' + item.description + '\n\nMensagem: \n\n' + text;
 				CC.user.message({id: item.creator._id, message: mail}, function(data) {
-					console.log(data);
+					// console.log(data);
+					Message.add('Mensagem enviada! Você receberá uma resposta por email.');
 				});
 			}
 		};
