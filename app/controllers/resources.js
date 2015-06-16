@@ -109,25 +109,26 @@ exports.list = function(req, res, next) {
 
   if (bbox) {
 
-    bbox = JSON.parse(req.query['bbox']);
+    if (typeof(bbox) == 'string')
+      bbox = JSON.parse(bbox);
 
-    // parse string values to float
-    bbox = _.map(bbox.coordinates, function(i){
-      return [parseFloat(i[0]), parseFloat(i[1])];
-    });
+    var coordinates = _.map(bbox.coordinates, function(lonlat){
+      return [parseFloat(lonlat[0]), parseFloat(lonlat[1])];
+    })
 
     options.criteria = {
       geometry: {
         $geoWithin: {
-          $box: bbox
+          $box: coordinates
         }
       }
     }
   }
 
   Resource.list(options, function (err, resources) {
-    if (err)
+    if (err){
       return res.status(500).json(messaging.error('errors.internal_error'));
+    }
 
     /* Send response */
     Resource.count().exec(function (err, count) {
