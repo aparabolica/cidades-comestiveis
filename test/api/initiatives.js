@@ -131,7 +131,7 @@ describe('API: Initiatives', function(){
      * Create initiatives
      */
     function createInitiatives(doneCreateInitiatives) {
-      factory.createInitiatives(70, user1, user1Area1, doneCreateInitiatives);
+      factory.createInitiatives(70, user1, user1Area1._id, doneCreateInitiatives);
     }
   });
 
@@ -675,6 +675,61 @@ describe('API: Initiatives', function(){
       });
     })
   });
+
+  /*
+    GET /api/v1/areas/:id
+  */
+
+  describe('GET /api/v1/areas/:id', function(){
+    it('return status 200 and related initiatives', function(doneIt){
+      request(app)
+        .get(apiPrefix + '/areas/' + user1Area1._id)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, res){
+          should.not.exist(err);
+          var body = res.body;
+
+          body.should.have.property('initiatives');
+          body.initiatives.should.be.instanceOf(Array).and.have.length(71);
+
+          var initiative = body.initiatives[0];
+
+          initiative.should.have.property('description');
+          initiative.should.have.property('creator', user1Area1.creator.toHexString());
+
+          doneIt();
+        });
+    });
+  });
+
+  /*
+    GET /api/v1/areas/:id
+  */
+
+  describe('GET /api/v1/areas', function(){
+    it('return status 200 and related initiatives', function(doneIt){
+      request(app)
+        .get(apiPrefix + '/areas')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, res){
+          should.not.exist(err);
+          var area = res.body.areas[0];
+
+          area.should.have.property('initiatives');
+          area.initiatives.should.be.instanceOf(Array).and.have.length(71);
+
+          var initiative = area.initiatives[0];
+
+          initiative.should.have.property('description');
+          initiative.should.have.property('creator', user1Area1.creator.toHexString());
+
+          doneIt();
+        });
+    });
+  });
+
 
   /*
    * After tests, clear database

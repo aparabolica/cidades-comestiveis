@@ -31,8 +31,8 @@ var user1Resource1;
 var user1Resource2;
 var user2;
 var user2AccessToken;
-var bbox1 = [-10,-10,5,10];
-var bbox2 = [10,12,25,25];
+var bbox1 = [[-10,-10],[10,10]];
+var bbox2 = [[10,12],[25,25]];
 
 /* Pagination */
 var resourceCount = 60;
@@ -338,9 +338,8 @@ describe('API: Resources', function(){
     context('bbox query', function(){
       it('should return resources within the bbox', function(doneIt){
         var options = {
-          bbox: bbox1
+          bbox: {coordinates: bbox1}
         }
-
 
         /* The request */
         request(app)
@@ -368,10 +367,7 @@ describe('API: Resources', function(){
               .find({
                 geometry: {
                   $geoWithin: {
-                      $box: [
-                        [ bbox1[0], bbox1[1] ],
-                        [ bbox1[2], bbox1[3] ]
-                      ]
+                      $box: bbox1
                   }
                 }
                })

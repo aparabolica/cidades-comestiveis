@@ -90,6 +90,7 @@ rosie.define('Initiative')
 exports.createInitiative = function(creator_id, area_id, done){
 	var initiative = new Initiative(rosie.build('Initiative'));
 	initiative.creator = creator_id;
+	initiative.areas.push(area_id);
 	initiative.save(function(err){
 		done(err, initiative);
 	})
@@ -112,11 +113,14 @@ rosie.define('Resource')
 			return 'some description for item ' + i
 		})
 	.sequence('name', function(i) { return 'name for item ' + i })
-	.option('bbox', [-180,-90,180,90])
+	.option('bbox', [[-180,-90],[180,90]])
 	.attr('geometry', ['bbox'], function(bbox){
-		// http://geojson.org/geojson-spec.html#bounding-boxes
-		var lat = bbox[1] + Math.random() * (bbox[3]-bbox[1]);
-		var lon = bbox[0] + Math.random() * (bbox[2]-bbox[0]);
+		var min_lon = bbox[0][0];
+		var min_lat = bbox[0][1];
+		var max_lon = bbox[1][0];
+		var max_lat = bbox[1][1];
+		var lat = min_lat + Math.random() * (max_lat-min_lat);
+		var lon = min_lon + Math.random() * (max_lon-min_lon);
 
 		return {
 			type: 'Point',

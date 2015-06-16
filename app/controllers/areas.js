@@ -4,6 +4,7 @@ var messaging = require('../../lib/messaging');
 var formidable = require('formidable');
 var mongoose = require('mongoose');
 var Area = mongoose.model('Area');
+var Initiative = mongoose.model('Initiative');
 var User = mongoose.model('User');
 
 var cloudinary = require('cloudinary');
@@ -14,14 +15,19 @@ cloudinary.config({
 });
 
 exports.load = function(req,res,next,id){
-  Area.findById(id, function(err, area){
+  Area.findById(id).exec(function(err, area){
     if (err)
       return res.status(400).json(messaging.mongooseErrors(err, 'areas'));
     else if (!area)
       return res.status(404).json(messaging.error('errors.areas.not_found'));
     else {
-      req.object = area;
-      next();
+      Initiative.find({
+        areas: area._id
+      }, function(err, initiatives){
+        area.initiatives = initiatives;
+        req.object = area;
+        next();
+      })
     }
   });
 }
