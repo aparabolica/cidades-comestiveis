@@ -97,7 +97,7 @@ exports.message = function(req, res) {
 
   client.sendEmail({
     "From": 'notificacoes@mapascoletivos.com.br',
-    "Reply-to": req.user.email,
+    "ReplyTo": req.user.email,
     "To": user.email,
     "Subject": 'Contato sobre recurso publicado',
     "TextBody": req.body.message
