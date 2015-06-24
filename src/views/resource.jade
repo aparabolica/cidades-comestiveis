@@ -19,7 +19,7 @@ article#resource.single-item(ng-controller="ResourceCtrl")
 	p(ng-show="canEdit")
 		a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar
 
-	form#contact.clearfix(ng-controller="ContactCreatorCtrl" ng-show="user && (user._id == item.creator._id)" ng-submit="contact(item, text)")
+	form#contact.clearfix(ng-controller="ContactCreatorCtrl" ng-show="user && (user._id !== item.creator._id)" ng-submit="contact(item, text)")
 		h3.message-label
 			span.icon-mail 
 			label(for="message_input") Envie uma mensagem para {{item.creator.name}}
