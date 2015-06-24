@@ -102,10 +102,8 @@ exports.message = function(req, res) {
     "Subject": 'Contato sobre recurso publicado',
     "TextBody": req.body.message
   }, function(err, success){
-    if (err)
-      return res.status(400).json(messaging.error('error sending message'));
-    else
-      return res.status(200);
+    if (err) return res.status(400).json(messaging.error('error sending message'));
+    else return res.sendStatus(200);
   })
 
 
