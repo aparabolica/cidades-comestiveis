@@ -96,7 +96,7 @@ exports.message = function(req, res) {
   var user = req.object;
 
   client.sendEmail({
-    "From": 'notificacoes@mapascoletivos.com.br',
+    "From": 'cidadescomestiveis@muda.org.br',
     "ReplyTo": req.user.email,
     "To": user.email,
     "Subject": 'Contato sobre recurso publicado',
