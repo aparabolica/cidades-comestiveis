@@ -174,12 +174,11 @@ app.controller('MainCtrl', [
 	'CCAuth',
 	'CCLoginDialog',
 	'HelloService',
-	'ngDialog',
 	'$rootScope',
 	'$state',
 	'$scope',
 	'$timeout',
-	function(Auth, CCLoginDialog, HelloService, ngDialog, $rootScope, $state, $scope, $timeout) {
+	function(Auth, CCLoginDialog, HelloService, $rootScope, $state, $scope, $timeout) {
 
 		$scope.fb = HelloService.facebook;
 
@@ -447,6 +446,7 @@ app.controller('SingleCtrl', [
 
 		if(!isMobile) {
 			var dialog = ngDialog.open({
+				overlay: false,
 				template: '/views/' + Type + '.html',
 				scope: $scope,
 				preCloseCallback: function() {
@@ -590,6 +590,7 @@ app.controller('UserCtrl', [
 
 		$scope.editUserDialog = function() {
 			dialog = ngDialog.open({
+				overlay: false,
 				template: '/views/edit-profile.html',
 				controller: ['$scope', 'CCAuth', 'CCService', 'leafletData', 'MessageService', function($scope, Auth, CC, leafletData, Message) {
 

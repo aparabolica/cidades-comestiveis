@@ -310,6 +310,7 @@ angular.module('cc')
 		return function(item, type) {
 
 			dialog = ngDialog.open({
+				overlay: false, 
 				template: '/views/new.html',
 				preCloseCallback: function() {
 					if($state.current.name == 'home.editItem' || $state.current.name == 'home.newItem') {
