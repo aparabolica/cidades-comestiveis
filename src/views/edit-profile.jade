@@ -5,9 +5,9 @@ form#edit-profile(ng-submit="save(user)")
 		p
 			label(for="name_input") Nome
 			input(id="name_input" type="text" ng-model="user.name")
-		//- p
-		//- 	label(for="email_input") Email
-		//- 	input(id="email_input" type="text" ng-model="user.email")
+		p
+			label(for="email_input") Email
+			input(id="email_input" type="text" ng-model="user.email")
 		p
 			label(for="bio_input") Biografia
 			textarea(id="bio_input" ng-model="user.bio")

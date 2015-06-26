@@ -18,7 +18,7 @@ require('angular-bootstrap-datetimepicker');
 var app = angular.module('cc', [
 	'ngDialog',
 	'ngCookies',
-	'ui.router', 
+	'ui.router',
 	'ngResource',
 	'leaflet-directive',
 	'ui.bootstrap.datetimepicker'
@@ -137,7 +137,7 @@ app.config([
 			angular.forEach(search, function(v, k){
 				params.push(k + '=' + v);
 			});
-			
+
 			return path + '/?' + params.join('&');
 		});
 	}
@@ -642,7 +642,7 @@ app.controller('UserCtrl', [
 					});
 
 					$scope.save = function(user) {
-						delete user.email;
+						// delete user.email;
 						CC.user.update(user, function(data) {
 							Auth.setToken(angular.extend(Auth.getToken(), data));
 							Message.add('Perfil atualizado.');
@@ -661,7 +661,7 @@ app.controller('PageCtrl', [
 	'$scope',
 	function($scope) {
 
-		
+
 
 	}
 ]);
