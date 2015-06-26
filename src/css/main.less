@@ -27,8 +27,8 @@ input,
 textarea,
 select,
 select option {
-	font-family: 'PressFeeling';
-	font-size: 22px;
+	font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif;
+	font-size: 16px;
 }
 
 label {
@@ -108,6 +108,7 @@ input[type=submit] {
 	line-height: 1;
 	padding: 5px 15px;
 	height: auto;
+	font-family: "PressFeeling";
 	&:hover {
 		background: @green;
 		color: #fff;
@@ -197,7 +198,7 @@ input[type=submit] {
 	margin-top: -30px;
 	background: @orange;
 	.border-radius(0 0 10px 10px);
-	padding: 3px 20px 6px;
+	padding: 8px 20px 10px;
 	color: #fff;
 	position: relative;
 	z-index: 200;
@@ -213,7 +214,7 @@ input[type=submit] {
 		position: relative;
 		.user-settings {
 			position: absolute;
-			top: 24px;
+			top: 20px;
 			left: -20px;
 			right: -20px;
 			padding: 5px 20px;
@@ -225,6 +226,7 @@ input[type=submit] {
 				display: block;
 				border-top: 1px dotted #fff;
 				line-height: 30px;
+				font-size: 14px;
 				// &:last-child {
 				// 	border-bottom: 0;
 				// }
@@ -457,7 +459,7 @@ input[type=submit] {
 					&:after {
 						content: ' x';
 						font-family: sans-serif;
-						font-size: 14px;
+						font-size: 10px;
 						line-height: 1;
 						float: right;
 						margin-top: 5px;
@@ -473,6 +475,9 @@ input[type=submit] {
 			border-right: 1px solid #ddd;
 			text-decoration: none;
 			outline: none;
+			font-size: 12px;
+			text-transform: uppercase;
+			font-weight: 600;
 			&:hover {
 				color: #333;
 			}
@@ -481,6 +486,7 @@ input[type=submit] {
 			}
 			.count {
 				font-size: 90%;
+				.border-radius(3px);
 				background: #f0f0f0;
 				color: @orange;
 				padding: 2px 5px;
@@ -539,8 +545,7 @@ input[type=submit] {
 	background: @orange;
 	margin-top: -250px;
 	color: #fff;
-	font-size: 28px;
-	font-family: "PressFeeling";
+	font-size: 20px;
 	.border-radius(10px);
 	.transition(all .2s linear);
 	max-height: 600px;
@@ -551,7 +556,6 @@ input[type=submit] {
 	}
 	.button {
 		border: 0;
-		font-family: "PressFeeling";
 		font-size: 32px;
 		text-transform: uppercase;
 		font-weight: normal;
@@ -566,7 +570,7 @@ input[type=submit] {
 #site-intro {
 	padding-top: 20px;
 	p {
-		font-size: 28px;
+		font-size: 20px;
 		color: #666;
 	}
 	.intro-details {
@@ -595,7 +599,9 @@ input[type=submit] {
 			}
 		}
 		.ten-steps {
+			font-family: "PressFeeling";
 			p {
+				font-size: 32px;
 				color: @orange;
 				line-height: 100%;
 				margin: 0;
@@ -627,9 +633,10 @@ input[type=submit] {
 			margin: 40px 80px 40px 40px;
 		}
 		p {
-			padding-top: 10px;
+			padding-top: 35px;
 			margin: 0;
-			font-size: 42px;
+			font-weight: 600;
+			font-size: 24px;
 			line-height: 120%;
 		}
 	}
@@ -949,7 +956,7 @@ input[type=submit] {
 		margin: 0;
 	}
 	p {
-		font-size: 28px;
+		font-size: 20px;
 		color: #666;
 	}
 	#ten-steps {
@@ -980,6 +987,7 @@ input[type=submit] {
 				.count {
 					float: left;
 					font-size: 170px;
+					font-family: "PressFeeling";
 					line-height: 100%;
 					margin: 0 20px 0 0;
 				}
@@ -1145,7 +1153,7 @@ input[type=submit] {
 		&:before {
 			content: url('../img/loading.gif');
 			display: block;
-		}	
+		}
 	}
 	&.active {
 		background: rgba(255,255,255,0.8);
@@ -1166,8 +1174,8 @@ input[type=submit] {
 	left: 0;
 	right: 0;
 	text-align: center;
-	font-size: 22px;
-	color: #333;
+	font-size: 14px;
+	color: #fff;
 	z-index: 999999;
 	&#dialog-messages {
 		position: absolute;
@@ -1177,8 +1185,8 @@ input[type=submit] {
 		color:#fff;
 	}
 	.message-content {
-		background: #f0f0f0;
-		border-bottom: 1px solid @orange;
+		background: @orange;
+		border-bottom: 1px solid #fff;
 		padding: 10px;
 	}
 	p {
@@ -1186,7 +1194,7 @@ input[type=submit] {
 	}
 	.close-button {
 		font-family: "Helvetica", "Arial", sans-serif;
-		color: #000;
+		color: #fff;
 		font-size: 16px;
 		text-decoration: none;
 		float: right;
