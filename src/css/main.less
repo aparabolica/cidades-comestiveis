@@ -455,15 +455,20 @@ input[type=submit] {
 			a {
 				color: #999;
 				&.active {
-					color: #333;
-					&:after {
-						content: ' x';
-						font-family: sans-serif;
-						font-size: 10px;
-						line-height: 1;
-						float: right;
-						margin-top: 5px;
+					color: #fff;
+					background: @green;
+					.count {
+						background: darken(@green, 10%);
+						color: #fff;
 					}
+					// &:after {
+					// 	content: ' x';
+					// 	font-family: sans-serif;
+					// 	font-size: 10px;
+					// 	line-height: 1;
+					// 	float: right;
+					// 	margin-top: 5px;
+					// }
 				}
 			}
 		}
