@@ -310,7 +310,7 @@ angular.module('cc')
 		return function(item, type) {
 
 			dialog = ngDialog.open({
-				overlay: false, 
+				overlay: false,
 				template: '/views/new.html',
 				preCloseCallback: function() {
 					if($state.current.name == 'home.editItem' || $state.current.name == 'home.newItem') {
@@ -445,12 +445,12 @@ angular.module('cc')
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
 											Message.add('Item cadastrado com sucesso!');
 											dialog.close();
-											$state.go('home');
+											$state.go('home', {}, {reload: true});
 										});
 									} else {
 										Message.add('Item cadastrado com sucesso!');
 										dialog.close();
-										$state.go('home');
+										$state.go('home', {}, {reload: true});
 									}
 								});
 							// Update item
@@ -460,12 +460,12 @@ angular.module('cc')
 										Message.add('Item atualizado com sucesso!');
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
 											dialog.close();
-											$state.go('home');
+											$state.go('home', {}, {reload: true});
 										});
 									} else {
 										Message.add('Item atualizado com sucesso!');
 										dialog.close();
-										$state.go('home');
+										$state.go('home', {}, {reload: true});
 									}
 								});
 							}
