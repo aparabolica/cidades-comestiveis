@@ -204,6 +204,7 @@ describe('API: Resources', function(){
           body.should.have.property('availableUntil', user1Resource1.availableUntil);
           body.should.have.property('creator');
           body.should.have.property('category', user1Resource1.category);
+          body.should.have.property('type', user1Resource1.type);
           body.should.have.property('geometry');
 
           doneIt();
