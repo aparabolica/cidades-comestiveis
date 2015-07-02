@@ -313,7 +313,10 @@ app.factory('ResourceService', [
 app.controller('ResourceCtrl', [
 	'$scope',
 	'ResourceService',
-	function($scope, Resource) {
+	'CCService',
+	'$state',
+	'ngDialog',
+	function($scope, Resource, CC, $state, ngDialog) {
 
 		$scope.getResourceCategory = Resource.getCategory;
 
@@ -327,6 +330,24 @@ app.controller('ResourceCtrl', [
 				$scope.catFilter = '';
 			else
 				$scope.catFilter = category;
+		};
+
+		$scope.canDelete = function(item, user) {
+			if(user) {
+				if(user._id == item.creator._id || user.role == 'admin') {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		$scope.delete = function(item, type) {
+			if(confirm('Você tem certeza que deseja remover este item?')) {
+				CC[type].delete({id: item._id}, function() {
+					ngDialog.closeAll();
+					$state.go('home', {}, {reload: true});
+				});
+			}
 		};
 	}
 ]);
