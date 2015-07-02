@@ -24,6 +24,15 @@ form#new-item(ng-submit="save(item)")
 				p
 					label(for="description_field") Descrição
 					textarea(id="description_field" ng-model="item.description")
+					
+			.resource-type-field(ng-show="hasField('resource-type')")
+				p
+					label(for="resource_type_field") Tipo de recurso
+					select(id="resource_type_field" ng-model="item.type")
+						option(value="") Selecione um tipo
+						option(value="Composto") Composto
+						option(value="Sementes") Sementes
+						option(value="Mudas") Mudas
 
 			.availability-field(ng-show="hasField('availability')" ng-init="displayAvAtCal = false; displayAvUnCal = false;")
 				p

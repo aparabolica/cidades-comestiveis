@@ -45,7 +45,8 @@
 						h3
 							a(ui-sref="home.resource({id: resource._id})")
 								span(class="c-icon-{{resource.icon}}") 
-								| {{getResourceCategory(resource)}}
+								| {{getResourceCategory(resource)}} 
+								span.type(ng-show="resource.type") {{resource.type}}
 						p
 							a(ui-sref="home.resource({id: resource._id})")
 								{{resource.description}}
