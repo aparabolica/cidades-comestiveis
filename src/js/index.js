@@ -6,7 +6,7 @@ moment.locale('pt-br');
 
 window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-// window.isMobile = true;
+window.isMobile = true;
 
 require('angular-ui-router');
 require('angular-resource');
@@ -157,7 +157,8 @@ app.config([
 				$window._gaq.push(['_trackPageview', $location.path()]);
 			}
 			if(fromState.name) {
-				// ngDialog.closeAll();
+				if(toState.name == 'home')
+					ngDialog.closeAll();
 				document.body.scrollTop = document.documentElement.scrollTop = 0;
 			}
 		});
