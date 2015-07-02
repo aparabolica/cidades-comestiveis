@@ -25,10 +25,10 @@ form#new-item(ng-submit="save(item)")
 					label(for="description_field") Descrição
 					textarea(id="description_field" ng-model="item.description")
 					
-			.resource-type-field(ng-show="hasField('resource-type')")
+			.supply-type-field(ng-show="hasField('supply-type')")
 				p
-					label(for="resource_type_field") Tipo de recurso
-					select(id="resource_type_field" ng-model="item.type")
+					label(for="supply_type_field") Tipo de insumo
+					select(id="supply_type_field" ng-model="item.type")
 						option(value="") Selecione um tipo
 						option(value="Composto") Composto
 						option(value="Sementes") Sementes

@@ -651,7 +651,7 @@ app.controller('UserCtrl', [
 								CC.user.picture({id: data._id, file: $scope.uploadImage}, function(data) {
 									Message.add('Perfil atualizado.');
 									dialog.close();
-								}
+								});
 							} else {
 								Message.add('Perfil atualizado.');
 								dialog.close();
