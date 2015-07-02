@@ -329,7 +329,7 @@ angular.module('cc')
 							defaultValues: {
 								category: 'Supply'
 							},
-							fields: ['description', 'availability', 'geometry', 'image']
+							fields: ['description', 'availability', 'geometry', 'image', 'resource-type']
 						},
 						{
 							name: 'Conhecimento',
