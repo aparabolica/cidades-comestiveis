@@ -17,9 +17,9 @@ article#resource.single-item(ng-controller="ResourceCtrl")
 		h4 {{item.creator.name}}
 		p(ng-show="item.creator.bio" ng-bind="item.creator.bio")
 		
-		p(ng-show="canEdit")
-			a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar 
-			a.button(href="javascript:void(0);" ng-click="delete(item, type)") Remover
+	p(ng-show="canEdit")
+		a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar 
+		a.button(href="javascript:void(0);" ng-click="delete(item, type)") Remover
 
 	form#contact.clearfix(ng-controller="ContactCreatorCtrl" ng-show="user && (user._id !== item.creator._id)" ng-submit="contact(item, text)")
 		h3.message-label
