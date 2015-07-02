@@ -6,7 +6,7 @@ article#resource.single-item(ng-controller="ResourceCtrl")
 		h3
 			span(class="c-icon-{{item.icon}}") 
 			| {{getResourceCategory(item)}} 
-			span.type(ng-show="resource.type") {{resource.type}}
+			span.type(ng-show="item.type") {{item.type}}
 		p {{item.description}}
 
 	.creator.item-section.clearfix
