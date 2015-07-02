@@ -5,7 +5,7 @@ var fbgraph = require('fbgraph');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var AccessToken = mongoose.model('AccessToken');
+var AccessToken = mongoose.model('Token');
 var messaging = require('../lib/messaging');
 
 
@@ -17,6 +17,7 @@ var generateAccessToken = function(user, res) {
 
 	var seed = crypto.randomBytes(20);
 	token._id = crypto.createHash('sha1').update(seed).digest('hex');
+	token.type = 'access';
 
 	token.save(function(err) {
 		if (err)

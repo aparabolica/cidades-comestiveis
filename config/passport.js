@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var LocalStrategy = require('passport-local').Strategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
 var User = mongoose.model('User');
-var AccessToken = mongoose.model('AccessToken');
+var AccessToken = mongoose.model('Token');
 
 
 module.exports = function (passport, config) {
