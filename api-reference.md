@@ -5,7 +5,6 @@
   * [User](#users): [new](#new-user), [update](#update-user), [get](#get-user), [list](#list-users)
   * Land: new, get, list, update, delete
   * Resources: new, get, list, update, delete
-  * Resource categories: new, get, list, update, delete
   * Initiatives: new, get, list, update, delete
 
 ---
@@ -389,6 +388,7 @@ POST /api/v1/resource/
 - `name` (*string*, ***required***)
 - `description` (*string*)
 - `category` (`['Supply', 'Tool', 'Knowledge', 'Work']`)
+- `type` 
 
 ### Responses
 

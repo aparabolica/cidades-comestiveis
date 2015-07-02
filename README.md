@@ -26,7 +26,7 @@ Start the server:
 
 Please visit [API documentation].
 
-[API Documentation]: https://github.com/codigourbano/cidades-comestiveis/wiki/api-reference
+[API Documentation]: https://github.com/codigourbano/cidades-comestiveis/blob/master/api-reference.md
 [urban agriculture]: https://en.wikipedia.org/wiki/Urban_agriculture
 [wiki]: https://github.com/codigourbano/cidades-comestiveis/wiki
 
