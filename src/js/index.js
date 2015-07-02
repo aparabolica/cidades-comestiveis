@@ -439,8 +439,6 @@ app.controller('SingleCtrl', [
 		$scope.item = Data;
 		$scope.type = Type;
 
-		console.log($scope.item);
-
 		var icon = false;
 
 		if($scope.item.category) {
@@ -514,9 +512,10 @@ app.controller('NewItemCtrl', [
 	'$stateParams',
 	'CCService',
 	'CCAuth',
+	'CCLoginDialog',
 	'HelloService',
 	'CCItemEdit',
-	function($scope, $state, $stateParams, CC, Auth, Hello, ItemEdit) {
+	function($scope, $state, $stateParams, CC, Auth, LoginDialog, Hello, ItemEdit) {
 
 		$scope.editDialog = ItemEdit;
 
@@ -525,7 +524,7 @@ app.controller('NewItemCtrl', [
 				if(Auth.getToken()) {
 					ItemEdit();
 				} else {
-					Hello.facebook.login(ItemEdit);
+					LoginDialog(ItemEdit);
 				}
 			}
 		});

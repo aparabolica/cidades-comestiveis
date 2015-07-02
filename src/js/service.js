@@ -308,7 +308,8 @@ angular.module('cc')
 		return function(callback) {
 			dialog = ngDialog.open({
 				template: '/views/login.html',
-				controller: ['$scope', 'CCAuth', function($scope, Auth) {
+				controller: ['$scope', 'CCAuth', 'HelloService', function($scope, Auth, HelloService) {
+					$scope.fb = HelloService.facebook;
 					$scope = angular.extend($scope, Auth);
 				}],
 				preCloseCallback: function() {
