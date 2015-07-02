@@ -6,7 +6,7 @@ moment.locale('pt-br');
 
 window.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-window.isMobile = true;
+// window.isMobile = true;
 
 require('angular-ui-router');
 require('angular-resource');
