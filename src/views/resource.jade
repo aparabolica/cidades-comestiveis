@@ -5,7 +5,8 @@ article#resource.single-item(ng-controller="ResourceCtrl")
 	.content.item-section
 		h3
 			span(class="c-icon-{{item.icon}}") 
-			| {{getResourceCategory(item)}}
+			| {{getResourceCategory(item)}} 
+			span.type(ng-show="resource.type") {{resource.type}}
 		p {{item.description}}
 
 	.creator.item-section.clearfix
