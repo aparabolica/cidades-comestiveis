@@ -332,6 +332,22 @@ angular.module('cc')
 	}
 ])
 
+.factory('CCMsgs', [
+	function() {
+		return {
+			get: function(txt) {
+				var msg = '';
+				switch(txt) {
+					case 'mongoose.errors.areas.missing_address':
+						msg = 'Você deve preencher o campo de endereço';
+						break;
+				}
+				return msg;
+			}
+		}
+	}
+])
+
 .factory('CCItemEdit', [
 	'$state',
 	'ngDialog',
@@ -349,7 +365,7 @@ angular.module('cc')
 						$state.go('home');
 					}
 				},
-				controller: ['$scope', 'leafletData', 'CCService', 'MessageService', function($scope, leafletData, CC, Message) {
+				controller: ['$scope', 'leafletData', 'CCService', 'MessageService', 'CCMsgs', function($scope, leafletData, CC, Message, Msgs) {
 
 					$scope.item = item || {};
 
@@ -484,6 +500,12 @@ angular.module('cc')
 										dialog.close();
 										$state.go('home', {}, {reload: true});
 									}
+								}, function(err) {
+									if(err.data.messages) {
+										_.each(err.data.messages, function(msg) {
+											Message.add(Msgs.get(msg.text));
+										});
+									}
 								});
 							// Update item
 							} else {
@@ -498,6 +520,12 @@ angular.module('cc')
 										Message.add('Item atualizado com sucesso!');
 										dialog.close();
 										$state.go('home', {}, {reload: true});
+									}
+								}, function(err) {
+									if(err.data.messages) {
+										_.each(err.data.messages, function(msg) {
+											Message.add(Msgs.get(msg.text));
+										});
 									}
 								});
 							}
