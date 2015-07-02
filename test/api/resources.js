@@ -134,6 +134,7 @@ describe('API: Resources', function(){
           availableAt: new Date('2015-10-01'),
           availableUntil: new Date('2015-11-02'),
           category: 'Supply',
+          type: 'Seeds',
           description: 'Sharing a resource'
         }
 
@@ -151,6 +152,7 @@ describe('API: Resources', function(){
             body.should.have.property('availableUntil');
             body.should.have.property('creator', user1._id.toHexString());
             body.should.have.property('category', payload.category);
+            body.should.have.property('type', payload.type);
             body.should.have.property('geometry');
 
             user1Resource1 = res.body;

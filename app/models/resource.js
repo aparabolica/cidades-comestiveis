@@ -10,6 +10,7 @@ var ResourceSchema = new Schema({
   availableAt: Date,
   availableUntil: Date,
   category: {type: String, enum: ['Supply', 'Tool', 'Knowledge', 'Work'], required: 'missing_category'},
+  type: String,
   name: { type: String },
   description: {type: String },
   geometry: { type: {type: String}, coordinates: []},

@@ -132,7 +132,8 @@ rosie.define('Resource')
 exports.createResource = function(creatorId, bbox, done){
 	var resource = new Resource(rosie.build('Resource', {},{bbox: bbox}));
 	resource.creator = creatorId;
-	resource.category = 'Tool';
+	resource.category = 'Supply';
+	resource.type = 'Seeds';
 	resource.save(function(err){
 		done(err, resource);
 	})
