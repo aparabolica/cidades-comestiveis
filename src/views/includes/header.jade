@@ -10,7 +10,8 @@ header#masthead
 				//- a(href="javascript:void(0);" ng-click="fb.login()" ng-show="!user")
 				//- 	span.icon.icon-facebook 
 				//- 	| Entrar
-				#user-dashboard(ng-controller="UserCtrl" ng-show="user") Olá {{user.name}} 
+				#user-dashboard(ng-controller="UserCtrl" ng-show="user") 
+					span(style="cursor:default;") Olá {{user.name}} 
 					span.icon-chevron-down
 					.user-settings
 						a(href="javascript:void(0);" ng-click="editUserDialog()") Editar perfil
