@@ -641,12 +641,21 @@ app.controller('UserCtrl', [
 						});
 					});
 
+					$scope.uploadImage = false;
+
 					$scope.save = function(user) {
 						// delete user.email;
 						CC.user.update(user, function(data) {
 							Auth.setToken(angular.extend(Auth.getToken(), data));
-							Message.add('Perfil atualizado.');
-							dialog.close();
+							if($scope.uploadImage) {
+								CC.user.picture({id: data._id, file: $scope.uploadImage}, function(data) {
+									Message.add('Perfil atualizado.');
+									dialog.close();
+								}
+							} else {
+								Message.add('Perfil atualizado.');
+								dialog.close();
+							}
 						});
 					}
 
