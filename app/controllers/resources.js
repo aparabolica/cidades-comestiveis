@@ -75,6 +75,7 @@ exports.updateImage = function(req, res, next) {
         return res.status(400).json(messaging.error('errors.resources.image.upload_error'));
       else {
         resource.image = result;
+        resource.image.url = cloudinary.url(resource.image.public_id, { width: 1000, height: 1000, crop: "limit" });
         resource.save(function(err) {
           if(err)
             res.status(400).json(messaging.mongooseErrors(err, 'resources'));

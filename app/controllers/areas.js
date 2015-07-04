@@ -74,11 +74,12 @@ exports.updateImage = function(req, res, next) {
   var form = new formidable.IncomingForm();
 
   form.parse(req, function(err, fields, files) {
-    cloudinary.uploader.upload(files.image.path, function(result) {
+    cloudinary.uploader.upload(files.file.path, function(result) {
       if (result.error)
         return res.status(400).json(messaging.error('errors.areas.image.upload_error'));
       else {
         area.image = result;
+        area.image.url = cloudinary.url(area.image.public_id, { width: 1000, height: 1000, crop: "limit" });
         area.save(function(err) {
           if(err)
             res.status(400).json(messaging.mongooseErrors(err, 'areas'));
