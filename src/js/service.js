@@ -347,13 +347,16 @@ angular.module('cc')
 	function() {
 		return {
 			get: function(txt) {
-				var msg = '';
+				var msg = txt;
 				switch(txt) {
 					case 'mongoose.errors.areas.missing_address':
 						msg = 'Você deve preencher o campo de endereço';
 						break;
 					case 'access_token.local.email_not_confirmed':
 						msg = 'Verifique seu email para ativar sua conta.';
+						break;
+					case 'email_confirmed':
+						msg = 'Seu email foi confirmado.'
 						break;
 				}
 				return msg;

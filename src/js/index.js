@@ -49,6 +49,9 @@ app.config([
 					}
 				}
 			})
+			.state('home.status', {
+				url: 'status/:message/'
+			})
 			.state('home.area', {
 				url: 'terreno/:id/',
 				controller: 'SingleCtrl',
@@ -234,9 +237,13 @@ app.controller('MainCtrl', [
 
 app.controller('HomeCtrl', [
 	'$rootScope',
+	'$state',
+	'$stateParams',
 	'$scope',
+	'MessageService',
+	'CCMsgs',
 	'CCService',
-	function($rootScope, $scope, CC) {
+	function($rootScope, $state, $stateParams, $scope, Message, Msgs, CC) {
 
 		CC.area.query(function(data) {
 			$scope.areas = data.areas;
@@ -244,6 +251,10 @@ app.controller('HomeCtrl', [
 				area.dataType = 'area';
 			});
 		});
+
+		if($state.params.message) {
+			Message.add(Msgs.get($state.params.message));
+		}
 
 		CC.resource.query(function(data) {
 			$scope.resources = data.resources;
