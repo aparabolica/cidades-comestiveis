@@ -118,7 +118,10 @@ UserSchema.pre('save', function(next){
 	if (self.isNew) {
 		mongoose.model('User').count(function(err, count){
 			if (err) return next(err);
-			if (count == 0) self.role = 'admin';
+			if (count == 0) {
+				self.role = 'admin';
+				self.emailConfirmed = true;
+			}
 			next();
 		});
 	} else next();
@@ -244,7 +247,8 @@ UserSchema.methods = {
 				"ReplyTo": 'naoresponda@muda.org.br',
 				"To": self.email,
 				"Subject": 'Confirme seu e-mail',
-				"TextBody": 'Para acessar o Cidades Comestíveis, confirmar seu e-mail no visitando o link:\n\nhttp://www.cidadescomestiveis.org/token/' + token._id
+				"TextBody": 'Para acessar o Cidades Comestíveis, confirmar seu e-mail no visitando o link:\n\n'
+											+ process.env.APP_URL + '/token/' + token._id
 			}, function(err, success){
 				if (err) console.log('error while sending e-mail confirmation');
 			})

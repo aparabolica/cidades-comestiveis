@@ -24,7 +24,7 @@ module.exports = function (app, config) {
   var tokenRoutes = require('express').Router();
   tokenRoutes.param('id', tokens.load);
   tokenRoutes.get('/token/:id', tokens.open);
-  app.use(config.apiPrefix, tokenRoutes);
+  app.use('/', tokenRoutes);
 
   /* Users routes */
   var usersRoutes = require('express').Router();
