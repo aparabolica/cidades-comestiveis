@@ -17,7 +17,8 @@ var TokenSchema = new Schema({
 	createdAt: {type: Date, default: Date.now},
 	expiresAt: {type: Date, required: true, default: moment().add(15, 'day').toDate() },
 	user: { type: Schema.ObjectId, ref: 'User' },
-	type: {type: String, enum: ['access', 'email_confirmation'], required: true}
+	type: {type: String, enum: ['access', 'email_confirmation'], required: true},
+	data: {}
 });
 
 /**

@@ -47,9 +47,11 @@ exports.update = function(req, res) {
   if (Object.keys(params).length == 0)
     return res.status(400).json(messaging.error('errors.users.missing_parameters'));
 
-  /* Stop e-mail change */
-  if (params.email)
-    return res.status(400).json(messaging.error('errors.users.cannot_change_email'));
+  /* Changing e-mail */
+  if (params.email != user.email) {
+    if (!validator.isEmail(params.email)) return res.status(400).json(messaging.error('errors.users.invalid_email'));
+    else user.sendEmailConfirmation(params.email);
+  }
 
   /* User is changing password */
   if (params.password) {

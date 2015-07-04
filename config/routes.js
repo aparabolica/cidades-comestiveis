@@ -8,6 +8,7 @@ var users = require('../app/controllers/users');
 var areas = require('../app/controllers/areas');
 var initiatives = require('../app/controllers/initiatives');
 var resources = require('../app/controllers/resources');
+var tokens = require('../app/controllers/tokens');
 
 module.exports = function (app, config) {
 
@@ -18,6 +19,12 @@ module.exports = function (app, config) {
   authRoutes.post('/login/facebook', auth.facebook);
   authRoutes.get('/logout', auth.logout);
   app.use(config.apiPrefix, authRoutes);
+
+  /* Token routes */
+  var tokenRoutes = require('express').Router();
+  tokenRoutes.param('id', tokens.load);
+  tokenRoutes.get('/token/:id', tokens.open);
+  app.use(config.apiPrefix, tokenRoutes);
 
   /* Users routes */
   var usersRoutes = require('express').Router();

@@ -137,6 +137,7 @@ UserSchema.methods = {
 			name: this.name,
 			picture: this.picture,
 			email: this.email,
+			emailConfirmed: this.emailConfirmed,
 			role: this.role,
 			bio: this.bio,
 			registeredAt: this.registeredAt,
@@ -222,7 +223,7 @@ UserSchema.methods = {
 		}
 	},
 
-	sendEmailConfirmation: function() {
+	sendEmailConfirmation: function(newEmail) {
 		// TODO: Expire all prior e-mail confirmations
 
 		var self = this;
@@ -230,6 +231,9 @@ UserSchema.methods = {
 		var seed = crypto.randomBytes(20);
 		var token = new Token({user: self._id, type: 'email_confirmation'});
 		token._id = crypto.createHash('sha1').update(seed).digest('hex');
+
+		// keep new e-mail address for e-mail changes
+		if (newEmail) token.data = {newEmail: newEmail};
 
 		token.save(function(err) {
 			if (err)
@@ -246,6 +250,7 @@ UserSchema.methods = {
 			})
 		})
 	},
+
 
 	contributions: function(doneGetContributions) {
 

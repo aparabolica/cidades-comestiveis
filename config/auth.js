@@ -40,7 +40,7 @@ exports.login = function(req, res, next) {
 
 		// Unknown error
 		if (err) {
-			return res.status(400).json(messaging.error(req.i18n, err));
+			return res.status(500).json(messaging.error(req.i18n, err));
 
 		// Error raised by passport
 		} else if (info && info.message) {
@@ -49,6 +49,10 @@ exports.login = function(req, res, next) {
 		// User not found.
 		} else if (!user) {
 			return res.status(401).json(messaging.error("access_token.local.unauthorized"));
+
+		// Check e-mail confirmation
+		} else if (!user.emailConfirmed) {
+			return res.status(401).json(messaging.error("access_token.local.email_not_confirmed"));
 
 		// Login successful, proceed with token
 		} else if (user) {
@@ -86,7 +90,8 @@ exports.facebook = function(req, res, next) {
 							name: name,
 							email: email,
 							picture: picture.location,
-							password: crypto.createHash('sha1').update(seed).digest('hex')
+							password: crypto.createHash('sha1').update(seed).digest('hex'),
+							emailConfirmed: true
 						});
 
 						user.save(function(err){
