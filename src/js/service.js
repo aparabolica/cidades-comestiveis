@@ -356,7 +356,16 @@ angular.module('cc')
 						msg = 'Verifique seu email para ativar sua conta.';
 						break;
 					case 'email_confirmed':
-						msg = 'Seu email foi confirmado.'
+						msg = 'Seu email foi confirmado.';
+						break;
+					case 'token_expired':
+						msg = 'A chave de acesso expirou.';
+						break;
+					case 'internal_error':
+						msg = 'Ocorreu um erro interno. Pora favor, tente novamente.';
+						break;
+					case 'token_not_found':
+						msg = 'Chave de acesso não encontrada.';
 						break;
 				}
 				return msg;
