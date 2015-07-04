@@ -2,7 +2,7 @@ header
 	h2 Entrar
 #auth.clearfix
 	.half-group
-		.half
+		.half(ng-hide="type == 'register'")
 			form#login(ng-submit="login(credentials)")
 				h3 Fazer login
 				p
@@ -18,7 +18,7 @@ header
 						span.icon.icon-facebook 
 						| Entrar com o Facebook
 
-		.half
+		.half(ng-hide="type == 'login'")
 			form#register(ng-submit="register(newUser)")
 				h3 Cadastre-se!
 				p

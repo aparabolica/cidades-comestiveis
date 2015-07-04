@@ -2,7 +2,11 @@
 	#auth-section(ng-show="!user")
 		a.button(href="javascript:void(0);" ng-click="fb.login()")
 			span.icon-facebook.icon 
+			| Entrar com o facebok
+		a.button(href="javascript:void(0);" ng-click="loginDialog(false, 'login')")
 			| Entrar
+		a.button(href="javascript:void(0);" ng-click="loginDialog(false, 'register')")
+			| Cadastrar
 
 	a.logout-button(href="javascript:void(0);" ng-click="logout()" ng-show="user") Sair
 

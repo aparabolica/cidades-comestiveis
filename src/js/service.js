@@ -46,7 +46,9 @@ angular.module('cc')
 	'$window',
 	'$q',
 	'$cookies',
-	function(CC, $http, $window, $q, $cookies) {
+	'MessageService',
+	'CCMsgs',
+	function(CC, $http, $window, $q, $cookies, Message, Msgs) {
 
 		var apiUrl = '/api/v1';
 
@@ -80,9 +82,17 @@ angular.module('cc')
 			login: function(credentials) {
 				var self = this;
 				var deferred = $q.defer();
-				$http.post(apiUrl + '/login', credentials).success(function(data) {
+				$http.post(apiUrl + '/login', credentials)
+				.success(function(data) {
 					self.setToken(data);
 					deferred.resolve(data);
+				})
+				.error(function(data) {
+					if(data.messages) {
+						_.each(data.messages, function(msg) {
+							Message.add(Msgs.get(msg.text));
+						});
+					}
 				});
 				return deferred.promise;
 			},
@@ -305,12 +315,13 @@ angular.module('cc')
 			}
 		});
 
-		return function(callback) {
+		return function(callback, type) {
 			dialog = ngDialog.open({
 				template: '/views/login.html',
 				controller: ['$scope', 'CCAuth', 'HelloService', function($scope, Auth, HelloService) {
 					$scope.fb = HelloService.facebook;
 					$scope = angular.extend($scope, Auth);
+					$scope.type = type;
 				}],
 				preCloseCallback: function() {
 					if(user) {
@@ -340,6 +351,9 @@ angular.module('cc')
 				switch(txt) {
 					case 'mongoose.errors.areas.missing_address':
 						msg = 'Você deve preencher o campo de endereço';
+						break;
+					case 'access_token.local.email_not_confirmed':
+						msg = 'Verifique seu email para ativar sua conta.';
 						break;
 				}
 				return msg;
