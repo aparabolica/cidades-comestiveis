@@ -8,6 +8,14 @@ var Area = mongoose.model('Area');
 var validator = require('validator');
 var postmark = require('postmark');
 var client = new postmark.Client(process.env.POSTMARK_KEY);
+var formidable = require('formidable');
+
+var cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+});
 
 /* Load user object */
 exports.load = function (req, res, next, id){
@@ -75,6 +83,27 @@ exports.update = function(req, res) {
       return res.status(200).json(user.privateInfo());
   });
 };
+
+/* Upload picture */
+exports.updatePicture = function(req, res, next) {
+  var user = req.object;
+
+  // parse a file upload
+  var form = new formidable.IncomingForm();
+
+  form.parse(req, function(err, fields, files) {
+    cloudinary.uploader.upload(files.file.path, function(result) {
+      if (result.error) return res.status(400).json(messaging.error('errors.user.picture.upload_error'));
+      else {
+        user.picture = cloudinary.url(result.public_id, { width: 160, height: 160, crop: "limit" });
+        user.save(function(err) {
+          if (err) res.status(500).json(messaging.error('internal_error'));
+          else res.status(200).json(user.privateInfo());
+        });
+      }
+    });
+  });
+}
 
 /* Get public info about a user. */
 exports.get = function(req, res) {
