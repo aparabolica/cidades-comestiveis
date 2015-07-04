@@ -30,8 +30,10 @@ exports.new = function(req, res) {
   user.save(function(err){
     if (err)
       return res.status(400).json(messaging.mongooseErrors(err, 'users'));
-    else
+    else {
+      user.sendEmailConfirmation();
       return res.status(201).json(user.privateInfo());
+    }
   });
 };
 

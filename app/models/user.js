@@ -10,6 +10,8 @@ var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var moment = require('moment');
 var validator = require('validator');
+var postmark = require('postmark');
+var client = new postmark.Client(process.env.POSTMARK_KEY);
 
 /**
  * User schema
@@ -19,6 +21,7 @@ var UserSchema = new Schema({
 	role: { type: String, enum: ['admin', 'moderator', 'user'], default: 'user'},
 	name: { type: String, required: 'missing_name'},
 	email: { type: String, required: 'missing_email', validate: [validator.isEmail, 'invalid_email'] },
+	emailConfirmed: {type: Boolean, default: false},
 	picture: String,
 	token: { type: String },
 	hashed_password: {type: String, required: 'missing_password'},
@@ -217,6 +220,31 @@ UserSchema.methods = {
 				expiresAt: moment().add('hour', 1).toDate()
 			}).save();
 		}
+	},
+
+	sendEmailConfirmation: function() {
+		// TODO: Expire all prior e-mail confirmations
+
+		var self = this;
+		var Token = mongoose.model('Token');
+		var seed = crypto.randomBytes(20);
+		var token = new Token({user: self._id, type: 'email_confirmation'});
+		token._id = crypto.createHash('sha1').update(seed).digest('hex');
+
+		token.save(function(err) {
+			if (err)
+				return res.json(401, messaging.mongooseErrors('access_token.error'));
+
+			client.sendEmail({
+				"From": 'cidadescomestiveis@muda.org.br',
+				"ReplyTo": 'naoresponda@muda.org.br',
+				"To": self.email,
+				"Subject": 'Confirme seu e-mail',
+				"TextBody": 'Para acessar o Cidades Comestíveis, confirmar seu e-mail no visitando o link:\n\nhttp://www.cidadescomestiveis.org/token/' + token._id
+			}, function(err, success){
+				if (err) console.log('error while sending e-mail confirmation');
+			})
+		})
 	},
 
 	contributions: function(doneGetContributions) {
