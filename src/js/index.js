@@ -207,7 +207,17 @@ app.controller('MainCtrl', [
 				}
 			}
 
+			$scope.navActive = false;
+			$scope.toggleNav = function() {
+				if($scope.navActive == true) {
+					$scope.navActive = false;
+				} else {
+					$scope.navActive = true;
+				}
+			}
+
 			$rootScope.$on('$stateChangeSuccess', function(ev, toState, fromState) {
+				$scope.navActive = false;
 				if(toState.name == 'home')
 					$scope.isHome = true;
 				else

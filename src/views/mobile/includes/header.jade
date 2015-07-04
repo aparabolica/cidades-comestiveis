@@ -8,3 +8,8 @@ header#masthead
 			a(ui-sref="home") Cidades Comestíveis
 				span.logo
 					span.c-icon-carrot.icon
+		nav#mobile-nav
+			span.icon-menu(ng-click="toggleNav()") 
+			.nav-content(ng-class="{active: navActive}")
+				a(ui-sref="projeto") O projeto
+				a(ui-sref="manifesto") Manifesto
