@@ -626,7 +626,7 @@ app.controller('UserCtrl', [
 			dialog = ngDialog.open({
 				overlay: false,
 				template: '/views/edit-profile.html',
-				controller: ['$scope', 'CCAuth', 'CCService', 'leafletData', 'MessageService', function($scope, Auth, CC, leafletData, Message) {
+				controller: ['$scope', '$state', 'CCAuth', 'CCService', 'leafletData', 'MessageService', function($scope, $state, Auth, CC, leafletData, Message) {
 
 					$scope.user = angular.extend({}, Auth.getToken());
 
@@ -684,10 +684,12 @@ app.controller('UserCtrl', [
 							if($scope.uploadImage) {
 								CC.user.picture({id: data._id, file: $scope.uploadImage}, function(data) {
 									Message.add('Perfil atualizado.');
+									$state.go('home', {}, {reload: true});
 									dialog.close();
 								});
 							} else {
 								Message.add('Perfil atualizado.');
+								$state.go('home', {}, {reload: true});
 								dialog.close();
 							}
 						});
