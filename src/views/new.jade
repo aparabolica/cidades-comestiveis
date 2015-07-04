@@ -69,9 +69,9 @@ form#new-item(ng-submit="save(item)")
 				p
 					label(for="access_field") Acesso
 					select(id="access_field" ng-model="item.access")
-						option(value="public") Permitido
-						option(value="permissive") Permissivo
-						option(value="restricted") Restrito
+						option(value="public") Público
+						option(value="permissive") Com autorização prévia
+						option(value="restricted") Privado
 
 			.address-field(ng-show="hasField('address')")
 				p

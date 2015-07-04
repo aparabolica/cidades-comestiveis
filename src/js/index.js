@@ -343,24 +343,6 @@ app.controller('ResourceCtrl', [
 			else
 				$scope.catFilter = category;
 		};
-
-		$scope.canDelete = function(item, user) {
-			if(user) {
-				if(user._id == item.creator._id || user.role == 'admin') {
-					return true;
-				}
-			}
-			return false;
-		};
-
-		$scope.delete = function(item, type) {
-			if(confirm('Você tem certeza que deseja remover este item?')) {
-				CC[type].delete({id: item._id}, function() {
-					ngDialog.closeAll();
-					$state.go('home', {}, {reload: true});
-				});
-			}
-		};
 	}
 ]);
 
@@ -446,7 +428,8 @@ app.controller('SingleCtrl', [
 	'ngDialog',
 	'$scope',
 	'$state',
-	function(Data, Type, Auth, ngDialog, $scope, $state) {
+	'CCService',
+	function(Data, Type, Auth, ngDialog, $scope, $state, CC) {
 
 		$scope.item = Data;
 		$scope.type = Type;
@@ -474,6 +457,15 @@ app.controller('SingleCtrl', [
 				$scope.canEdit = true;
 			}
 		}
+
+		$scope.delete = function(item, type) {
+			if(confirm('Você tem certeza que deseja remover este item?')) {
+				CC[type].delete({id: item._id}, function() {
+					ngDialog.closeAll();
+					$state.go('home', {}, {reload: true});
+				});
+			}
+		};
 
 		if(!isMobile) {
 			var dialog = ngDialog.open({
