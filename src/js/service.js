@@ -537,8 +537,8 @@ angular.module('cc')
 							} else {
 								CC[$scope.selectedCategory.api].update(item, function(data) {
 									if($scope.uploadImage) {
-										Message.add('Item atualizado com sucesso!');
 										CC[$scope.selectedCategory.api].addImage({id: data._id, file: $scope.uploadImage}, function(data) {
+											Message.add('Item atualizado com sucesso!');
 											dialog.close();
 											$state.go('home', {}, {reload: true});
 										});
