@@ -13,6 +13,11 @@ header
 					input(type="password" ng-model="credentials.password")
 				p
 					input(type="submit" value="Entrar")
+				p
+					a.button(href="javascript:void(0);" ng-click="fb.login()")
+						span.icon.icon-facebook 
+						| Entrar com o Facebook
+
 		.half
 			form#register(ng-submit="register(newUser)")
 				h3 Cadastre-se!

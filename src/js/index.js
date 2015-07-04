@@ -157,7 +157,8 @@ app.config([
 				$window._gaq.push(['_trackPageview', $location.path()]);
 			}
 			if(fromState.name) {
-				// ngDialog.closeAll();
+				if(toState.name == 'home')
+					ngDialog.closeAll();
 				document.body.scrollTop = document.documentElement.scrollTop = 0;
 			}
 		});
@@ -313,7 +314,10 @@ app.factory('ResourceService', [
 app.controller('ResourceCtrl', [
 	'$scope',
 	'ResourceService',
-	function($scope, Resource) {
+	'CCService',
+	'$state',
+	'ngDialog',
+	function($scope, Resource, CC, $state, ngDialog) {
 
 		$scope.getResourceCategory = Resource.getCategory;
 
@@ -327,6 +331,24 @@ app.controller('ResourceCtrl', [
 				$scope.catFilter = '';
 			else
 				$scope.catFilter = category;
+		};
+
+		$scope.canDelete = function(item, user) {
+			if(user) {
+				if(user._id == item.creator._id || user.role == 'admin') {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		$scope.delete = function(item, type) {
+			if(confirm('Você tem certeza que deseja remover este item?')) {
+				CC[type].delete({id: item._id}, function() {
+					ngDialog.closeAll();
+					$state.go('home', {}, {reload: true});
+				});
+			}
 		};
 	}
 ]);
@@ -418,8 +440,6 @@ app.controller('SingleCtrl', [
 		$scope.item = Data;
 		$scope.type = Type;
 
-		console.log($scope.item);
-
 		var icon = false;
 
 		if($scope.item.category) {
@@ -493,9 +513,10 @@ app.controller('NewItemCtrl', [
 	'$stateParams',
 	'CCService',
 	'CCAuth',
+	'CCLoginDialog',
 	'HelloService',
 	'CCItemEdit',
-	function($scope, $state, $stateParams, CC, Auth, Hello, ItemEdit) {
+	function($scope, $state, $stateParams, CC, Auth, LoginDialog, Hello, ItemEdit) {
 
 		$scope.editDialog = ItemEdit;
 
@@ -504,7 +525,7 @@ app.controller('NewItemCtrl', [
 				if(Auth.getToken()) {
 					ItemEdit();
 				} else {
-					Hello.facebook.login(ItemEdit);
+					LoginDialog(ItemEdit);
 				}
 			}
 		});
