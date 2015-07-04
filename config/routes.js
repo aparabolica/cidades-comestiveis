@@ -34,6 +34,7 @@ module.exports = function (app, config) {
   usersRoutes.get('/users/:id', users.get);
   usersRoutes.get('/users/:id/contributions', users.contributions);
   usersRoutes.post('/users/:id/message', [auth.isLogged,users.message]);
+  usersRoutes.post('/users/:id/picture', [auth.isLogged, auth.canUpdateUser, users.updatePicture]);
   usersRoutes.get('/users', users.list);
   app.use(config.apiPrefix, usersRoutes);
 
