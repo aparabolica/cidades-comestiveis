@@ -56,6 +56,16 @@ exports.update = function(req, res, next) {
   });
 }
 
+/* Remove */
+exports.remove = function(req, res) {
+  var area = req.object;
+
+  area.remove(function(err) {
+    if (err) return res.sendStatus(500);
+    else res.sendStatus(200);
+  });
+}
+
 /* Upload image */
 exports.updateImage = function(req, res, next) {
   var area = req.object;

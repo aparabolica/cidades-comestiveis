@@ -44,6 +44,7 @@ module.exports = function (app, config) {
   areaRoutes.post('/areas/:id/image', [auth.isLogged, auth.canUpdate, areas.updateImage]);
   areaRoutes.get('/areas/:id', areas.show);
   areaRoutes.put('/areas/:id', [auth.isLogged, auth.canUpdate, areas.update]);
+  areaRoutes.delete('/areas/:id', [auth.isLogged, auth.canUpdate, areas.remove]);
   areaRoutes.get('/areas', areas.list);
   app.use(config.apiPrefix, areaRoutes);
 
