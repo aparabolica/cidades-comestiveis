@@ -26,3 +26,4 @@ article#area.single-item
 
 	p(ng-show="canEdit")
 		a.button(ui-sref="home.editItem({id: item._id, type: type})") Editar
+		a.button(href="javascript:void(0);" ng-click="delete(item, type)") Remover
