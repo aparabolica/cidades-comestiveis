@@ -51,6 +51,17 @@ exports.update = function(req, res, next) {
   });
 }
 
+/* Remove */
+exports.remove = function(req, res, next) {
+  var resource = req.object;
+
+  resource.remove(function(err) {
+    if (err) return res.sendStatus(500);
+    else res.sendStatus(200);
+  });
+}
+
+
 /* Upload image */
 exports.updateImage = function(req, res, next) {
   var resource = req.object;
