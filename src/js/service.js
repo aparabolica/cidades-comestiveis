@@ -248,7 +248,11 @@ angular.module('cc')
 				},
 				removeArea: {
 					method: 'PUT',
-					url: apiUrl + '/initiatives/:id/removeArea/:area_id'
+					url: apiUrl + '/initiatives/:id/removeArea/:area_id',
+					params: {
+						id: '@id',
+						area_id: '@area_id'
+					}
 				}
 			}),
 			resource: $resource(apiUrl + '/resources/:id', { id: '@_id' }, {
