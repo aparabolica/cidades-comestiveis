@@ -461,11 +461,20 @@ app.controller('SingleCtrl', [
 
 		var user = Auth.getToken();
 
-		$scope.canEdit = false;
+		$scope.canEditCurrent = false;
 		if(user) {
 			if(user._id == Data.creator._id || user.role == 'admin') {
-				$scope.canEdit = true;
+				$scope.canEditCurrent = true;
 			}
+		}
+
+		$scope.canEdit = function(item, type) {
+			if(user) {
+				if(user._id == item.creator._id || user.role == 'admin') {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		$scope.delete = function(item, type) {
@@ -476,6 +485,14 @@ app.controller('SingleCtrl', [
 				});
 			}
 		};
+
+		$scope.unsetIniatitive = function(initiative, area) {
+			if(confirm('Você tem certeza que deseja desassociar esta iniciativa do terreno?')) {
+				CC.initiative.removeArea({id: initiative._id, area_id: area._id}, function() {
+					area.initiatives = _.filter(area.initiatives, function(item) { return item._id !== initiative._id; });
+				})
+			}
+		}
 
 		if(!isMobile) {
 			var dialog = ngDialog.open({
@@ -600,9 +617,14 @@ app.controller('InitiativeCtrl', [
 	'$scope',
 	function(CC, Message, $scope) {
 
-		$scope.addArea = function(id, areaId) {
-			CC.initiative.addArea({id: id, area_id: areaId}, function(data) {
-				Message.add('Iniciativa associada com sucesso');
+		$scope.addArea = function(id, area) {
+			CC.initiative.addArea({id: id, area_id: area._id}, function(data) {
+				if(!area.initiatives)
+					area.initiatives = [];
+				CC.initiative.get({id: id}, function(initiative) {
+					area.initiatives.push(initiative);
+					Message.add('Iniciativa associada com sucesso');
+				});
 			});
 		};
 
