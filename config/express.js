@@ -53,6 +53,14 @@ module.exports = function (app, config, passport) {
     }
   }));
 
+  // Setup CORS
+  app.use(function(req, res, next) {
+    res.set('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    next();
+  });
+
   // use passport session
   app.use(passport.initialize());
   app.use(passport.session());
