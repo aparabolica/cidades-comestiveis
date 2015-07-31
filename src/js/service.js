@@ -5,7 +5,7 @@ angular.module('cc')
 	function() {
 
 		hello.init({
-			'facebook': '1671515763079566'
+			'facebook': '518015825012483'
 		});
 
 	}
