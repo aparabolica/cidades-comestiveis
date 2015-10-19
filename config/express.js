@@ -39,7 +39,7 @@ module.exports = function (app, config, passport) {
 
   // Don't log during tests
   // Logging middleware
-  if (env !== 'test') app.use(morgan('default', log));
+  if (env !== 'test') app.use(morgan('combined', log));
 
   // bodyParser should be above methodOverride
   app.use(bodyParser.json({limit: '50mb'}));
