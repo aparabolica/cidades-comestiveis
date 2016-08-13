@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "angular": "^1.4.0",
-    "angular-bootstrap-datetimepicker": "dalelotts/angular-bootstrap-datetimepicker#0.3.12",
+    "angular-bootstrap-datetimepicker": "dalelotts/angular-bootstrap-datetimepicker#v1.0.1",
     "angular-cookies": "^1.4.0",
     "angular-leaflet-directive": "^0.7.15",
     "angular-resource": "^1.4.0",

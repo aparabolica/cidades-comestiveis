@@ -6,7 +6,7 @@
 var
 	apiPrefix = '/api/v1',
 	path = require('path'),
-	rootPath = path.resolve(__dirname + '../..');
+	rootPath = path.resolve(__dirname + '/..');
 
 
 /**
