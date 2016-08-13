@@ -367,7 +367,7 @@ app.controller('MapCtrl', [
 		angular.extend($scope, {
 			defaults: {
 				// tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-				tileLayer: "http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg",
+				tileLayer: "https://{s}.tiles.mapbox.com/v4/miguelpeixe.l94olf54/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWlndWVscGVpeGUiLCJhIjoiVlc0WWlrQSJ9.pIPkSx25w7ossO6rZH9Tcw",
 				// tileLayer: "http://{s}.sm.mapstack.stamen.com/((toner-lite,$ff6600[hsl-color]),(parks,$339900[hsl-color]),mapbox-water)/{z}/{x}/{y}.png",
 				// tileLayer: "http://{s}.sm.mapstack.stamen.com/($eeeeee[@p],(parks,$339900[hsl-color]),mapbox-water,(toner-lite,$ff6600[hsl-color])[multiply])/{z}/{x}/{y}.png",
 				maxZoom: 18,
