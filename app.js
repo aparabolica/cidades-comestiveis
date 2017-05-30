@@ -2,14 +2,16 @@
  * Module dependencies
  */
 
-var dotenv = require('dotenv').load();
-var express = require('express')
-var passport = require('passport')
-var env = process.env.NODE_ENV || 'development'
-var config = require('./config/config')[env]
-var rootPath = config.rootPath
-var mongoose = require('mongoose')
-var fs = require('fs')
+var fs = require('fs');
+if(fs.existsSync('./.env')) {
+  require('dotenv').load();
+}
+var express = require('express');
+var passport = require('passport');
+var env = process.env.NODE_ENV || 'development';
+var config = require('./config/config')[env];
+var rootPath = config.rootPath;
+var mongoose = require('mongoose');
 
 mongoose.connect(config.db);
 

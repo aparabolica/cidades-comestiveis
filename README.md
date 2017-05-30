@@ -13,9 +13,9 @@ Clone locally:
 
     git clone https://github.com/codigourbano/cidades-comestiveis.git
 
-Install dependencies:
+Install dependencies and compile assets:
 
-    npm install
+    npm install && ./node_modules/.bin/grunt build
 
 Start the server:
 

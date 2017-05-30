@@ -17,16 +17,16 @@ module.exports = {
 	development: {
 		rootPath: rootPath,
 		apiPrefix: apiPrefix,
-		db: 'mongodb://localhost/comestiveis_dev'
+		db: process.env.MONGODB_URI || 'mongodb://localhost/comestiveis_dev'
 	},
 	test: {
 		rootPath: rootPath,
 		apiPrefix: apiPrefix,
-		db: 'mongodb://localhost/comestiveis_test'
+		db: process.env.MONGODB_URI || 'mongodb://localhost/comestiveis_test'
 	},
 	production: {
 		rootPath: rootPath,
 		apiPrefix: apiPrefix,
-		db: process.env.MONGOLAB_URI || 'mongodb://localhost/comestiveis_production'
+		db: process.env.MONGODB_URI || 'mongodb://localhost/comestiveis_production'
 	}
 }

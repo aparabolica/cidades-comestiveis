@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "watch": "NODE_ENV=development ./node_modules/.bin/nodemon --watch app.js",
-    "postinstall": "mkdir -p public && ./node_modules/.bin/grunt build",
+    "postinstall": "mkdir -p public",
     "start": "node app.js",
     "test": "NODE_ENV=test mocha test/api"
   },

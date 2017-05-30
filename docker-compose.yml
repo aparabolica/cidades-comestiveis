@@ -1,0 +1,22 @@
+version: '2'
+services:
+  app:
+    build: .
+    image: aparabolica/cidades-comestiveis
+    ports:
+      - 3000:3000
+    links:
+      - database:mongo
+    environment:
+      PORT: 3000
+      NODE_ENV: development
+      MONGODB_URI: mongodb://mongo/cidades-comestiveis
+      CLOUDINARY_CLOUD_NAME: your-cloud-name
+      CLOUDINARY_KEY: your-cloud-key
+      CLOUDINARY_SECRET: your-cloud-secret
+      POSTMARK_KEY: your-postmark-key
+      APP_URL: http://www.cidadescomestiveis.org
+  database:
+    image: mongo
+    volumes:
+      - ./db:/data/db
